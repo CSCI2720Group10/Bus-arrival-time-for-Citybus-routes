@@ -26,8 +26,8 @@ var User = mongoose.model('User', UserSchema);
 var LocationSchema = mongoose.Schema({
 	locId: { type: Number, required: true, unique: true },
     name: { type: String, required: true },
-	latitude: { type: Number, required: true },
-	longitude: { type: Number, required: true },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
     dir: { type: Boolean, required: true }, // true: outbound, false: inbound
     seq: { type: Number, required: true },
     busArrivalTime: { type: Date, required: true }
@@ -49,12 +49,11 @@ var RouteLocationSchema = mongoose.Schema({
 var RouteLocation = mongoose.model('RouteLocation', RouteLocationSchema);
 
 var CommentSchema = mongoose.Schema({
-	locId: { type: Number, required: true, unique: true },
-	latitude: { type: Number, required: true },
-	longitude: { type: Number, required: true },
-	name: { type: String, required: true },
-    busArrivalTime: { type: Date, required: true },
-    routeId: { type: Number, required: true }
+	commentId: { type: Number, required: true, unique: true },
+	userId : { type: Number, required: true },
+	content: { type: String, required: true },
+	locId: { type: Number, required: true },
+    time: { type: Date, required: true }
 });
 var Comment= mongoose.model('Comment', CommentSchema);
 
