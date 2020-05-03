@@ -1,6 +1,18 @@
 const express = require ('express');
 const app = express();
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
+
+const bcrypt = require('bcrypt');
+
+const session = require('express-session');
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+
 const mongoose = require('mongoose');
 mongoose.connect('');
 
@@ -14,11 +26,12 @@ db.once('open', function () {
 
 var UserSchema = mongoose.Schema({
 	userId: { type: Number, required: true, unique: true },
-	userName: { type: String, required: true },
+	username: { type: String, required: true },
 	password: { type: String, required: true },
-	fav_locId: [{ type: Number, required: true }],
-	fav_routeId: { type: Number, required: true },
-	searchHistory: { type: String, required: true },
+	fav_locId: [{ type: Number }],
+	fav_routeId: [{ type: Number }],
+	homeLoc: { latitude: { type: Number, required: true },
+               longitude: { type: Number, required: true } },
     status: { type: Number, required: true }
 });
 var User = mongoose.model('User', UserSchema);
@@ -57,9 +70,74 @@ var CommentSchema = mongoose.Schema({
 });
 var Comment= mongoose.model('Comment', CommentSchema);
 
-app.all("/",function(req,res)
-{
-	res.send("Welcome to VM !");
+app.use("/", express.static(__dirname));
+
+app.get("/", function(req,res){
+    res.sendFile(__dirname + "/root.html");
+});
+
+app.post("/login", function(req, res){
+    //console.log(bcrypt.hashSync(password));
+
+    User.findOne({username: req.body['username']})
+	.exec(function(err, user) {
+		if (err) {
+			res.send(err);
+        }
+        else if (user == null){
+            res.send("empty");
+        }
+        else if (user.password == req.body['password']){
+            req.session['login'] = true;
+            req.session['username'] = req.body['username'];
+            res.redirect('/user');
+        }
+        else{
+            res.send("fail");
+        }
+    });
+});
+
+app.get('/user', function(req, res) {
+	if (req.session['login']) {
+		res.sendFile(__dirname + "/user.html");
+	} else {
+		res.send('Please login to view this page!');
+	}
+});
+
+app.post("/loginAdmin", function(req, res){
+    req.session['loginAdmin'] = true;
+    res.redirect('/admin');
+});
+
+app.get("/admin", function(req,res){
+    if (req.session['adminLogin']) {
+        res.sendFile(__dirname + "/admin.html");
+	} else {
+		res.send('Please login as admin to view this page!');
+	}
+});
+
+// RESTful API
+app.get("/locations", function(req,res){
+
+});
+
+app.post("/locations", function(req,res){
+
+});
+
+app.get("/locations/:loc-id", function(req,res){
+
+});
+
+app.put("/locations/:loc-id", function(req,res){
+
+});
+
+app.delete("/locations/:loc-id", function(req,res){
+
 });
 
 const server = app.listen(2064);

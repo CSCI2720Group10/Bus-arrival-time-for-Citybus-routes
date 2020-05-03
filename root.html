@@ -1,8 +1,25 @@
 <html>
     <head>
-      <title></title>
+        <title>Login</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="script.js"></script>
     </head>
-    <body>
-        <p>Testing File in GIt HUb</p>
+    <body class="m-2">
+        <button id="test">click</button>
+        <h1>Login</h1>
+        <form>
+            <div class="form-group w-25">
+                <label for="name">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                <label for="name">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <p id="errorMsg"></p>
+            <button type="submit" class="btn btn-success" id="login">Login</button>
+        </form>
+        <a id="adminLogin" href="">Login as admin</a>
     </body>
 </html>
