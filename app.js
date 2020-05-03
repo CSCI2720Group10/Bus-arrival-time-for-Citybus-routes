@@ -37,7 +37,7 @@ var UserSchema = mongoose.Schema({
 var User = mongoose.model('User', UserSchema);
 
 var LocationSchema = mongoose.Schema({
-	locId: { type: Number, required: true, unique: true },
+    locId: { type: Number, required: true, unique: true },
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
@@ -72,35 +72,43 @@ var Comment= mongoose.model('Comment', CommentSchema);
 
 app.use("/", express.static(__dirname));
 
-app.get("/", function(req,res){
-    res.sendFile(__dirname + "/root.html");
+app.get("/", function(req, res){
+    if (req.session['login'] == true)
+        res.sendFile(__dirname + '/user.html');
+    else if (req.session['loginAdmin'] == true)
+        res.sendFile(__dirname + '/admin.html');
+    else
+        res.sendFile(__dirname + "/root.html");
 });
 
 app.post("/login", function(req, res){
-    //console.log(bcrypt.hashSync(password));
-
-    User.findOne({username: req.body['username']})
-	.exec(function(err, user) {
-		if (err) {
-			res.send(err);
-        }
-        else if (user == null){
-            res.send("empty");
-        }
-        else if (user.password == req.body['password']){
-            req.session['login'] = true;
-            req.session['username'] = req.body['username'];
-            res.redirect('/user');
-        }
-        else{
-            res.send("fail");
-        }
-    });
+    if (req.body['username'] == "" || req.body['password'] == ""){
+        res.send("empty");
+    }
+    else{
+        User.findOne({username: req.body['username']})
+        .exec(function(err, user) {
+            if (err) {
+                res.send(err);
+            }
+            else if (user == null){
+                res.send("fail");
+            }
+            else if (user.password == req.body['password']){
+                req.session['login'] = true;
+                req.session['username'] = req.body['username'];
+                res.redirect('/user');
+            }
+        });
+    }
 });
 
 app.get('/user', function(req, res) {
 	if (req.session['login']) {
-		res.sendFile(__dirname + "/user.html");
+        var content = '<button type="button" class="btn btn-dark" id="logout">Logout</button>';
+        content += '<p>Welcome!</p>';
+        res.send(content);
+		//res.sendFile(__dirname + "/user.html");
 	} else {
 		res.send('Please login to view this page!');
 	}
@@ -112,11 +120,25 @@ app.post("/loginAdmin", function(req, res){
 });
 
 app.get("/admin", function(req,res){
-    if (req.session['adminLogin']) {
-        res.sendFile(__dirname + "/admin.html");
+    if (req.session['loginAdmin']) {
+        var content = '<button type="button" class="btn btn-dark" id="logoutAdmin">Logout</button>';
+        content += '<p>Welcome Admin!</p>';
+        res.send(content);
+        //res.sendFile(__dirname + "/admin.html");
 	} else {
 		res.send('Please login as admin to view this page!');
 	}
+});
+
+app.post("/logout", function(req, res){
+    req.session['login'] = false;
+    req.session['username'] = "";
+    res.send();
+});
+
+app.post("/logoutAdmin", function(req, res){
+    req.session['loginAdmin'] = false;
+    res.send();
 });
 
 // RESTful API
