@@ -105,10 +105,7 @@ app.post("/login", function(req, res){
 
 app.get('/user', function(req, res) {
 	if (req.session['login']) {
-        var content = '<button type="button" class="btn btn-dark" id="logout">Logout</button>';
-        content += '<p>Welcome!</p>';
-        res.send(content);
-		//res.sendFile(__dirname + "/user.html");
+		res.sendFile(__dirname + "/user.html");
 	} else {
 		res.send('Please login to view this page!');
 	}
@@ -121,10 +118,7 @@ app.post("/loginAdmin", function(req, res){
 
 app.get("/admin", function(req,res){
     if (req.session['loginAdmin']) {
-        var content = '<button type="button" class="btn btn-dark" id="logoutAdmin">Logout</button>';
-        content += '<p>Welcome Admin!</p>';
-        res.send(content);
-        //res.sendFile(__dirname + "/admin.html");
+        res.sendFile(__dirname + "/admin.html");
 	} else {
 		res.send('Please login as admin to view this page!');
 	}
@@ -133,12 +127,12 @@ app.get("/admin", function(req,res){
 app.post("/logout", function(req, res){
     req.session['login'] = false;
     req.session['username'] = "";
-    res.send();
+	res.sendFile(__dirname + "/root.html");
 });
 
 app.post("/logoutAdmin", function(req, res){
     req.session['loginAdmin'] = false;
-    res.send();
+	res.sendFile(__dirname + "/root.html");
 });
 
 // RESTful API

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var $rootBody = $('<h1>Login</h1>'
+    /*var $rootBody = $('<h1>Login</h1>'
     + '<form>'
     + '<div class="form-group w-25">'
     + '<label for="name">Username</label>'
@@ -10,7 +10,7 @@ $(document).ready(function() {
     + '<p id="errorMsg"></p>'
     + '<button type="submit" class="btn btn-success" id="login">Login</button>'
     + '</form>'
-    + '<a id="loginAdmin" href="">Login as admin</a>');
+    + '<a id="loginAdmin" href="">Login as admin</a>');*/
 
     $(document).on("click", "#login", function(e) {
         e.preventDefault();
@@ -28,7 +28,9 @@ $(document).ready(function() {
                 $("#errorMsg").html("Wrong username/password!");
             }
             else{
-               $("body").html(res);
+				res = res.split("body");
+				res = res[1].slice(1, res[1].length - 2);
+				$("body").html(res);
             }
         });
     });
@@ -44,6 +46,8 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
+            res = res.split("body");
+			res = res[1].slice(1, res[1].length - 2);
             $("body").html(res);
         });
     });
@@ -54,7 +58,9 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
-            $("body").html($rootBody);
+			res = res.split("body");
+			res = res[1].slice(1, res[1].length - 2);
+            $("body").html(res);
         });
     });
 
@@ -64,7 +70,9 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
-            $("body").html($rootBody);
+			res = res.split("body");
+			res = res[1].slice(1, res[1].length - 2);
+            $("body").html(res);
         });
     });
 });
