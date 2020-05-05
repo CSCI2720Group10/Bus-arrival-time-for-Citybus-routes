@@ -14,7 +14,7 @@ app.use(session({
 }));
 
 const mongoose = require('mongoose');
-mongoose.connect('');
+mongoose.connect('mongodb://123:123@localhost/proj');
 
 var db = mongoose.connection;
 // Upon connection failure
@@ -161,14 +161,21 @@ app.post("/login", function(req, res){
             else if (user == null){
                 res.send("fail");
             }
-            else if (!bcrypt.compare(user.password, req.body['password'])){
-                res.send("fail");
+            else{
+                bcrypt.compare(req.body['password'], user.password, function(err, result){
+                    if (err)
+                        res.send(err);
+                    else if(result){
+                        req.session['login'] = true;
+                        req.session['username'] = req.body['username'];
+                        res.redirect('./user');
+                    }
+                    else {
+                        res.send("fail");
+                    }
+                });
             }
-            else if (bcrypt.compare(req.body['password'], user.password)){
-                req.session['login'] = true;
-                req.session['username'] = req.body['username'];
-                res.redirect('./user');
-            }
+
         });
     }
 });
