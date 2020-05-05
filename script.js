@@ -1,4 +1,16 @@
 $(document).ready(function() {
+    history.replaceState({content: $("body").html(), title: $("title").html()}, null, "\\");
+
+    $(window).on("popstate", function() {
+        if (event.state.hasOwnProperty('file')){
+            $("body").load(event.state.file + " #content");
+            $("title").html(event.state.title);
+        }
+        else{
+            $("body").html(event.state.content);
+            $("title").html(event.state.title);
+        }
+    });
 
     $(document).on("click", "#signup", function(e) {
         e.preventDefault();
@@ -7,10 +19,12 @@ $(document).ready(function() {
             type: "GET"
         })
         .done(function(res){
-            res = res.split("body");
+            /*res = res.split("body");
             res = res[1].slice(1, res[1].length - 2);
-            $("body").html(res);
+            $("body").html(res);*/
+            $("body").load(res + " #content");
             $("title").html("Sign Up");
+            history.pushState({file: res, title: $("title").html()}, null, res);
         });
     });
 
@@ -37,9 +51,10 @@ $(document).ready(function() {
                 $("#msg").html("Please enter the same password!");
             }
             else{
-				res = res.split("body");
+				/*res = res.split("body");
 				res = res[1].slice(1, res[1].length - 2);
-				$("body").html(res);
+				$("body").html(res);*/
+                $("body").load(res + " #content");
                 $("#msg").html("Sign up successful!");
                 $("title").html("Login");
             }
@@ -57,6 +72,7 @@ $(document).ready(function() {
 			res = res[1].slice(1, res[1].length - 2);
             $("body").html(res);
             $("title").html("Login");
+            history.pushState({content: res, title: $("title").html()}, null, "\\");
         });
     });
 
@@ -76,9 +92,10 @@ $(document).ready(function() {
                 $("#msg").html("Wrong username/password!");
             }
             else{
-				res = res.split("body");
+				/*res = res.split("body");
 				res = res[1].slice(1, res[1].length - 2);
-				$("body").html(res);
+				$("body").html(res);*/
+                $("body").load(res + " #content");
                 $("title").html("Home");
             }
         });
@@ -95,9 +112,10 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
-            res = res.split("body");
+            /*res = res.split("body");
 			res = res[1].slice(1, res[1].length - 2);
-            $("body").html(res);
+            $("body").html(res);*/
+            $("body").load(res + " #content");
             $("title").html("Admin Home");
         });
     });
@@ -108,9 +126,10 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
-			res = res.split("body");
+			/*res = res.split("body");
 			res = res[1].slice(1, res[1].length - 2);
-            $("body").html(res);
+            $("body").html(res);*/
+            $("body").load(res + " #content");
             $("title").html("Login");
         });
     });
@@ -121,9 +140,10 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
-			res = res.split("body");
+			/*res = res.split("body");
 			res = res[1].slice(1, res[1].length - 2);
-            $("body").html(res);
+            $("body").html(res);*/
+            $("body").load(res + " #content");
             $("title").html("Login");
         });
     });

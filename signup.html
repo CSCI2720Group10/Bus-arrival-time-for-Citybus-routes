@@ -8,21 +8,21 @@
         <script src="script.js"></script>
     </head>
     <body>
-		<div class="m-2">
+		<div id="content" class="m-2">
 			<h1>Sign Up</h1>
 			<form>
-				<div class="form-group w-25">
+				<div class="form-group">
 					<label for="name">Username(between 4 and 20 charcters)</label>
-					<input type="text" class="form-control inputBox" id="username" name="username" required>
+					<input type="text" style="width: 300px" class="form-control inputBox" id="username" name="username" required>
 					<label for="name">Password</label>
-					<input type="password" class="form-control inputBox" id="password" name="password" required>
+					<input type="password" style="width: 300px" class="form-control inputBox" id="password" name="password" required>
 					<label for="name">Repeat your password</label>
-					<input type="password" class="form-control inputBox" id="repeatPassword" name="repeatPassword" required>
+					<input type="password" style="width: 300px" class="form-control inputBox" id="repeatPassword" name="repeatPassword" required>
 				</div>
 				<p id="msg"></p>
 				<button type="submit" class="btn btn-success" id="signupSubmit">Sign up</button>
 			</form>
-            <a id="login" href="./">Login</a>
+            <a id="login" href="">Login</a>
 		</div>
     </body>
 </html>

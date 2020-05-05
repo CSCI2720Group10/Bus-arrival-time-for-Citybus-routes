@@ -77,16 +77,16 @@ app.get("/", function(req, res){
     else if (req.session['loginAdmin'] == true)
         res.sendFile(__dirname + '/admin.html');
     else
-        res.sendFile(__dirname + "/root.html");
+        res.sendFile(__dirname + '/root.html');
 });
 
 app.get("/signup", function(req, res){
     if (req.session['login'] == true)
-        res.sendFile(__dirname + '/user.html');
+        res.send('/user.html');
     else if (req.session['loginAdmin'] == true)
-        res.sendFile(__dirname + '/admin.html');
+        res.send('/admin.html');
     else
-        res.sendFile(__dirname + '/signup.html');
+        res.send('/signup.html');
 });
 
 app.post("/signup", function(req, res){
@@ -137,7 +137,7 @@ app.post("/signup", function(req, res){
                                 res.send(err);
                             }
                             else{
-                                res.sendFile(__dirname + "/root.html");
+                                res.send("/root.html");
                             }
                         });
                     }
@@ -154,7 +154,6 @@ app.post("/login", function(req, res){
     else{
         User.findOne({username: req.body['username']})
         .exec(function(err, user) {
-            //console.log(bcrypt.hashSync(req.body.password, 8));
             if (err) {
                 res.send(err);
             }
@@ -182,7 +181,7 @@ app.post("/login", function(req, res){
 
 app.get('/user', function(req, res) {
 	if (req.session['login']) {
-		res.sendFile(__dirname + "/user.html");
+		res.send("user.html");
 	} else {
 		res.send('Please login to view this page!');
 	}
@@ -195,7 +194,7 @@ app.post("/loginAdmin", function(req, res){
 
 app.get("/admin", function(req,res){
     if (req.session['loginAdmin']) {
-        res.sendFile(__dirname + "/admin.html");
+        res.send("/admin.html");
 	} else {
 		res.send('Please login as admin to view this page!');
 	}
@@ -204,12 +203,12 @@ app.get("/admin", function(req,res){
 app.post("/logout", function(req, res){
     req.session['login'] = false;
     req.session['username'] = "";
-	res.sendFile(__dirname + "/root.html");
+	res.send("root.html");
 });
 
 app.post("/logoutAdmin", function(req, res){
     req.session['loginAdmin'] = false;
-	res.sendFile(__dirname + "/root.html");
+	res.send("/root.html");
 });
 
 // RESTful API
