@@ -93,7 +93,7 @@ app.post("/signup", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == "" || req.body['repeatPassword'] == ""){
         res.send("empty");
     }
-    if (req.body['username'].length < 4 || req.body['username'].length > 20){
+    else if (req.body['username'].length < 4 || req.body['username'].length > 20){
         res.send("invalidUsername");
     }
     else{
