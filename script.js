@@ -15,14 +15,14 @@ $(document).ready(function() {
     $(document).on("click", "#login", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "/login",
+            url: "./login",
             type: "POST",
             data: {username: $("#username").val(),
                    password: $("#password").val()}
         })
         .done(function(res){
             if(res == "empty"){
-                $("#errorMsg").html("Please enter Username and Password!");
+                $("#errorMsg").html("Please enter username and password!");
             }
             else if(res == "fail"){
                 $("#errorMsg").html("Wrong username/password!");
@@ -42,7 +42,7 @@ $(document).ready(function() {
 	$(document).on("click", "#loginAdmin", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "/loginAdmin",
+            url: "./loginAdmin",
             type: "POST"
         })
         .done(function(res){
@@ -54,7 +54,7 @@ $(document).ready(function() {
 
     $(document).on("click", "#logout", function() {
         $.ajax({
-            url: "/logout",
+            url: "./logout",
             type: "POST"
         })
         .done(function(res){
@@ -66,7 +66,7 @@ $(document).ready(function() {
 
     $(document).on("click", "#logoutAdmin", function() {
         $.ajax({
-            url: "/logoutAdmin",
+            url: "./logoutAdmin",
             type: "POST"
         })
         .done(function(res){

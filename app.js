@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const session = require('express-session');
 app.use(session({
@@ -94,10 +94,13 @@ app.post("/login", function(req, res){
             else if (user == null){
                 res.send("fail");
             }
+            else if (user.password != req.body['password']){
+                res.send("fail");
+            }
             else if (user.password == req.body['password']){
                 req.session['login'] = true;
                 req.session['username'] = req.body['username'];
-                res.redirect('/user');
+                res.redirect('./user');
             }
         });
     }
@@ -113,7 +116,7 @@ app.get('/user', function(req, res) {
 
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
-    res.redirect('/admin');
+    res.redirect('./admin');
 });
 
 app.get("/admin", function(req,res){
