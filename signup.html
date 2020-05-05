@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Login</title>
+        <title>Sign Up</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -9,20 +9,20 @@
     </head>
     <body>
 		<div class="m-2">
-			<h1>Login</h1>
+			<h1>Sign Up</h1>
 			<form>
 				<div class="form-group w-25">
 					<label for="name">Username</label>
 					<input type="text" class="form-control inputBox" id="username" name="username" required>
 					<label for="name">Password</label>
 					<input type="password" class="form-control inputBox" id="password" name="password" required>
+					<label for="name">Repeat your password</label>
+					<input type="password" class="form-control inputBox" id="repeatPassword" name="password" required>
 				</div>
 				<p id="msg"></p>
-				<button type="submit" class="btn btn-success" id="loginUser">Login</button>
+				<button type="submit" class="btn btn-success" id="signupSubmit">Sign up</button>
 			</form>
-            <a id="signup" href="">Create an account</a>
-            <br>
-			<a id="loginAdmin" href="">Login as admin</a>
+            <a id="login" href="./">Login</a>
 		</div>
     </body>
 </html>

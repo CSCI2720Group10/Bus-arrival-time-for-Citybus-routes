@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 const session = require('express-session');
 app.use(session({
@@ -30,9 +30,8 @@ var UserSchema = mongoose.Schema({
 	password: { type: String, required: true },
 	fav_locId: [{ type: Number }],
 	fav_routeId: [{ type: Number }],
-	homeLoc: { latitude: { type: Number, required: true },
-               longitude: { type: Number, required: true } },
-    status: { type: Number, required: true }
+	homeLoc: { latitude: { type: Number },
+               longitude: { type: Number } }
 });
 var User = mongoose.model('User', UserSchema);
 
@@ -81,9 +80,21 @@ app.get("/", function(req, res){
         res.sendFile(__dirname + "/root.html");
 });
 
-app.post("/login", function(req, res){
-    if (req.body['username'] == "" || req.body['password'] == ""){
+app.get("/signup", function(req, res){
+    if (req.session['login'] == true)
+        res.sendFile(__dirname + '/user.html');
+    else if (req.session['loginAdmin'] == true)
+        res.sendFile(__dirname + '/admin.html');
+    else
+        res.sendFile(__dirname + '/signup.html');
+});
+
+app.post("/signup", function(req, res){
+    if (req.body['username'] == "" || req.body['password'] == "" || req.body['repeatPassword'] == ""){
         res.send("empty");
+    }
+    if (req.body['username'].length < 4 || req.body['username'].length > 20){
+        res.send("invalidUsername");
     }
     else{
         User.findOne({username: req.body['username']})
@@ -91,13 +102,69 @@ app.post("/login", function(req, res){
             if (err) {
                 res.send(err);
             }
+            else if (user != null){
+                res.send("existsUsername");
+            }
+            else if (req.body['password'] != req.body['repeatPassword']){
+                res.send("fail");
+            }
+            else{
+                User.findOne()
+                .sort({userId: -1})
+                .select('userId')
+                .exec(function(err, result) {
+                    if (err){
+                        res.send(err);
+                    }
+                    else {
+                        var u;
+                        if (result == null) {
+                            u = new User({
+                                userId: 1,
+                                username: req.body['username'],
+	                            password: bcrypt.hashSync(req.body['password'], 8)
+                            });
+                        }
+                        else {
+                            u = new User({
+                                userId: result.userId + 1,
+                                username: req.body['username'],
+                                password: bcrypt.hashSync(req.body['password'], 8)
+                            });
+                        }
+                        u.save(function(err) {
+                            if (err){
+                                res.send(err);
+                            }
+                            else{
+                                res.sendFile(__dirname + "/root.html");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
+app.post("/login", function(req, res){
+    if (req.body['username'] == "" || req.body['password'] == ""){
+        res.send("empty");
+    }
+    else{
+        User.findOne({username: req.body['username']})
+        .exec(function(err, user) {
+            //console.log(bcrypt.hashSync(req.body.password, 8));
+            if (err) {
+                res.send(err);
+            }
             else if (user == null){
                 res.send("fail");
             }
-            else if (user.password != req.body['password']){
+            else if (!bcrypt.compare(user.password, req.body['password'])){
                 res.send("fail");
             }
-            else if (user.password == req.body['password']){
+            else if (bcrypt.compare(req.body['password'], user.password)){
                 req.session['login'] = true;
                 req.session['username'] = req.body['username'];
                 res.redirect('./user');
