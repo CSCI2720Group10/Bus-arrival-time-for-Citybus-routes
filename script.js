@@ -38,25 +38,16 @@ $(document).ready(function() {
                    repeatPassword: $("#repeatPassword").val()}
         })
         .done(function(res){
-            if(res == "empty"){
-                $("#msg").html("Please fill in all the fields!");
-            }
-            else if(res == "invalidUsername"){
-                $("#msg").html("The username should have 4-20 characters!");
-            }
-            else if(res == "existsUsername"){
-                $("#msg").html("The username already exists!");
-            }
-            else if(res == "fail"){
-                $("#msg").html("Please enter the same password!");
-            }
-            else{
+            if(res == "/root.html"){
 				/*res = res.split("body");
 				res = res[1].slice(1, res[1].length - 2);
 				$("body").html(res);*/
                 $("body").load(res + " #content");
                 $("#msg").html("Sign up successful!");
                 $("title").html("Login");
+            }
+            else{
+                $("#msg").html(res);
             }
         });
     });
@@ -85,18 +76,15 @@ $(document).ready(function() {
                    password: $("#password").val()}
         })
         .done(function(res){
-            if(res == "empty"){
-                $("#msg").html("Please enter username and password!");
-            }
-            else if(res == "fail"){
-                $("#msg").html("Wrong username/password!");
-            }
-            else{
+            if(res == "/user.html"){
 				/*res = res.split("body");
 				res = res[1].slice(1, res[1].length - 2);
 				$("body").html(res);*/
                 $("body").load(res + " #content");
                 $("title").html("Home");
+            }
+            else{
+                $("#msg").html(res);
             }
         });
     });
@@ -120,7 +108,8 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on("click", "#logout", function() {
+    $(document).on("click", "#logout", function(e) {
+        e.preventDefault();
         $.ajax({
             url: "./logout",
             type: "POST"
@@ -134,7 +123,8 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on("click", "#logoutAdmin", function() {
+    $(document).on("click", "#logoutAdmin", function(e) {
+        e.preventDefault();
         $.ajax({
             url: "./logoutAdmin",
             type: "POST"

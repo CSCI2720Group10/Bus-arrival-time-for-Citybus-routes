@@ -5,12 +5,47 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
         <script src="script.js"></script>
+        <script src="admin.js"></script>
     </head>
     <body>
 		<div id="content" class="m-2">
-			<button type="button" class="btn btn-dark" id="logoutAdmin">Logout</button>
-			<p>Welcome Admin!</p>
+            <nav class="mb-2 navbar navbar-expand-md bg-secondary">
+				<ul id="navbarButton" class="navbar-nav w-100">
+                    <li class="nav-item"><a id="adminHome" class="nav-link text-warning" href="">Home</a></li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a id="locDropdown" class="nav-link text-warning dropdown-toggle" data-toggle="dropdown" href="">Location</a>
+                            <div id="locDropdownMenu" class="dropdown-menu">
+                                <a id="createLoc" class="dropdown-item" href="">Create Location</a>
+				                <a id="retrieveLoc" class="dropdown-item" href="">Retrieve Location</a>
+                                <a id="updateLoc" class="dropdown-item" href="">Update Location</a>
+                                <a id="deleteLoc" class="dropdown-item" href="">Delete Location</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a id="userDropdown" class="nav-link text-warning dropdown-toggle" data-toggle="dropdown" href="">User</a>
+                            <div id="userDropdownMenu" class="dropdown-menu">
+                                <a id="createUser" id="createLoc" class="dropdown-item" href="">Create User</a>
+                                <a id="retrieveUser" class="dropdown-item" href="">Retrieve User</a>
+                                <a id="updateUser" class="dropdown-item" href="">Update User</a>
+                                <a id="deleteUser" class="dropdown-item" href="">Delete User</a>
+                            </div>
+                        </div>
+                    </li>
+					<li class="nav-item"><a id="logoutAdmin" class="nav-link text-warning" href="">Logout</a></li>
+				</ul>
+			</nav>
+
+            <div id="adminHomeContent">
+                <p>Welcome Admin!</p>
+                <button type="button" class="btn btn-dark" id="flush">Flush data</button>
+                <p id="msg"></p>
+            </div>
 		</div>
     </body>
 </html>

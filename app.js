@@ -47,7 +47,7 @@ var LocationSchema = mongoose.Schema({
 var Location = mongoose.model('Location', LocationSchema);
 
 var RouteSchema = mongoose.Schema({
-	locId: { type: Number, required: true, unique: true },
+	routeId: { type: Number, required: true, unique: true },
 	startLocId: { type: Number, required: true },
 	endLocId: { type: Number, required: true },
 	stopCount: { type: Number, required: true }
@@ -91,10 +91,13 @@ app.get("/signup", function(req, res){
 
 app.post("/signup", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == "" || req.body['repeatPassword'] == ""){
-        res.send("empty");
+        res.send("Please fill in all the fields!");
     }
     else if (req.body['username'].length < 4 || req.body['username'].length > 20){
-        res.send("invalidUsername");
+        res.send("The username should have 4-20 characters!");
+    }
+    else if (req.body['password'].length < 4 || req.body['password'].length > 20){
+        res.send("The username should have 4-20 characters!");
     }
     else{
         User.findOne({username: req.body['username']})
@@ -103,10 +106,10 @@ app.post("/signup", function(req, res){
                 res.send(err);
             }
             else if (user != null){
-                res.send("existsUsername");
+                res.send("The username already exists!");
             }
             else if (req.body['password'] != req.body['repeatPassword']){
-                res.send("fail");
+                res.send("Please enter the same password!");
             }
             else{
                 User.findOne()
@@ -149,7 +152,7 @@ app.post("/signup", function(req, res){
 
 app.post("/login", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == ""){
-        res.send("empty");
+        res.send("Please enter username and password!");
     }
     else{
         User.findOne({username: req.body['username']})
@@ -158,7 +161,7 @@ app.post("/login", function(req, res){
                 res.send(err);
             }
             else if (user == null){
-                res.send("fail");
+                res.send("Wrong username/password!");
             }
             else{
                 bcrypt.compare(req.body['password'], user.password, function(err, result){
@@ -170,7 +173,7 @@ app.post("/login", function(req, res){
                         res.redirect('./user');
                     }
                     else {
-                        res.send("fail");
+                        res.send("Wrong username/password!");
                     }
                 });
             }
@@ -181,7 +184,7 @@ app.post("/login", function(req, res){
 
 app.get('/user', function(req, res) {
 	if (req.session['login']) {
-		res.send("user.html");
+		res.send("/user.html");
 	} else {
 		res.send('Please login to view this page!');
 	}
@@ -209,6 +212,20 @@ app.post("/logout", function(req, res){
 app.post("/logoutAdmin", function(req, res){
     req.session['loginAdmin'] = false;
 	res.send("/root.html");
+});
+
+app.post("/admin/flush", function(req, res){
+    console.log(req.body['route']);
+    console.log(req.body['routeLoc']);
+    console.log(req.body['loc']);
+    console.log(req.body['eta']);
+
+    //store data
+
+
+
+
+    res.send("Done!");
 });
 
 // RESTful API
