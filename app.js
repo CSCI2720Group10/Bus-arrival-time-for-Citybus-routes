@@ -27,7 +27,7 @@ db.once('open', function () {
 
 var UserSchema = mongoose.Schema({
 	userId: { type: Number, required: true, unique: true },
-	username: { type: String, required: true },
+	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
 	fav_locId: [{ type: Number }],
 	fav_routeId: [{ type: Number }],
@@ -98,7 +98,7 @@ app.post("/signup", function(req, res){
         res.send("The username should have 4-20 characters!");
     }
     else if (req.body['password'].length < 4 || req.body['password'].length > 20){
-        res.send("The username should have 4-20 characters!");
+        res.send("The password should have 4-20 characters!");
     }
     else{
         User.findOne({username: req.body['username']})
@@ -226,6 +226,143 @@ app.post("/admin/flush", function(req, res){
 
 
     res.send("Done!");
+});
+
+app.get("/admin/user", function(req, res){
+    User.find()
+	.select('username password')
+    .sort({userId: 1})
+	.exec(function(err, users) {
+		if (err)
+			res.send(err);
+		else if (users.length == 0)
+			res.send("No users!");
+		else {
+			var output = "";
+			for(var i = 0; i < users.length; i++) {
+				output += '<div class="mb-3 userInfo">Username: <span>' + users[i].username + "</span><br>" +
+				"Password: <span>" + users[i].password + "</span></div>";
+            }
+			res.send(output);
+		}
+	});
+});
+
+app.post("/admin/user", function(req,res){
+    if (req.body['username'] == "" || req.body['password'] == ""){
+        res.send("Please fill in all the fields!");
+    }
+    else if (req.body['username'].length < 4 || req.body['username'].length > 20){
+        res.send("The username should have 4-20 characters!");
+    }
+    else if (req.body['password'].length < 4 || req.body['password'].length > 20){
+        res.send("The password should have 4-20 characters!");
+    }
+    else{
+        User.findOne({username: req.body['username']})
+        .exec(function(err, user) {
+            if (err) {
+                res.send(err);
+            }
+            else if (user != null){
+                res.send("The username already exists!");
+            }
+            else{
+                User.findOne()
+                .sort({userId: -1})
+                .select('userId')
+                .exec(function(err, result) {
+                    if (err){
+                        res.send(err);
+                    }
+                    else {
+                        var u;
+                        if (result == null) {
+                            u = new User({
+                                userId: 1,
+                                username: req.body['username'],
+	                            password: bcrypt.hashSync(req.body['password'], 8)
+                            });
+                        }
+                        else {
+                            u = new User({
+                                userId: result.userId + 1,
+                                username: req.body['username'],
+                                password: bcrypt.hashSync(req.body['password'], 8)
+                            });
+                        }
+                        u.save(function(err) {
+                            if (err){
+                                res.send(err);
+                            }
+                            else{
+                                res.send("Create user successfully!");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
+app.put("/admin/user", function(req,res){
+    if(req.body['newUsername'] != undefined){
+        if (req.body['newUsername'].length < 4 || req.body['newUsername'].length > 20){
+            res.send("The username should have 4-20 characters!");
+        }
+        else{
+            User.findOne({username: req.body['newUsername']})
+            .exec(function(err, user) {
+                if (err){
+                    res.send(err);
+                }
+                else if (user != null){
+                    res.send("The username already exists!");
+                }
+                else{
+                    User.updateOne({username: req.body['username']},{username: req.body['newUsername']})
+                    .exec(function(err, result) {
+                        if (err) {
+                            res.send(err);
+                        }
+                        else {
+                            res.send();
+                        }
+                    });
+                }
+            });
+        }
+    }
+    else{
+        if (req.body['newPassword'].length < 4 || req.body['newPassword'].length > 20){
+            res.send("The password should have 4-20 characters!");
+        }
+        else{
+            var hashedPassword =  bcrypt.hashSync(req.body['newPassword'], 8);
+            User.updateOne({username: req.body['username']},{password: hashedPassword})
+            .exec(function(err, user) {
+                if (err) {
+                    res.send(err);
+                }
+                else {
+                    res.send(hashedPassword);
+                }
+            });
+        }
+    }
+});
+
+app.delete("/admin/user", function(req,res){
+    User.remove({username: req.body['username']})
+    .exec(function(err, user) {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send();
+        }
+    });
 });
 
 // RESTful API

@@ -182,26 +182,146 @@ $(document).ready(function() {
     $(document).on("click", "#createUser", function(e){
         e.preventDefault();
         changeNavbar($("#createUser"));
+
+        $("#title").html("Create User");
+        var content = '<h1>Create User</h1>' +
+			'<form>' +
+            '<div class="form-group">' +
+            '<label for="name">Username(between 4 and 20 charcters)</label>' +
+            '<input type="text" style="width: 300px" class="form-control inputBox" id="username" name="username" required>' +
+            '<label for="name">Password(between 4 and 20 charcters)</label>' +
+            '<input type="password" style="width: 300px" class="form-control inputBox" id="password" name="password" required>' +
+            '</div>' +
+            '<p id="msg"></p>'+
+            '<button type="submit" class="btn btn-success" id="create">Create</button>' +
+			'</form>';
+        $("#adminContent").html(content);
+    });
+
+    $(document).on("click", "#create", function(e){
+        e.preventDefault();
+        $("#msg").removeClass("text-success");
+
+        $.ajax({
+            url: "./admin/user",
+            type: "POST",
+            data: {username: $("#username").val(),
+                   password: $("#password").val()}
+        })
+        .done(function(res){
+            if(res == "Create user successfully!"){
+                $("#msg").addClass("text-success");
+                $("form").trigger("reset");
+            }
+            $("#msg").html(res);
+        });
     });
 
     $(document).on("click", "#retrieveUser", function(e){
         e.preventDefault();
         changeNavbar($("#retrieveUser"));
+
+        $.ajax({
+            url: "./admin/user",
+            type: "GET"
+        })
+        .done(function(res){
+            $("#title").html("Retrieve User");
+            $("#adminContent").html("<h1>User Information</h1>" + res);
+        });
     });
 
     $(document).on("click", "#updateUser", function(e){
         e.preventDefault();
         changeNavbar($("#updateUser"));
+
+        $.ajax({
+            url: "./admin/user",
+            type: "GET"
+        })
+        .done(function(res){
+            $("#title").html("Update User");
+            $("#adminContent").html("<h1>User Information</h1>" + res);
+            $(".userInfo").append('<br><button type="button" class="btn btn-warning editUsername mr-3">Edit username</button><button type="button" class="btn btn-warning editPassword">Edit password</button>');
+        });
+    });
+
+    $(document).on("click", ".editUsername ", function(){
+        var newUsername = prompt("Please enter the new username");
+        if(newUsername != null){
+            var $this = $(this);
+            var username = $this.parent().find("span").eq(0).html();
+            $.ajax({
+                url: "./admin/user",
+                type: "PUT",
+                data: {username: username,
+                       newUsername: newUsername}
+            })
+            .done(function(res){
+                if(res != ""){
+                    alert(res);
+                }
+                else{
+                    $this.parent().find("span").eq(0).html(newUsername);
+                }
+            });
+
+        }
+    });
+
+    $(document).on("click", ".editPassword", function(){
+        var newPassword = prompt("Please enter the new password");
+        if(newPassword != null){
+            var $this = $(this);
+            var username = $this.parent().find("span").eq(0).html();
+            $.ajax({
+                url: "./admin/user",
+                type: "PUT",
+                data: {username: username,
+                       newPassword: newPassword}
+            })
+            .done(function(res){
+                if(res[0] != "$"){
+                    alert(res);
+                }
+                else{
+                    $this.parent().find("span").eq(1).html(res);
+                }
+            });
+
+        }
     });
 
     $(document).on("click", "#deleteUser", function(e){
         e.preventDefault();
         changeNavbar($("#deleteUser"));
+
+        $.ajax({
+            url: "./admin/user",
+            type: "GET"
+        })
+        .done(function(res){
+            $("#title").html("Delete User");
+            $("#adminContent").html("<h1>User Information</h1>" + res);
+            $(".userInfo").append('<br><button type="button" class="btn btn-warning delete">Delete user</button>');
+        });
+    });
+
+    $(document).on("click", ".delete", function(){
+        var $this = $(this);
+        var username = $(this).parent().find("span").eq(0).html();
+        $.ajax({
+            url: "./admin/user",
+            type: "DELETE",
+            data: {username: username}
+        })
+        .done(function(res){
+            $this.parent().remove();
+        });
     });
 
     $(document).on("click", "#createLocData", function(e){
         e.preventDefault();
         changeNavbar($("#createLocData"));
     });
-
 });
