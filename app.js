@@ -2,7 +2,8 @@ const express = require ('express');
 const app = express();
 
 const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json({limit: '100mb' ,extended: true}));
+app.use(bodyParser.urlencoded({limit: '100mb' ,extended: true, parameterLimit: 1000000}));
 
 const bcrypt = require('bcrypt');
 
