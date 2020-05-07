@@ -219,7 +219,6 @@ app.post("/admin/flush", function(req, res){
     console.log(req.body['route']);
     console.log(req.body['routeLoc']);
     console.log(req.body['loc']);
-    console.log(req.body['eta']);
 
     //store data
 

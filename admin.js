@@ -36,7 +36,7 @@ async function getRouteLoc(){                                   //get all locati
     return data;
 }
 
-async function getLoc(routeLoc){                                //get all locations details in each route
+async function getLoc(routeLoc){                    //get all locations details in each route
     let data = [];
     for(var loc of routeLoc){                       //for every series of locations in each route
         let arr = [];
@@ -58,7 +58,7 @@ async function getLoc(routeLoc){                                //get all locati
     return data;
 }
 
-async function getETA(routeLoc){                                 //get the ETA info for each loc in each route
+async function getETA(routeLoc){                    //get the ETA info for each loc in each route
     let data = [];
     let i = 0;                                      //from the first route
     for(var loc of routeLoc){                       //all the location series
@@ -83,46 +83,47 @@ async function getETA(routeLoc){                                 //get the ETA i
 }
 
 async function flushData(){
-    try {
-        $("#msg").removeClass("text-success");
-        $("#msg").html("Flushing...");
-        let routeLoc = await getRouteLoc();
-        let loc = await getLoc(routeLoc);
-        let eta = await getETA(routeLoc);
-        //console.log(eta);
-        let routeData = [];
-        let routeLocData = [];
-        let locData = [];
-        for(var i = 0; i < 10; i++){
-            let arr = [];
-            routeData.push({routeId : routes[i],
-                            startLocId: routeLoc[i][0].stop,
-                            endLocId: routeLoc[i][routeLoc[i].length - 1].stop,
-                            stopCount: routeLoc[i].length});
+    $("#msg").removeClass("text-success");
+    $("#msg").html("Flushing...");
+    let routeLoc = await getRouteLoc();
+    let loc = await getLoc(routeLoc);
+    let eta = await getETA(routeLoc);
+    let routeData = [];
+    let routeLocData = [];
+    let locData = [];
 
-            for(var j = 0; j < routeLoc[i].length; j++){
-                arr.push(routeLoc[i][j].stop);
-            }
-            routeLocData.push({routeId : routes[i],
-                               locId: arr});
+    for(var i = 0; i < 10; i++){
+        let arr = [];
+        routeData.push({routeId : routes[i],
+                        startLocId: routeLoc[i][0].stop,
+                        endLocId: routeLoc[i][routeLoc[i].length - 1].stop,
+                        stopCount: routeLoc[i].length});
 
-            for(var j = 0; j < eta[i].length; j++){
-                for(var k = 0; k < eta[i][j].length; k++){
-                    arr.push(eta[i][j][k].eta);
-                }
-            }
-            for(var j = 0; j < routeLoc[i].length; j++){
-                locData.push({locId : routeLocData[i].locId[j],
-                              name: loc[i][j].name_en,
-                              latitude: loc[i][j].lat,
-                              longitude: loc[i][j].long,
-                              dir: routeLoc[i][j].dir,
-                              seq: routeLoc[i][j].seq,
-                              eta: arr});
-            }
-
+        for(var j = 0; j < routeLoc[i].length; j++){
+            arr.push(routeLoc[i][j].stop);
         }
+        routeLocData.push({routeId : routes[i],
+                           locId: arr});
 
+        arr = [];
+        console.log(arr);
+        for(var j = 0; j < routeLoc[i].length; j++){
+            for(var k = 0; k < eta[i][j].length; k++){
+                arr.push(eta[i][j][k].eta);
+                console.log(eta[i][j][k].eta);
+            }
+            locData.push({locId : routeLocData[i].locId[j],
+                          name: loc[i][j].name_en,
+                          latitude: loc[i][j].lat,
+                          longitude: loc[i][j].long,
+                          dir: routeLoc[i][j].dir,
+                          seq: routeLoc[i][j].seq,
+                          eta: arr});
+            arr = [];
+        }
+    }
+
+    try {
         await $.ajax({
             url: "./admin/flush",
             type: "POST",
@@ -198,9 +199,9 @@ $(document).ready(function() {
         changeNavbar($("#deleteUser"));
     });
 
-    $(document).on("click", "#obtainLoc", function(e){
+    $(document).on("click", "#createLocData", function(e){
         e.preventDefault();
-        changeNavbar($("#obtainLoc"));
+        changeNavbar($("#createLocData"));
     });
 
 });
