@@ -37,13 +37,13 @@ var UserSchema = mongoose.Schema({
 var User = mongoose.model('User', UserSchema);
 
 var LocationSchema = mongoose.Schema({
-    locId: { type: Number, required: true, unique: true },
+    locId: { type: Number, required: true},
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
-    dir: { type: Boolean, required: true }, // true: outbound, false: inbound
+    dir: { type: String, required: true }, // I: inbound, O: outbound
     seq: { type: Number, required: true },
-    busArrivalTime: { type: Date, required: true }
+    eta: { type: Array, required: true }     //estimated time of arrival
 });
 var Location = mongoose.model('Location', LocationSchema);
 
@@ -222,10 +222,43 @@ app.post("/admin/flush", function(req, res){
 
     //store data
 
+    var arr_route = req.body['route'];
+    var arr_routeLoc = req.body['routeLoc'];
+    var arr_loc = req.body['loc'];
+
+    console.log(arr_route.length);
+    for(var i=0; i < arr_route.length; i++){
+        a = new Route(arr_route[i]);
+        a.save(function(err) {
+            if(err)
+                console.log(err);
+        });
+    };
+
+    res.write("Route Data Completed<br>");
+ /*                                                     //not working since the array format is not the same as the schemas
+    for(var i=0; i < arr_routeLoc.length; i++){
+        b = new RouteLocation(arr_routeLoc[i]);
+        b.save(function(err) {
+            if(err)
+                console.log(err);
+        });
+    };
+
+    res.write("Route Location Data Completed<br>");
+ */
+    for(var i=0; i < arr_loc.length; i++){
+        c = new Location(arr_loc[i]);
+        c.save(function(err) {
+            if(err)
+                console.log(err);
+        });
+    };
+
+    res.write("Location Data Completed<br>");
 
 
-
-    res.send("Done!");
+    res.end("Done!");
 });
 
 app.get("/admin/user", function(req, res){
