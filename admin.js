@@ -1,6 +1,6 @@
 const routes = [20, 22, 70, 117, 260, 307, 592, 608, 681, 969];
 
-async function getRoute(){
+async function getRoute(){                                      //get details for each route
     let data = [];
     for(var r of routes){
         try {
@@ -18,7 +18,7 @@ async function getRoute(){
     return data;
 }
 
-async function getRouteLoc(){
+async function getRouteLoc(){                                   //get all locations in each route
     let data = [];
     for(var r of routes){
         try {
@@ -36,11 +36,11 @@ async function getRouteLoc(){
     return data;
 }
 
-async function getLoc(routeLoc){
+async function getLoc(routeLoc){                                //get all locations details in each route
     let data = [];
-    for(var loc of routeLoc){
+    for(var loc of routeLoc){                       //for every series of locations in each route
         let arr = [];
-        for(var l of loc){
+        for(var l of loc){                          //for every locations in that series
             try {
                 await $.ajax({
                     url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/stop/" + l.stop,
@@ -58,12 +58,12 @@ async function getLoc(routeLoc){
     return data;
 }
 
-async function getETA(routeLoc){
+async function getETA(routeLoc){                                 //get the ETA info for each loc in each route
     let data = [];
-    let i = 0;
-    for(var loc of routeLoc){
+    let i = 0;                                      //from the first route
+    for(var loc of routeLoc){                       //all the location series
         let arr = [];
-        for(var l of loc){
+        for(var l of loc){                          //all the locations in that series
             try {
                 await $.ajax({
                     url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/eta/CTB/" + l.stop+ "/" + routes[i],
