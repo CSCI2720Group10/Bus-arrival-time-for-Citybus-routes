@@ -183,7 +183,6 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#createUser"));
 
-        $("#title").html("Create User");
         var content = '<h1>Create User</h1>' +
 			'<form>' +
             '<div class="form-group">' +
@@ -195,7 +194,9 @@ $(document).ready(function() {
             '<p id="msg"></p>'+
             '<button type="submit" class="btn btn-success" id="create">Create</button>' +
 			'</form>';
+        $("title").html("Create User");
         $("#adminContent").html(content);
+        history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/create_user.html");
     });
 
     $(document).on("click", "#create", function(e){
@@ -226,8 +227,9 @@ $(document).ready(function() {
             type: "GET"
         })
         .done(function(res){
-            $("#title").html("Retrieve User");
+            $("title").html("Retrieve User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
+            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/retrieve_user.html");
         });
     });
 
@@ -240,9 +242,10 @@ $(document).ready(function() {
             type: "GET"
         })
         .done(function(res){
-            $("#title").html("Update User");
+            $("title").html("Update User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning editUsername mr-3">Edit username</button><button type="button" class="btn btn-warning editPassword">Edit password</button>');
+            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/update_user.html");
         });
     });
 
@@ -265,7 +268,6 @@ $(document).ready(function() {
                     $this.parent().find("span").eq(0).html(newUsername);
                 }
             });
-
         }
     });
 
@@ -288,7 +290,6 @@ $(document).ready(function() {
                     $this.parent().find("span").eq(1).html(res);
                 }
             });
-
         }
     });
 
@@ -301,9 +302,10 @@ $(document).ready(function() {
             type: "GET"
         })
         .done(function(res){
-            $("#title").html("Delete User");
+            $("title").html("Delete User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning delete">Delete user</button>');
+            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/delete_user.html");
         });
     });
 

@@ -207,7 +207,7 @@ app.get("/admin", function(req,res){
 app.post("/logout", function(req, res){
     req.session['login'] = false;
     req.session['username'] = "";
-	res.send("root.html");
+	res.send("/root.html");
 });
 
 app.post("/logoutAdmin", function(req, res){
@@ -261,6 +261,24 @@ app.post("/admin/flush", function(req, res){
     res.end("Done!");
 });
 
+// CRUD actions for location data
+app.get("/admin/location", function(req, res){
+
+});
+
+app.post("/admin/location", function(req,res){
+
+});
+
+app.put("/admin/location", function(req,res){
+
+});
+
+app.delete("/admin/location", function(req,res){
+
+});
+
+// CRUD actions for user data
 app.get("/admin/user", function(req, res){
     User.find()
 	.select('username password')
