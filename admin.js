@@ -139,51 +139,68 @@ async function flushData(){
     }
 }
 
+function changeNavbar($clickedLink){
+    var $otherLinks = $("nav > div > a, nav div.dropdown-menu > a").not($clickedLink);
+    $otherLinks.removeClass("disabled");
+    $otherLinks.removeClass("text-danger");
+    $otherLinks.addClass("text-success");
+    $clickedLink.addClass("disabled");
+    $clickedLink.addClass("text-danger");
+}
+
 $(document).ready(function() {
     $(document).on("click", "#flush", async function(){ await flushData()});
 
-    $(document).on("mouseenter mouseleave", "#locDropdown", function(){
-        $("#locDropdownMenu").toggle();
+    $(document).on("click", "#adminHome", function(e){
+        e.preventDefault();
+        changeNavbar($("#adminHome"));
+
+        $("#adminContent").load("/admin.html #adminContent");
     });
 
-    $(document).on("mouseenter mouseleave", "#userDropdown", function(){
-        $("#userDropdownMenu").toggle();
+    $(document).on("click", "#createLoc", function(e){
+        e.preventDefault();
+        changeNavbar($("#createLoc"));
     });
 
-    $(document).on("click", "#adminHome", function(){
-
+    $(document).on("click", "#retrieveLoc", function(e){
+        e.preventDefault();
+        changeNavbar($("#retrieveLoc"));
     });
 
-    $(document).on("click", "#createLoc", function(){
-
+    $(document).on("click", "#updateLoc", function(e){
+        e.preventDefault();
+        changeNavbar($("#updateLoc"));
     });
 
-    $(document).on("click", "#retrieveLoc", function(){
-
+    $(document).on("click", "#deleteLoc", function(e){
+        e.preventDefault();
+        changeNavbar($("#deleteLoc"));
     });
 
-    $(document).on("click", "#updateLoc", function(){
-
+    $(document).on("click", "#createUser", function(e){
+        e.preventDefault();
+        changeNavbar($("#createUser"));
     });
 
-    $(document).on("click", "#deleteLoc", function(){
-
+    $(document).on("click", "#retrieveUser", function(e){
+        e.preventDefault();
+        changeNavbar($("#retrieveUser"));
     });
 
-    $(document).on("click", "#createUser", function(){
-
+    $(document).on("click", "#updateUser", function(e){
+        e.preventDefault();
+        changeNavbar($("#updateUser"));
     });
 
-    $(document).on("click", "#retrieveUser", function(){
-
+    $(document).on("click", "#deleteUser", function(e){
+        e.preventDefault();
+        changeNavbar($("#deleteUser"));
     });
 
-    $(document).on("click", "#updateUser", function(){
-
-    });
-
-    $(document).on("click", "#deleteUser", function(){
-
+    $(document).on("click", "#obtainLoc", function(e){
+        e.preventDefault();
+        changeNavbar($("#obtainLoc"));
     });
 
 });

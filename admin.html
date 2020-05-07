@@ -12,36 +12,33 @@
     </head>
     <body>
 		<div id="content" class="m-2">
-            <nav class="mb-2 navbar navbar-expand-md bg-secondary">
-				<ul id="navbarButton" class="navbar-nav w-100">
-                    <li class="nav-item"><a id="adminHome" class="nav-link text-warning" href="">Home</a></li>
-                    <li class="nav-item">
-                        <div id="locDropdown" class="dropdown">
-                            <a class="nav-link text-warning dropdown-toggle" data-toggle="dropdown" href="">Location</a>
-                            <div id="locDropdownMenu" class="dropdown-menu">
-                                <a id="createLoc" class="dropdown-item" href="">Create Location</a>
-				                <a id="retrieveLoc" class="dropdown-item" href="">Retrieve Location</a>
-                                <a id="updateLoc" class="dropdown-item" href="">Update Location</a>
-                                <a id="deleteLoc" class="dropdown-item" href="">Delete Location</a>
-                            </div>
+            <nav class="mb-2 navbar navbar-expand-md bg-dark">
+				<div class="navbar-nav nav-fill justify-content-around w-100">
+					<a id="adminHome" class="nav-link text-danger disabled" href="">Home</a>
+					<div class="dropdown">
+                        <a id="locDropdown" class="nav-link text-success dropdown-toggle" data-toggle="dropdown" href="">Location</a>
+                        <div id="locDropdownMenu" class="dropdown-menu">
+                            <a id="createLoc" class="dropdown-item text-success" href="">Create Location</a>
+                            <a id="retrieveLoc" class="dropdown-item text-success" href="">Retrieve Location</a>
+                            <a id="updateLoc" class="dropdown-item text-success" href="">Update Location</a>
+                            <a id="deleteLoc" class="dropdown-item text-success" href="">Delete Location</a>
                         </div>
-                    </li>
-                    <li class="nav-item">
-                        <div id="userDropdown" class="dropdown">
-                            <a class="nav-link text-warning dropdown-toggle" data-toggle="dropdown" href="">User</a>
-                            <div id="userDropdownMenu" class="dropdown-menu">
-                                <a id="createUser" id="createLoc" class="dropdown-item" href="">Create User</a>
-                                <a id="retrieveUser" class="dropdown-item" href="">Retrieve User</a>
-                                <a id="updateUser" class="dropdown-item" href="">Update User</a>
-                                <a id="deleteUser" class="dropdown-item" href="">Delete User</a>
-                            </div>
+                    </div>
+					<div class="dropdown">
+                        <a id="userDropdown" class="nav-link text-success dropdown-toggle" data-toggle="dropdown" href="">User</a>
+                        <div id="userDropdownMenu" class="dropdown-menu">
+                            <a id="createUser" class="dropdown-item text-success" href="">Create User</a>
+                            <a id="retrieveUser" class="dropdown-item text-success" href="">Retrieve User</a>
+                            <a id="updateUser" class="dropdown-item text-success" href="">Update User</a>
+                            <a id="deleteUser" class="dropdown-item text-success" href="">Delete User</a>
                         </div>
-                    </li>
-					<li class="nav-item"><a id="logoutAdmin" class="nav-link text-warning" href="">Logout</a></li>
-				</ul>
-			</nav>
+                    </div>
+                    <a id="obtainLoc" class="nav-link text-success" href="">Obtain Location Data</a>
+					<a id="logoutAdmin" class="nav-link text-success" href="">Logout</a>
+				</div>
+            </nav>
 
-            <div id="adminHomeContent">
+            <div id="adminContent">
                 <p>Welcome Admin!</p>
                 <button type="button" class="btn btn-dark" id="flush">Flush data</button>
                 <p id="msg"></p>
