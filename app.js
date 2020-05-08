@@ -267,18 +267,28 @@ app.post("/admin/flush", function(req, res){
     res.write("Route Location Data Completed<br>");
  /*
     for(var i=0; i < arr_loc.length; i++){              //Location Data (Not done yet)
-        c = new Location(arr_loc[i]);
-        Location.findOne({locId: arr_loc[i].locId})
-        .exec(function(err, loc) {
-            if(err)
-                console.log(err);
-            else if(loc == null) {
-                 c.save(function(err) {
-                     if(err)
-                         console.log(err);
-                 });
-            }
-        });
+        console.log(arr_loc[i]);
+        if(i==0){
+             c = new Location(arr_loc[i]);
+             c.save(function(err) {
+                 if(err)
+                     console.log(err);
+             });
+        }
+        else {
+            Location.findOne({locId: arr_loc[i].locId})
+            .exec(function(err, loc) {
+                if(err)
+                    console.log(err);
+                else if(loc == null) {
+                     c = new Location(arr_loc[i]);
+                     c.save(function(err) {
+                         if(err)
+                             console.log(err);
+                     });
+                }
+            });
+        }
     };
 
     res.write("Location Data Completed<br>");
