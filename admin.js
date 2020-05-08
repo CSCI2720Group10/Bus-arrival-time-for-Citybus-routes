@@ -19,39 +19,49 @@ async function getRoute(){                                      //get details fo
 }
 
 async function getRouteLoc(){                                   //get all locations in each route
-    let data = [];
-    for(var r of routes){
-        try {
-            await $.ajax({
-                url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/route-stop/CTB/" + r + "/inbound",
+    var data = [];
+    var promises;
+    try{
+        promises = routes.map(async route => {
+            return await $.ajax({
+                url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/route-stop/CTB/" + route + "/inbound",
                 type: "GET"
             })
             .done(function(res){
                 data.push(res.data);
             });
-        } catch (err) {
-            console.log(err);
-        }
+        });
+    } catch(err) {
+        console.log(err);
+    }
+
+    for(var p of promises) {
+        await p;
     }
     return data;
 }
 
 async function getLoc(routeLoc){                    //get all locations details in each route
-    let data = [];
-    for(var loc of routeLoc){                       //for every series of locations in each route
+    var data = [];
+    for(var locs of routeLoc){                       //for every series of locations in each route
         let arr = [];
-        for(var l of loc){                          //for every locations in that series
-            try {
-                await $.ajax({
-                    url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/stop/" + l.stop,
+        var promises;
+        try{
+            promises = locs.map(async loc => {       //for every locations in that series
+                return await $.ajax({
+                    url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/stop/" + loc.stop,
                     type: "GET"
                 })
                 .done(function(res){
                     arr.push(res.data);
                 });
-            } catch (err) {
-                console.log(err);
-            }
+            });
+        } catch(err) {
+            console.log(err);
+        }
+
+        for(var p of promises) {
+            await p;
         }
         data.push(arr);
     }
@@ -85,13 +95,24 @@ async function getETA(routeLoc){                    //get the ETA info for each 
 async function flushData(){
     $("#msg").removeClass("text-success");
     $("#msg").html("Flushing...");
-    let routeLoc = await getRouteLoc();
-    let loc = await getLoc(routeLoc);
+
+    let routeLoc;
+    let loc;
+    try{
+        routeLoc = await getRouteLoc();
+        loc = await getLoc(routeLoc);
+    } catch(err) {
+        console.log(err);
+    }
+
+    console.log(routeLoc);
+    console.log(loc);
 
     let routeData = [];
     let routeLocData = [];
     let locData = [];
-
+    $("#msg").addClass("text-success");
+    $("#msg").html("DONE");
     for(var i = 0; i < 10; i++){
         let arr = [];
         routeData.push({routeId : routes[i],
