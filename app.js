@@ -57,7 +57,7 @@ var Route = mongoose.model('Route', RouteSchema);
                                                                 //Route Location Schema
 var RouteLocationSchema = mongoose.Schema({
     routeId: { type: Number, required: true, unique: true },
-    loc: [{ type: Array, required: true }]      //array of location(including dir, seq, eta)
+    loc: [{ type: Array, required: true }]      //array of location(including dir, seq)
 });
 var RouteLocation = mongoose.model('RouteLocation', RouteLocationSchema);
 
@@ -226,16 +226,29 @@ app.post("/admin/flush", function(req, res){
     console.log(req.body['routeLoc']);
     console.log(req.body['loc']);
 
-    //store data
+    // remove routes and locations collections before storing data
+    Location.remove({}, function(err, result){
+        if(err)
+            console.log(err);
+    });
+    Route.remove({}, function(err, result){
+        if(err)
+            console.log(err);
+    });
+    RouteLocation.remove({}, function(err, result){
+        if(err)
+            console.log(err);
+    });
 
+    // store data
     var arr_route = req.body['route'];
     var arr_routeLoc = req.body['routeLoc'];
     var arr_loc = req.body['loc'];
 
     console.log(arr_route.length);
     for(var i=0; i < arr_route.length; i++){            //Route Data
-        a = new Route(arr_route[i]);
-        a.save(function(err) {
+        var r  = new Route(arr_route[i]);
+        r.save(function(err) {
             if(err)
                 console.log(err);
         });
@@ -244,8 +257,8 @@ app.post("/admin/flush", function(req, res){
     res.write("Route Data Completed<br>");
                                                       //Route Location Data
     for(var i=0; i < arr_routeLoc.length; i++){
-        b = new RouteLocation(arr_routeLoc[i]);
-        b.save(function(err) {
+        var rl = new RouteLocation(arr_routeLoc[i]);
+        rl.save(function(err) {
             if(err)
                 console.log(err);
         });
@@ -279,14 +292,17 @@ app.post("/admin/flush", function(req, res){
 app.get("/admin/location", function(req, res){
 
 });
+
 //create location
 app.post("/admin/location", function(req,res){
 
 });
+
 //update location
 app.put("/admin/location", function(req,res){
 
 });
+
 //delete location
 app.delete("/admin/location", function(req,res){
 
@@ -313,6 +329,7 @@ app.get("/admin/user", function(req, res){
 		}
 	});
 });
+
 //create users
 app.post("/admin/user", function(req,res){
     if (req.body['username'] == "" || req.body['password'] == ""){
@@ -371,6 +388,7 @@ app.post("/admin/user", function(req,res){
         });
     }
 });
+
 //update users
 app.put("/admin/user", function(req,res){
     if(req.body['newUsername'] != undefined){
@@ -418,6 +436,7 @@ app.put("/admin/user", function(req,res){
         }
     }
 });
+
 //delete users
 app.delete("/admin/user", function(req,res){
     User.remove({username: req.body['username']})
@@ -430,7 +449,6 @@ app.delete("/admin/user", function(req,res){
         }
     });
 });
-
 
 // RESTful API
 app.get("/locations", function(req,res){

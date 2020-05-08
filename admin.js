@@ -87,7 +87,7 @@ async function flushData(){
     $("#msg").html("Flushing...");
     let routeLoc = await getRouteLoc();
     let loc = await getLoc(routeLoc);
-    let eta = await getETA(routeLoc);
+
     let routeData = [];
     let routeLocData = [];
     let locData = [];
@@ -99,26 +99,16 @@ async function flushData(){
                         endLocId: routeLoc[i][routeLoc[i].length - 1].stop,
                         stopCount: routeLoc[i].length});
 
-        let arr_eta = [];
-        console.log(arr_eta);
         for(var j = 0; j < routeLoc[i].length; j++){
-            for(var k = 0; k < eta[i][j].length; k++){
-                arr_eta.push(eta[i][j][k].eta);
-                console.log(eta[i][j][k].eta);
-            }
             locData.push({locId : routeLoc[i][j].stop,
                           name: loc[i][j].name_en,
                           latitude: loc[i][j].lat,
-                          longitude: loc[i][j].long,
-                          });
+                          longitude: loc[i][j].long});
 
             arr.push({
                 locId: routeLoc[i][j].stop,
                 dir: routeLoc[i][j].dir,
-                seq: routeLoc[i][j].seq,
-                eta: arr_eta,
-            });
-            arr_eta = [];
+                seq: routeLoc[i][j].seq});
         }
 
         routeLocData.push({routeId : routes[i],
