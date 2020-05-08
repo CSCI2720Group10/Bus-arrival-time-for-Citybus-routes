@@ -99,28 +99,30 @@ async function flushData(){
                         endLocId: routeLoc[i][routeLoc[i].length - 1].stop,
                         stopCount: routeLoc[i].length});
 
-        for(var j = 0; j < routeLoc[i].length; j++){
-            arr.push(routeLoc[i][j].stop);
-        }
-        routeLocData.push({routeId : routes[i],
-                           locId: arr});
-
-        arr = [];
-        console.log(arr);
+        let arr_eta = [];
+        console.log(arr_eta);
         for(var j = 0; j < routeLoc[i].length; j++){
             for(var k = 0; k < eta[i][j].length; k++){
-                arr.push(eta[i][j][k].eta);
+                arr_eta.push(eta[i][j][k].eta);
                 console.log(eta[i][j][k].eta);
             }
-            locData.push({locId : routeLocData[i].locId[j],
+            locData.push({locId : routeLoc[i][j].stop,
                           name: loc[i][j].name_en,
                           latitude: loc[i][j].lat,
                           longitude: loc[i][j].long,
-                          dir: routeLoc[i][j].dir,
-                          seq: routeLoc[i][j].seq,
-                          eta: arr});
-            arr = [];
+                          });
+
+            arr.push({
+                locId: routeLoc[i][j].stop,
+                dir: routeLoc[i][j].dir,
+                seq: routeLoc[i][j].seq,
+                eta: arr_eta,
+            });
+            arr_eta = [];
         }
+
+        routeLocData.push({routeId : routes[i],
+                           loc: arr});
     }
 
     try {

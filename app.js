@@ -38,13 +38,10 @@ var User = mongoose.model('User', UserSchema);
 
                                                                 //Location Schema
 var LocationSchema = mongoose.Schema({
-    locId: { type: Number, required: true},
+    locId: { type: Number, required: true, unique: true},
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-    dir: { type: String, required: true }, // I: inbound, O: outbound
-    seq: { type: Number, required: true },
-    eta: { type: Array, required: true }     //estimated time of arrival
+    longitude: { type: Number, required: true }
 });
 var Location = mongoose.model('Location', LocationSchema);
 
@@ -59,8 +56,8 @@ var Route = mongoose.model('Route', RouteSchema);
 
                                                                 //Route Location Schema
 var RouteLocationSchema = mongoose.Schema({
-    route: { type: mongoose.Schema.Types.ObjectId, ref: 'Route', required: true },
-    loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true }]
+    routeId: { type: Number, required: true, unique: true },
+    loc: [{ type: Array, required: true }]      //array of location(including dir, seq, eta)
 });
 var RouteLocation = mongoose.model('RouteLocation', RouteLocationSchema);
 
@@ -245,7 +242,7 @@ app.post("/admin/flush", function(req, res){
     };
 
     res.write("Route Data Completed<br>");
- /*                                                     //not working since the array format is not the same as the schemas
+                                                      //Route Location Data
     for(var i=0; i < arr_routeLoc.length; i++){
         b = new RouteLocation(arr_routeLoc[i]);
         b.save(function(err) {
@@ -255,17 +252,24 @@ app.post("/admin/flush", function(req, res){
     };
 
     res.write("Route Location Data Completed<br>");
- */
-    for(var i=0; i < arr_loc.length; i++){              //Location Data
+ /*
+    for(var i=0; i < arr_loc.length; i++){              //Location Data (Not done yet)
         c = new Location(arr_loc[i]);
-        c.save(function(err) {
+        Location.findOne({locId: arr_loc[i].locId})
+        .exec(function(err, loc) {
             if(err)
                 console.log(err);
+            else if(loc == null) {
+                 c.save(function(err) {
+                     if(err)
+                         console.log(err);
+                 });
+            }
         });
     };
 
     res.write("Location Data Completed<br>");
-
+*/
 
     res.end("Done!");
 });
