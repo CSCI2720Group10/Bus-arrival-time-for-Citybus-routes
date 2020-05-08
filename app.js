@@ -24,7 +24,7 @@ db.on('error', console.error.bind(console, 'Connection error:'));
 db.once('open', function () {
 	console.log("Connection is open...");
 });
-
+                                                                //User Schema
 var UserSchema = mongoose.Schema({
 	userId: { type: Number, required: true, unique: true },
 	username: { type: String, required: true, unique: true },
@@ -36,6 +36,7 @@ var UserSchema = mongoose.Schema({
 });
 var User = mongoose.model('User', UserSchema);
 
+                                                                //Location Schema
 var LocationSchema = mongoose.Schema({
     locId: { type: Number, required: true},
     name: { type: String, required: true },
@@ -47,6 +48,7 @@ var LocationSchema = mongoose.Schema({
 });
 var Location = mongoose.model('Location', LocationSchema);
 
+                                                                //Route Schema
 var RouteSchema = mongoose.Schema({
 	routeId: { type: Number, required: true, unique: true },
 	startLocId: { type: Number, required: true },
@@ -55,12 +57,14 @@ var RouteSchema = mongoose.Schema({
 });
 var Route = mongoose.model('Route', RouteSchema);
 
+                                                                //Route Location Schema
 var RouteLocationSchema = mongoose.Schema({
     route: { type: mongoose.Schema.Types.ObjectId, ref: 'Route', required: true },
     loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true }]
 });
 var RouteLocation = mongoose.model('RouteLocation', RouteLocationSchema);
 
+                                                                //Comment Schema
 var CommentSchema = mongoose.Schema({
 	commentId: { type: Number, required: true, unique: true },
 	userId : { type: Number, required: true },
@@ -81,6 +85,7 @@ app.get("/", function(req, res){
         res.sendFile(__dirname + '/root.html');
 });
 
+                                                                //Sign up page
 app.get("/signup", function(req, res){
     if (req.session['login'] == true)
         res.send('/user.html');
@@ -151,6 +156,7 @@ app.post("/signup", function(req, res){
     }
 });
 
+                                                                //Login page
 app.post("/login", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please enter username and password!");
@@ -183,6 +189,7 @@ app.post("/login", function(req, res){
     }
 });
 
+                                                                //User page
 app.get('/user', function(req, res) {
 	if (req.session['login']) {
 		res.send("/user.html");
@@ -191,6 +198,13 @@ app.get('/user', function(req, res) {
 	}
 });
 
+app.post("/logout", function(req, res){
+    req.session['login'] = false;
+    req.session['username'] = "";
+	res.send("/root.html");
+});
+
+                                                                //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
     res.redirect('./admin');
@@ -204,17 +218,12 @@ app.get("/admin", function(req,res){
 	}
 });
 
-app.post("/logout", function(req, res){
-    req.session['login'] = false;
-    req.session['username'] = "";
-	res.send("/root.html");
-});
-
 app.post("/logoutAdmin", function(req, res){
     req.session['loginAdmin'] = false;
 	res.send("/root.html");
 });
 
+                                                //admin flush data
 app.post("/admin/flush", function(req, res){
     console.log(req.body['route']);
     console.log(req.body['routeLoc']);
@@ -227,7 +236,7 @@ app.post("/admin/flush", function(req, res){
     var arr_loc = req.body['loc'];
 
     console.log(arr_route.length);
-    for(var i=0; i < arr_route.length; i++){
+    for(var i=0; i < arr_route.length; i++){            //Route Data
         a = new Route(arr_route[i]);
         a.save(function(err) {
             if(err)
@@ -247,7 +256,7 @@ app.post("/admin/flush", function(req, res){
 
     res.write("Route Location Data Completed<br>");
  */
-    for(var i=0; i < arr_loc.length; i++){
+    for(var i=0; i < arr_loc.length; i++){              //Location Data
         c = new Location(arr_loc[i]);
         c.save(function(err) {
             if(err)
@@ -261,24 +270,26 @@ app.post("/admin/flush", function(req, res){
     res.end("Done!");
 });
 
-// CRUD actions for location data
+                                                // Admin CRUD actions for location data
+//retrieve location
 app.get("/admin/location", function(req, res){
 
 });
-
+//create location
 app.post("/admin/location", function(req,res){
 
 });
-
+//update location
 app.put("/admin/location", function(req,res){
 
 });
-
+//delete location
 app.delete("/admin/location", function(req,res){
 
 });
 
-// CRUD actions for user data
+                                                // Admin CRUD actions for user data
+//retrieve users
 app.get("/admin/user", function(req, res){
     User.find()
 	.select('username password')
@@ -298,7 +309,7 @@ app.get("/admin/user", function(req, res){
 		}
 	});
 });
-
+//create users
 app.post("/admin/user", function(req,res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please fill in all the fields!");
@@ -356,7 +367,7 @@ app.post("/admin/user", function(req,res){
         });
     }
 });
-
+//update users
 app.put("/admin/user", function(req,res){
     if(req.body['newUsername'] != undefined){
         if (req.body['newUsername'].length < 4 || req.body['newUsername'].length > 20){
@@ -403,7 +414,7 @@ app.put("/admin/user", function(req,res){
         }
     }
 });
-
+//delete users
 app.delete("/admin/user", function(req,res){
     User.remove({username: req.body['username']})
     .exec(function(err, user) {
@@ -415,6 +426,7 @@ app.delete("/admin/user", function(req,res){
         }
     });
 });
+
 
 // RESTful API
 app.get("/locations", function(req,res){

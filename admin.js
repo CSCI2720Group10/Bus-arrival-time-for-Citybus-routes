@@ -179,6 +179,7 @@ $(document).ready(function() {
         changeNavbar($("#deleteLoc"));
     });
 
+                                                                        //create users
     $(document).on("click", "#createUser", function(e){
         e.preventDefault();
         changeNavbar($("#createUser"));
@@ -218,6 +219,7 @@ $(document).ready(function() {
         });
     });
 
+                                                                        //retrieve users
     $(document).on("click", "#retrieveUser", function(e){
         e.preventDefault();
         changeNavbar($("#retrieveUser"));
@@ -233,6 +235,7 @@ $(document).ready(function() {
         });
     });
 
+                                                                        //update users
     $(document).on("click", "#updateUser", function(e){
         e.preventDefault();
         changeNavbar($("#updateUser"));
@@ -293,6 +296,7 @@ $(document).ready(function() {
         }
     });
 
+                                                                        //delete users
     $(document).on("click", "#deleteUser", function(e){
         e.preventDefault();
         changeNavbar($("#deleteUser"));
@@ -321,6 +325,7 @@ $(document).ready(function() {
             $this.parent().remove();
         });
     });
+
 
     $(document).on("click", "#createLocData", function(e){
         e.preventDefault();
