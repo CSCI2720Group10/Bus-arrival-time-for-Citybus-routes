@@ -3,7 +3,7 @@ const app = express();
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: '100mb' ,extended: true}));
-app.use(bodyParser.urlencoded({limit: '100mb' ,extended: true, parameterLimit: 1000000}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true, parameterLimit: 1000000}));
 
 const bcrypt = require('bcrypt');
 
@@ -261,22 +261,27 @@ app.post("/admin/flush", function(req, res){
 
         // obtain location info of each route
         var locInfo = [];
-        for(var i = 0; i < arr_route.length; i++){
-            var locId = []; // all locId in a route
-            for (var loc of arr_routeLoc[i].loc){
-                locId.push(loc.locId);
+        await (async()=>{
+            for(var i = 0; i < arr_route.length; i++){
+                var locId = []; // all locId in a route
+                for (var loc of arr_routeLoc[i].loc){
+                    locId.push(loc.locId);
+                }
+
+                var arr = [];
+                var j = 0;
+                for (var id of locId){
+                    await Location.findOne({locId: id}) // synchronised?
+                        .then(function(loc){
+                            arr.push({loc: loc._id,
+                                      dir: arr_routeLoc[i].loc[j].dir,
+                                      seq: arr_routeLoc[i].loc[j].seq});
+                            j++;
+                    });
+                }
+                locInfo.push(arr);
             }
-            var arr = [];
-            var j =0
-            for await (const loc of Location.find({locId: { $in: locId }})) {
-                arr.push({loc: loc._id,
-                          dir: arr_routeLoc[i].loc[j].dir,
-                          seq: arr_routeLoc[i].loc[j].seq});
-                j++;
-            }
-            locInfo.push(arr);
-        }
-        //console.log(locInfo);
+        })();
 
         // store routes
         var i = 0;
@@ -298,7 +303,7 @@ app.post("/admin/flush", function(req, res){
         console.log("Route Data Completed");
         res.write("Route Data Completed<br>");
 
-        /*Route.findOne({routeId: "70"})
+        /*Route.findOne({routeId: "969"})
         .populate('locInfo.loc')
         .exec(function(err, result){
             if(err)
@@ -306,13 +311,8 @@ app.post("/admin/flush", function(req, res){
             else if(result == null)
                 console.log("not found")
             else{
-                console.log(result.locInfo[0].loc);
-                console.log(result.locInfo[0].loc.locId);
-                console.log(result.locInfo[0].loc.name);
-                console.log(result.locInfo[0].loc.latitude);
-                console.log(result.locInfo[0].loc.longitude);
                 for(var i = 0; i < result.locInfo.length; i++){
-                    console.log(result.locInfo[i].loc);
+                    console.log(result.locInfo[i].loc.locId)
                     console.log(result.locInfo[i].seq);
                     console.log(result.locInfo[i].dir);
                 }
@@ -324,14 +324,50 @@ app.post("/admin/flush", function(req, res){
 });
 
                                                 // Admin CRUD actions for location data
-//retrieve location
-app.get("/admin/location", function(req, res){
-
-});
-
 //create location
 app.post("/admin/location", function(req,res){
 
+});
+
+//retrieve location
+app.get("/admin/location", function(req, res){
+    var routeId = req.query['routeId'];
+
+    if(routeId == ""){
+        res.send("Please enter the route ID");
+    }
+    else{
+        Route.findOne({routeId: routeId})
+        .exec(function(err, route){
+            if(err){
+                console.log(err);
+            }
+            else if (route == null){
+                res.send("This route does not exist!");
+            }
+            else{
+                Route.findOne({routeId: routeId})
+                .populate('locInfo.loc')
+                .exec(function(err, result){
+                    if(err)
+                        console.log(err);
+                    else if(result == null)
+                        console.log("not found")
+                    else{
+                        var output = "<h5>Route ID: " + routeId + "</h5>" +
+                            "<h5>Route direction: " + (result.locInfo[0].dir == "I" ? "Inbound" : "Outbound") + "</h5>";
+                        for(var i = 0; i < result.locInfo.length; i++){
+                            output += "Bus stop ID: " + result.locInfo[i].loc.locId + "<br>" +
+                            "Bus stop name: " + result.locInfo[i].loc.name + "<br>" +
+                            "Bus stop location (latitude, longitude): (" + result.locInfo[i].loc.latitude + ", " + result.locInfo[i].loc.longitude + ")<br>" +
+                            "Bus stop sequence number: " + result.locInfo[i].seq + "<br><br>";
+                        }
+                        res.send(output);
+                    }
+                });
+            }
+        });
+    }
 });
 
 //update location
@@ -345,27 +381,6 @@ app.delete("/admin/location", function(req,res){
 });
 
                                                 // Admin CRUD actions for user data
-//retrieve users
-app.get("/admin/user", function(req, res){
-    User.find()
-	.select('username password')
-    .sort({userId: 1})
-	.exec(function(err, users) {
-		if (err)
-			res.send(err);
-		else if (users.length == 0)
-			res.send("No users!");
-		else {
-			var output = "";
-			for(var i = 0; i < users.length; i++) {
-				output += '<div class="mb-3 userInfo">Username: <span>' + users[i].username + "</span><br>" +
-				"Password: <span>" + users[i].password + "</span></div>";
-            }
-			res.send(output);
-		}
-	});
-});
-
 //create users
 app.post("/admin/user", function(req,res){
     if (req.body['username'] == "" || req.body['password'] == ""){
@@ -423,6 +438,27 @@ app.post("/admin/user", function(req,res){
             }
         });
     }
+});
+
+//retrieve users
+app.get("/admin/user", function(req, res){
+    User.find()
+	.select('username password')
+    .sort({userId: 1})
+	.exec(function(err, users) {
+		if (err)
+			res.send(err);
+		else if (users.length == 0)
+			res.send("No users!");
+		else {
+			var output = "";
+			for(var i = 0; i < users.length; i++) {
+				output += '<div class="mb-3 userInfo">Username: <span>' + users[i].username + "</span><br>" +
+				"Password: <span>" + users[i].password + "</span></div>";
+            }
+			res.send(output);
+		}
+	});
 });
 
 //update users

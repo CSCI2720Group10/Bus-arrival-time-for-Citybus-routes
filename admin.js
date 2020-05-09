@@ -181,17 +181,55 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#adminHome"));
 
-        $("#adminContent").load("/admin.html #adminContent");
+        $("#adminContent").load("/admin.html #adminContent", function(){
+            $("title").html("Admin Home");
+            history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/admin.html");
+        });
     });
 
     $(document).on("click", "#createLoc", function(e){
         e.preventDefault();
         changeNavbar($("#createLoc"));
+
     });
 
+                                                                        //retrieve locations
     $(document).on("click", "#retrieveLoc", function(e){
         e.preventDefault();
         changeNavbar($("#retrieveLoc"));
+
+        var content = '<h1>Retrieve Location</h1>' +
+			'<form>' +
+            '<div class="form-group">' +
+            '<label for="name">Which route\'s locations you want to retrieve (' + routes.join(', ') + ')?</label>' +
+            '<input type="text" style="width: 300px" class="form-control inputBox" id="routeId" name="routeId" required>' +
+            '</div>' +
+            '<p id="msg"></p>'+
+            '<button type="submit" class="btn btn-success" id="retrieveLocBtn">Retrieve</button>' +
+			'</form>' +
+            '<div id="result"></div>';
+        $("title").html("Retrieve Location");
+        $("#adminContent").html(content);
+        history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/retrieve_location.html");
+    });
+
+    $(document).on("click", "#retrieveLocBtn", function(e){
+        e.preventDefault();
+        $("#msg").removeClass("text-success");
+
+        $.ajax({
+            url: "./admin/location?routeId=" + $("#routeId").val(),
+            type: "GET"
+        })
+        .done(function(res){
+            if(res[0] == "<"){
+                $("#result").html(res);
+                $("form").trigger("reset");
+            }
+            else{
+                $("#msg").html(res);
+            }
+        });
     });
 
     $(document).on("click", "#updateLoc", function(e){
@@ -218,14 +256,14 @@ $(document).ready(function() {
             '<input type="password" style="width: 300px" class="form-control inputBox" id="password" name="password" required>' +
             '</div>' +
             '<p id="msg"></p>'+
-            '<button type="submit" class="btn btn-success" id="create">Create</button>' +
+            '<button type="submit" class="btn btn-success" id="createUserBtn">Create</button>' +
 			'</form>';
         $("title").html("Create User");
         $("#adminContent").html(content);
         history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/create_user.html");
     });
 
-    $(document).on("click", "#create", function(e){
+    $(document).on("click", "#createUserBtn", function(e){
         e.preventDefault();
         $("#msg").removeClass("text-success");
 
