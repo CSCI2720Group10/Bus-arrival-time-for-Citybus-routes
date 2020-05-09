@@ -38,7 +38,7 @@ var User = mongoose.model('User', UserSchema);
 
                                                                 //Location Schema
 var LocationSchema = mongoose.Schema({
-    locId: { type: Number, required: true, unique: true},
+    locId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
@@ -47,19 +47,15 @@ var Location = mongoose.model('Location', LocationSchema);
 
                                                                 //Route Schema
 var RouteSchema = mongoose.Schema({
-	routeId: { type: Number, required: true, unique: true },
+	routeId: { type: String, required: true, unique: true },
 	startLocId: { type: Number, required: true },
 	endLocId: { type: Number, required: true },
-	stopCount: { type: Number, required: true }
+	stopCount: { type: Number, required: true },
+    locInfo: [{ loc: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
+                dir: { type: String, required: true },
+                seq: { type: Number, required: true } }]      //array of location(including dir, seq)
 });
 var Route = mongoose.model('Route', RouteSchema);
-
-                                                                //Route Location Schema
-var RouteLocationSchema = mongoose.Schema({
-    routeId: { type: Number, required: true, unique: true },
-    loc: [{ type: Array, required: true }]      //array of location(including dir, seq)
-});
-var RouteLocation = mongoose.model('RouteLocation', RouteLocationSchema);
 
                                                                 //Comment Schema
 var CommentSchema = mongoose.Schema({
@@ -219,82 +215,112 @@ app.post("/logoutAdmin", function(req, res){
     req.session['loginAdmin'] = false;
 	res.send("/root.html");
 });
-
                                                 //admin flush data
 app.post("/admin/flush", function(req, res){
-    console.log(req.body['route']);
+    /*console.log(req.body['route']);
     console.log(req.body['routeLoc']);
-    console.log(req.body['loc']);
+    console.log(req.body['loc']);*/
 
-    // remove routes and locations collections before storing data
-    Location.remove({}, function(err, result){
-        if(err)
-            console.log(err);
-    });
-    Route.remove({}, function(err, result){
-        if(err)
-            console.log(err);
-    });
-    RouteLocation.remove({}, function(err, result){
-        if(err)
-            console.log(err);
-    });
-
-    // store data
-    var arr_route = req.body['route'];
-    var arr_routeLoc = req.body['routeLoc'];
-    var arr_loc = req.body['loc'];
-
-    console.log(arr_route.length);
-    for(var i=0; i < arr_route.length; i++){            //Route Data
-        var r  = new Route(arr_route[i]);
-        r.save(function(err) {
+    (async () => {
+        // remove routes and locations collections before storing data
+        await Location.remove({}, function(err, result){
             if(err)
                 console.log(err);
+            else
+                console.log("Remove Location");
         });
-    };
-
-    res.write("Route Data Completed<br>");
-                                                      //Route Location Data
-    for(var i=0; i < arr_routeLoc.length; i++){
-        var rl = new RouteLocation(arr_routeLoc[i]);
-        rl.save(function(err) {
+        await Route.remove({}, function(err, result){
             if(err)
                 console.log(err);
+            else
+                console.log("Remove Route");
         });
-    };
 
-    res.write("Route Location Data Completed<br>");
- /*
-    for(var i=0; i < arr_loc.length; i++){              //Location Data (Not done yet)
-        console.log(arr_loc[i]);
-        if(i==0){
-             c = new Location(arr_loc[i]);
-             c.save(function(err) {
-                 if(err)
-                     console.log(err);
-             });
-        }
-        else {
-            Location.findOne({locId: arr_loc[i].locId})
-            .exec(function(err, loc) {
-                if(err)
-                    console.log(err);
-                else if(loc == null) {
-                     c = new Location(arr_loc[i]);
-                     c.save(function(err) {
-                         if(err)
-                             console.log(err);
-                     });
+        // store data
+        var arr_route = req.body['route'];
+        var arr_routeLoc = req.body['routeLoc'];
+        var arr_loc = req.body['loc'];
+
+        // store locations
+        var promises;
+        await (async () => {
+            try{
+                promises = arr_loc.map(async loc => {
+                    var l = new Location(loc);
+                    return l.save().then();
+                });
+                for(var p of promises) {
+                    await p;
                 }
-            });
+            } catch(err) {
+                console.log(err);
+            }
+        })();
+        console.log("Location Data Completed");
+        res.write("Location Data Completed<br>");
+
+        // obtain location info of each route
+        var locInfo = [];
+        for(var i = 0; i < arr_route.length; i++){
+            var locId = []; // all locId in a route
+            for (var loc of arr_routeLoc[i].loc){
+                locId.push(loc.locId);
+            }
+            var arr = [];
+            var j =0
+            for await (const loc of Location.find({locId: { $in: locId }})) {
+                arr.push({loc: loc._id,
+                          dir: arr_routeLoc[i].loc[j].dir,
+                          seq: arr_routeLoc[i].loc[j].seq});
+                j++;
+            }
+            locInfo.push(arr);
         }
-    };
+        //console.log(locInfo);
 
-    res.write("Location Data Completed<br>");
-*/
+        // store routes
+        var i = 0;
+        for await (var route of arr_route){
+            try{
+                var r = new Route({
+                    routeId: route.routeId,
+                    startLocId: route.startLocId,
+                    endLocId: route.endLocId,
+                    stopCount: route.stopCount,
+                    locInfo: locInfo[i]});
 
-    res.end("Done!");
+                await r.save().then();
+                i++;
+            } catch(err){
+                console.log(err);
+            }
+        }
+        console.log("Route Data Completed");
+        res.write("Route Data Completed<br>");
+
+        /*Route.findOne({routeId: "70"})
+        .populate('locInfo.loc')
+        .exec(function(err, result){
+            if(err)
+                console.log(err);
+            else if(result == null)
+                console.log("not found")
+            else{
+                console.log(result.locInfo[0].loc);
+                console.log(result.locInfo[0].loc.locId);
+                console.log(result.locInfo[0].loc.name);
+                console.log(result.locInfo[0].loc.latitude);
+                console.log(result.locInfo[0].loc.longitude);
+                for(var i = 0; i < result.locInfo.length; i++){
+                    console.log(result.locInfo[i].loc);
+                    console.log(result.locInfo[i].seq);
+                    console.log(result.locInfo[i].dir);
+                }
+            }
+        });*/
+
+        res.end("Done!");
+    })();
 });
 
                                                 // Admin CRUD actions for location data

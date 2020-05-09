@@ -21,6 +21,7 @@ async function getRoute(){                                      //get details fo
 async function getRouteLoc(){                                   //get all locations in each route
     var data = [];
     var promises;
+
     try{
         promises = routes.map(async route => {
             return await $.ajax({
@@ -31,40 +32,37 @@ async function getRouteLoc(){                                   //get all locati
                 data.push(res.data);
             });
         });
+        for(var p of promises) {
+            await p;
+        }
     } catch(err) {
         console.log(err);
     }
 
-    for(var p of promises) {
-        await p;
-    }
     return data;
 }
 
-async function getLoc(routeLoc){                    //get all locations details in each route
+async function getLoc(arr_locId){                    //get all locations
     var data = [];
-    for(var locs of routeLoc){                       //for every series of locations in each route
-        let arr = [];
-        var promises;
-        try{
-            promises = locs.map(async loc => {       //for every locations in that series
-                return await $.ajax({
-                    url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/stop/" + loc.stop,
-                    type: "GET"
-                })
-                .done(function(res){
-                    arr.push(res.data);
-                });
-            });
-        } catch(err) {
-            console.log(err);
-        }
+    var promises;
 
+    try{
+        promises = arr_locId.map(async locId => {
+            return await $.ajax({
+                url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/stop/" + locId,
+                type: "GET"
+            })
+            .done(function(res){
+                data.push(res.data);
+            });
+        });
         for(var p of promises) {
             await p;
         }
-        data.push(arr);
+    } catch(err) {
+        console.log(err);
     }
+
     return data;
 }
 
@@ -97,10 +95,21 @@ async function flushData(){
     $("#msg").html("Flushing...");
 
     let routeLoc;
-    let loc;
+    let loc; // 1D array of location data
     try{
         routeLoc = await getRouteLoc();
-        loc = await getLoc(routeLoc);
+
+        // get all non-duplicate locId
+        var arr_locId = [];
+        for(var locs of routeLoc){
+            for(var l of locs){
+                if (!arr_locId.includes(l.stop)) {
+                    arr_locId.push(l.stop);
+                }
+            }
+        }
+
+        loc = await getLoc(arr_locId);
     } catch(err) {
         console.log(err);
     }
@@ -111,8 +120,7 @@ async function flushData(){
     let routeData = [];
     let routeLocData = [];
     let locData = [];
-    $("#msg").addClass("text-success");
-    $("#msg").html("DONE");
+
     for(var i = 0; i < 10; i++){
         let arr = [];
         routeData.push({routeId : routes[i],
@@ -121,11 +129,6 @@ async function flushData(){
                         stopCount: routeLoc[i].length});
 
         for(var j = 0; j < routeLoc[i].length; j++){
-            locData.push({locId : routeLoc[i][j].stop,
-                          name: loc[i][j].name_en,
-                          latitude: loc[i][j].lat,
-                          longitude: loc[i][j].long});
-
             arr.push({
                 locId: routeLoc[i][j].stop,
                 dir: routeLoc[i][j].dir,
@@ -135,6 +138,15 @@ async function flushData(){
         routeLocData.push({routeId : routes[i],
                            loc: arr});
     }
+    console.log(routeData);
+    console.log(routeLocData);
+    for(var i = 0; i < loc.length; i++){
+        locData.push({locId : loc[i].stop,
+                      name: loc[i].name_en,
+                      latitude: loc[i].lat,
+                      longitude: loc[i].long});
+    }
+    console.log(locData);
 
     try {
         await $.ajax({
