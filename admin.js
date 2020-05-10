@@ -462,9 +462,17 @@ $(document).ready(function() {
     $(document).on("click", "#createLocData", function(e){
         e.preventDefault();
         changeNavbar($("#createLocData"));
-
-        var 
-
-
+        var locDataForm = '<h1>Create the location Data</h1>' +
+              '<form class="form-inline">'+
+                '<div class="form-group">'+
+                '<label for="files">Upload a CSV formatted file:</label>' +
+                    '<input type="file" id="files" class="form-control" accept=".csv" required />' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>' +
+                    '</div>' +
+            ' </form>';
+        $("title").html("Location Data Create");
+        $("#adminContent").html(locDataForm);
     });
 });
