@@ -5,8 +5,11 @@
 
 1.User
 
+User view: top 5 locations with most comments (e.g. bar chart) 
+
 2.Admins
 
+Admin view: top 5 active users with comments and favourites (e.g. bar chart) 
 
 
 
