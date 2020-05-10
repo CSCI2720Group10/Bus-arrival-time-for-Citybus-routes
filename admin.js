@@ -465,7 +465,8 @@ $(document).ready(function() {
         var locDataForm = '<h1>Create the location Data</h1>' +
               '<form class="form-inline">'+
                 '<div class="form-group">'+
-                '<label for="files">Upload a CSV formatted file:</label>' +
+            '<label for="files">Please Upload a CSV file here:</label>' +
+                    
                     '<input type="file" id="files" class="form-control" accept=".csv" required />' +
                     '</div>' +
                     '<div class="form-group">' +
