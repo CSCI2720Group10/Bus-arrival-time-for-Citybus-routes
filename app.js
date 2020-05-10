@@ -554,7 +554,8 @@ app.delete("/admin/user", function(req,res){
 });
 
 // RESTful API
-app.get("/locations", function(req,res){
+app.get("/locations", function (req, res) {
+
 
 });
 
