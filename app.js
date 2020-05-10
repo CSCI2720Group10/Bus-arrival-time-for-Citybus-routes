@@ -408,6 +408,7 @@ app.put("/admin/location", function(req,res){
 
 //delete location
                                                             //retrieve locations for delete
+
 app.get("/admin/location_del_retr", function(req, res) {
     Location.find().select('locId name latitude longitude').exec(function(err, loc) {
         if(err){
@@ -428,7 +429,7 @@ app.get("/admin/location_del_retr", function(req, res) {
                 res.send(output);
             }
     })
-})
+});
 
 app.delete("/admin/location", function(req,res){
     Location.remove({locId: req.body['locId']})
