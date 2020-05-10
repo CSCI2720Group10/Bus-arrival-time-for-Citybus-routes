@@ -187,6 +187,7 @@ $(document).ready(function() {
         });
     });
 
+                                                                        //create location
     $(document).on("click", "#createLoc", function(e){
         e.preventDefault();
         changeNavbar($("#createLoc"));
@@ -278,9 +279,36 @@ $(document).ready(function() {
         changeNavbar($("#updateLoc"));
     });
 
+                                                                        //delete location
     $(document).on("click", "#deleteLoc", function(e){
         e.preventDefault();
         changeNavbar($("#deleteLoc"));
+
+        $.ajax({
+            url: "./admin/location_del_retr",
+            type: "GET"
+        })
+        .done(function(res){
+            $("title").html("Delete Location");
+            $("#adminContent").html("<h1 id='locTop'>Location Information</h1>" +
+                                    "<div align='right'><a href='#locBottom'>Go to bottom</a></div>" + res);
+            $(".locInfo").append('<br><button type="button" class="btn btn-warning deleteLocBtn">Delete Location</button>');
+            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/delete_location.html");
+        });
+    });
+
+
+    $(document).on("click", ".deleteLocBtn", function(){
+        var $this = $(this);
+        var locId = $(this).parent().find("span").html();
+        $.ajax({
+            url: "./admin/location",
+            type: "DELETE",
+            data: {locId: locId}
+        })
+        .done(function(res){
+            $this.parent().remove();
+        });
     });
 
                                                                         //create users
@@ -412,12 +440,12 @@ $(document).ready(function() {
         .done(function(res){
             $("title").html("Delete User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
-            $(".userInfo").append('<br><button type="button" class="btn btn-warning delete">Delete user</button>');
+            $(".userInfo").append('<br><button type="button" class="btn btn-warning deleteUserBtn">Delete user</button>');
             history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/delete_user.html");
         });
     });
 
-    $(document).on("click", ".delete", function(){
+    $(document).on("click", ".deleteUserBtn", function(){
         var $this = $(this);
         var username = $(this).parent().find("span").eq(0).html();
         $.ajax({
