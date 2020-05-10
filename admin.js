@@ -462,5 +462,9 @@ $(document).ready(function() {
     $(document).on("click", "#createLocData", function(e){
         e.preventDefault();
         changeNavbar($("#createLocData"));
+
+        var 
+
+
     });
 });

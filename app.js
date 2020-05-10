@@ -207,7 +207,7 @@ app.get("/admin", function(req,res){
     if (req.session['loginAdmin']) {
         res.send("/admin.html");
 	} else {
-		res.send('Please login as admin to view this page!');
+		res.send('Please login as dmin to view thisa page!');
 	}
 });
 
