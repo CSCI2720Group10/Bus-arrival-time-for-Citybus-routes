@@ -191,7 +191,48 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#createLoc"));
 
+        var content = '<h1>Create Location</h1>' +
+			'<form>' +
+            '<div class="form-group">' +
+            '<label for="name">Location ID</label>' +
+            '<input type="text" style="width: 300px" class="form-control inputBox" id="locId" name="locId" required>' +
+            '<label for="name">Location Name (in English)</label>' +
+            '<input type="text" style="width: 300px" class="form-control inputBox" id="locName" name="locName" required>' +
+            '<label for="name">Location Latitude</label>' +
+            '<input type="text" style="width: 300px" class="form-control inputBox" id="locLat" name="locLat" required>' +
+            '<label for="name">Location Longitude</label>' +
+            '<input type="text" style="width: 300px" class="form-control inputBox" id="locLong" name="locLong" required>' +
+            '</div>' +
+            '<p id="msg"></p>'+
+            '<button type="submit" class="btn btn-success" id="createLocBtn">Create</button>' +
+			'</form>';
+        $("title").html("Create Location");
+        $("#adminContent").html(content);
+        history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/create_location.html");
     });
+
+    $(document).on("click", "#createLocBtn", function(e){
+        e.preventDefault();
+        $("#msg").removeClass("text-success");
+
+        $.ajax({
+            url: "./admin/location",
+            type: "POST",
+            data: {locId: $("#locId").val(),
+                  locName: $("#locName").val(),
+                  locLat: $("#locLat").val(),
+                  locLong: $("#locLong").val()
+                  }
+        })
+        .done(function(res){
+            if(res == "Create location successfully!"){
+                $("#msg").addClass("text-success");
+                $("form").trigger("reset");
+            }
+            $("#msg").html(res);
+        });
+    });
+
 
                                                                         //retrieve locations
     $(document).on("click", "#retrieveLoc", function(e){

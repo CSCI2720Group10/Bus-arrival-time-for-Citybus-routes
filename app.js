@@ -326,7 +326,38 @@ app.post("/admin/flush", function(req, res){
                                                 // Admin CRUD actions for location data
 //create location
 app.post("/admin/location", function(req,res){
+    if (req.body['locId'] == "" || req.body['locName'] == ""
+        || req.body['locLat'] == "" || req.body['locLong'] == ""){
+        res.send("Please fill in all the fields!");
+    }
+    else{
+        Location.findOne({locId: req.body['locId']})
+        .exec(function(err, loc) {
+            if (err) {
+                res.send(err);
+            }
+            else if (loc != null){
+                res.send("The location already exists!");
+            }
+            else{
+                l = new Location({
+                    locId: req.body['locId'],
+                    name: req.body['locName'],
+                    latitude: req.body['locLat'],
+                    longitude: req.body['locLong']
+                });
 
+                l.save(function(err) {
+                    if (err){
+                        res.send(err);
+                    }
+                    else{
+                        res.send("Create location successfully!");
+                    }
+                });
+            }
+        })
+    }
 });
 
 //retrieve location
