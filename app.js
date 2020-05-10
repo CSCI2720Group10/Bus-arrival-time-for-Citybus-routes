@@ -407,8 +407,40 @@ app.put("/admin/location", function(req,res){
 });
 
 //delete location
-app.delete("/admin/location", function(req,res){
+                                                            //retrieve locations for delete
 
+app.get("/admin/location_del_retr", function(req, res) {
+    Location.find().select('locId name latitude longitude').exec(function(err, loc) {
+        if(err){
+                console.log(err);
+            }
+            else if (loc == null){
+                res.send("There are no locations!");
+            }
+            else {
+                var output = "";
+                for(var i = 0; i < loc.length; i++){
+                    output += "<div class='mb-3 locInfo'>Location ID: <span>" + loc[i].locId + "</span><br>" +
+                        "Location Name: " + loc[i].name + "<br>" +
+                        "Location Latitude: " + loc[i].latitude + "<br>" +
+                        "Location Longitude: " + loc[i].longitude + "</div><br><br>";
+                }
+                output += "<div id='locBottom' align='right'><a href='#locTop'>Go to top.</a></div>"
+                res.send(output);
+            }
+    })
+});
+
+app.delete("/admin/location", function(req,res){
+    Location.remove({locId: req.body['locId']})
+    .exec(function(err, user) {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send();
+        }
+    });
 });
 
                                                 // Admin CRUD actions for user data
