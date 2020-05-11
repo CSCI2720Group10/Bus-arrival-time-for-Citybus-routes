@@ -123,7 +123,7 @@ async function flushData(){
 
     for(var i = 0; i < 10; i++){
         let arr = [];
-        routeData.push({routeId : routes[i],
+        routeData.push({routeId : routeLoc[i][0].route,
                         startLocId: routeLoc[i][0].stop,
                         endLocId: routeLoc[i][routeLoc[i].length - 1].stop,
                         stopCount: routeLoc[i].length});
@@ -240,11 +240,18 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#retrieveLoc"));
 
+        var selectMenu = '<option value="' + routes[0] + '" selected">' + routes[0]  + '</option>';
+        for(var i = 1; i < routes.length; i++){
+            selectMenu += '<option value="' + routes[i] + '">' + routes[i]  + '</option>';
+        }
+
         var content = '<h1>Retrieve Location</h1>' +
 			'<form>' +
             '<div class="form-group">' +
-            '<label for="name">Which route\'s locations you want to retrieve (' + routes.join(', ') + ')?</label>' +
-            '<input type="text" style="width: 300px" class="form-control inputBox" id="routeId" name="routeId" required>' +
+            '<label for="name">Which route\'s locations you want to retrieve?</label>' +
+            '<br><select id="routeId" style="width: 300px" class="custom-select">' +
+            selectMenu +
+            '</select>' +
             '</div>' +
             '<p id="msg"></p>'+
             '<button type="submit" class="btn btn-success" id="retrieveLocBtn">Retrieve</button>' +
@@ -463,15 +470,14 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#createLocData"));
         var locDataForm = '<h1>Create the location Data</h1>' +
-              '<form class="form-inline">'+
-                '<div class="form-group">'+
+            '<form class="form-inline">'+
+            '<div class="form-group">'+
             '<label for="files">Please Upload a CSV file here:</label>' +
-                    
-                    '<input type="file" id="files" class="form-control" accept=".csv" required />' +
-                    '</div>' +
-                    '<div class="form-group">' +
-                    '<button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>' +
-                    '</div>' +
+            '<input type="file" id="files" class="form-control" accept=".csv" required />' +
+            '</div>' +
+            '<div class="form-group">' +
+            '<button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>' +
+            '</div>' +
             ' </form>';
         $("title").html("Location Data Create");
         $("#adminContent").html(locDataForm);
