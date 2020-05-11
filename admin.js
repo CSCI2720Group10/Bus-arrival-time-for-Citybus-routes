@@ -622,7 +622,11 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#createLocData"));
         var locDataForm = '<div class="container" >'+
-            '<h1>Create the location Data</h1>' +
+            '<h1>Create the Location Data</h1>' +
+            '<h4>Please follow the structure below:</h4>'+
+            '<h4>Date Feature: | Location Name | Location Latitude | Location Longitude | </h4>'+
+            '<img src="CSV_format.PNG" alt="Format of CSV file" width="50%" height ="50%" >'+
+            '<h3><i>Reminder that the name should <strong>not</strong> include any "," </i></h3>'+
             '<form class="form-inline">' +
                 '<div class="form-group">' +
                     '<label for="files">Please Upload a CSV file here: <br></label>' +
