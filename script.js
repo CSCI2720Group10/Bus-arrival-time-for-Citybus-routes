@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    history.replaceState({ content: $("#content").html(), title: $("title").html() }, null, "/");
+    history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
 
     $(window).on("popstate", function() {
         if (event.state.hasOwnProperty('content')){
@@ -71,7 +71,7 @@ $(document).ready(function() {
             if(res == "/user.html"){
                 $("body").load(res + " #content", function(){
                     $("title").html("Home");
-                    history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
+                    history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/home.html");
                 });
             }
             else{
