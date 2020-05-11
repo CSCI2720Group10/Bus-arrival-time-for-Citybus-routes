@@ -209,7 +209,7 @@ $(document).ready(function() {
 			'</form>';
         $("title").html("Create Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/create_location.html");
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/create_location.html");
     });
 
     $(document).on("click", "#createLocBtn", function(e){
@@ -240,44 +240,34 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#retrieveLoc"));
 
-        var selectMenu = '<option value="' + routes[0] + '" selected">' + routes[0]  + '</option>';
-        for(var i = 1; i < routes.length; i++){
-            selectMenu += '<option value="' + routes[i] + '">' + routes[i]  + '</option>';
+        var selectMenu = '<option value="" hidden selected">Select Route</option>';
+        for(var route of routes){
+            selectMenu += '<option value="' + route + '">' + route + '</option>';
         }
 
         var content = '<h1>Retrieve Location</h1>' +
 			'<form>' +
             '<div class="form-group">' +
             '<label for="name">Which route\'s locations you want to retrieve?</label>' +
-            '<br><select id="routeId" style="width: 300px" class="custom-select">' +
+            '<br><select id="retrieveLocSelectMenu" style="width: 300px" class="custom-select">' +
             selectMenu +
             '</select>' +
             '</div>' +
-            '<p id="msg"></p>'+
-            '<button type="submit" class="btn btn-success" id="retrieveLocBtn">Retrieve</button>' +
 			'</form>' +
             '<div id="result"></div>';
         $("title").html("Retrieve Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/retrieve_location.html");
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/retrieve_location.html");
     });
 
-    $(document).on("click", "#retrieveLocBtn", function(e){
-        e.preventDefault();
-        $("#msg").removeClass("text-success");
-
+    $(document).on("change", "#retrieveLocSelectMenu", function(e){
         $.ajax({
-            url: "./admin/location?routeId=" + $("#routeId").val(),
+            url: "./admin/location?routeId=" + e.target.value,
             type: "GET"
         })
         .done(function(res){
-            if(res[0] == "<"){
-                $("#result").html(res);
-                $("form").trigger("reset");
-            }
-            else{
-                $("#msg").html(res);
-            }
+            $("#result").html(res);
+            $("form").trigger("reset");
         });
     });
 
@@ -286,8 +276,8 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#updateLoc"));
 
-        $.ajax({
-            url: "./admin/location_del_retr",
+        /*$.ajax({
+            url: "./admin/location",
             type: "GET"
         })
         .done(function(res){
@@ -297,9 +287,42 @@ $(document).ready(function() {
             $(".locInfo").append('<br><button type="button" class="btn btn-warning editLocId mr-3">Edit Location ID</button>' +
                                   '<button type="button" class="btn btn-warning editLocName mr-3">Edit Location Name</button>'
                                  //+ '<button type="button" class="btn btn-warning editLocLat mr-3">Edit Location Latitude</button>' +
-                                //  '<button type="button" class="btn btn-warning editLocLong">Edit Location Longitude</button>'
+                                 // '<button type="button" class="btn btn-warning editLocLong">Edit Location Longitude</button>'
                                  );
-            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/update_location.html");
+            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/update_location.html");
+        });*/
+        var selectMenu = '<option value="" hidden selected">Select Route</option>';
+        for(var route of routes){
+            selectMenu += '<option value="' + route + '">' + route + '</option>';
+        }
+
+        var content = '<h1>Update Location</h1>' +
+            '<form>' +
+            '<div class="form-group">' +
+            '<label for="name">Which route\'s locations you want to update?</label>' +
+            '<br><select id="updateLocSelectMenu" style="width: 300px" class="custom-select">' +
+            selectMenu +
+            '</select>' +
+            '</div>' +
+            '</form>' +
+            '<div id="result"></div>';
+        $("title").html("Update Location");
+        $("#adminContent").html(content);
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/update_location.html");
+    });
+
+    $(document).on("change", "#updateLocSelectMenu", function(e){
+        $.ajax({
+            url: "./admin/location?routeId=" + e.target.value,
+            type: "GET"
+        })
+        .done(function(res){
+            $("#result").html(res);
+            $("form").trigger("reset");
+            $(".locInfo").append('<br><button type="button" class="btn btn-warning editLocId mr-3">Edit Location ID</button>' +
+                                 '<button type="button" class="btn btn-warning editLocName mr-3">Edit Location Name</button>' +
+                                 '<button type="button" class="btn btn-warning editLocLat mr-3">Edit Location Latitude</button>' +
+                                 '<button type="button" class="btn btn-warning editLocLong">Edit Location Longitude</button>');
         });
     });
 
@@ -330,11 +353,11 @@ $(document).ready(function() {
         var newLocName = prompt("Please enter the new location name");
         if(newLocName != null){
             var $this = $(this);
-            var locName = $this.parent().find("span").eq(1).html();
+            var locId = $this.parent().find("span").eq(0).html();
             $.ajax({
                 url: "./admin/location",
                 type: "PUT",
-                data: {locName: locName,
+                data: {locId: locId,
                        newLocName: newLocName}
             })
             .done(function(res){
@@ -349,28 +372,93 @@ $(document).ready(function() {
         }
     });
 
+    $(document).on("click", ".editLocLat", function(){
+        var newLocLat = prompt("Please enter the new latitude");
+        if(newLocLat != null){
+            var $this = $(this);
+            var locId = $this.parent().find("span").eq(0).html();
+            $.ajax({
+                url: "./admin/location",
+                type: "PUT",
+                data: {locId: locId,
+                       newLocLat: newLocLat}
+            })
+            .done(function(res){
+                if(res != "Location Latitude Updated"){
+                    alert(res);
+                }
+                else{
+                    $this.parent().find("span").eq(2).html(newLocLat);
+                    alert(res);
+                }
+            });
+        }
+    });
+
+    $(document).on("click", ".editLocLong", function(){
+        var newLocLong = prompt("Please enter the new longitude");
+        if(newLocLong != null){
+            var $this = $(this);
+            var locId = $this.parent().find("span").eq(0).html();
+            $.ajax({
+                url: "./admin/location",
+                type: "PUT",
+                data: {locId: locId,
+                       newLocLong: newLocLong}
+            })
+            .done(function(res){
+                if(res != "Location Longitude Updated"){
+                    alert(res);
+                }
+                else{
+                    $this.parent().find("span").eq(3).html(newLocLong);
+                    alert(res);
+                }
+            });
+        }
+    });
+
                                                                         //delete location
     $(document).on("click", "#deleteLoc", function(e){
         e.preventDefault();
         changeNavbar($("#deleteLoc"));
 
+        var selectMenu = '<option value="" hidden selected">Select Route</option>';
+        for(var route of routes){
+            selectMenu += '<option value="' + route + '">' + route + '</option>';
+        }
+
+        var content = '<h1>Delete Location</h1>' +
+			'<form>' +
+            '<div class="form-group">' +
+            '<label for="name">Which route\'s locations you want to delete?</label>' +
+            '<br><select id="deleteLocSelectMenu" style="width: 300px" class="custom-select">' +
+            selectMenu +
+            '</select>' +
+            '</div>' +
+			'</form>' +
+            '<div id="result"></div>';
+        $("title").html("Delete Location");
+        $("#adminContent").html(content);
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/delete_location.html");
+    });
+
+    $(document).on("change", "#deleteLocSelectMenu", function(e){
         $.ajax({
-            url: "./admin/location_del_retr",
+            url: "./admin/location?routeId=" + e.target.value,
             type: "GET"
         })
         .done(function(res){
-            $("title").html("Delete Location");
-            $("#adminContent").html("<h1 id='locTop'>Location Information</h1>" +
-                                    "<div align='right'><a href='#locBottom'>Go to bottom</a></div>" + res);
+            $("#result").html(res);
+            $("form").trigger("reset");
             $(".locInfo").append('<br><button type="button" class="btn btn-warning deleteLocBtn">Delete Location</button>');
-            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/delete_location.html");
         });
     });
 
-
     $(document).on("click", ".deleteLocBtn", function(){
         var $this = $(this);
-        var locId = $(this).parent().find("span").html();
+        var locId = $(this).parent().find("span").eq(0).html();
+
         $.ajax({
             url: "./admin/location",
             type: "DELETE",
@@ -399,7 +487,7 @@ $(document).ready(function() {
 			'</form>';
         $("title").html("Create User");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/create_user.html");
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/create_user.html");
     });
 
     $(document).on("click", "#createUserBtn", function(e){
@@ -433,7 +521,7 @@ $(document).ready(function() {
         .done(function(res){
             $("title").html("Retrieve User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
-            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/retrieve_user.html");
+            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/retrieve_user.html");
         });
     });
 
@@ -450,7 +538,7 @@ $(document).ready(function() {
             $("title").html("Update User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning editUsername mr-3">Edit username</button><button type="button" class="btn btn-warning editPassword">Edit password</button>');
-            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/update_user.html");
+            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/update_user.html");
         });
     });
 
@@ -511,7 +599,7 @@ $(document).ready(function() {
             $("title").html("Delete User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning deleteUserBtn">Delete user</button>');
-            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/delete_user.html");
+            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/delete_user.html");
         });
     });
 

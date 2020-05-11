@@ -361,42 +361,33 @@ app.post("/admin/location", function(req,res){
 //retrieve location
 app.get("/admin/location", function(req, res){
     var routeId = req.query['routeId'];
-
-    if(routeId == ""){
-        res.send("Please enter the route ID");
-    }
-    else{
-        Route.findOne({routeId: routeId})
-        .exec(function(err, route){
-            if(err){
-                console.log(err);
-            }
-            else if (route == null){
-                res.send("This route does not exist!");
-            }
-            else{
-                Route.findOne({routeId: routeId})
-                .populate('locInfo.loc')
-                .exec(function(err, result){
-                    if(err)
-                        console.log(err);
-                    else if(result == null)
-                        console.log("not found")
-                    else{
-                        var output = "<h5>Route ID: " + routeId + "</h5>" +
-                            "<h5>Route direction: " + (result.locInfo[0].dir == "I" ? "Inbound" : "Outbound") + "</h5>";
-                        for(var i = 0; i < result.locInfo.length; i++){
-                            output += "Bus stop ID: " + result.locInfo[i].loc.locId + "<br>" +
-                            "Bus stop name: " + result.locInfo[i].loc.name + "<br>" +
-                            "Bus stop location (latitude, longitude): (" + result.locInfo[i].loc.latitude + ", " + result.locInfo[i].loc.longitude + ")<br>" +
-                            "Bus stop sequence number: " + result.locInfo[i].seq + "<br><br>";
-                        }
-                        res.send(output);
+    Route.findOne({routeId: routeId})
+    .exec(function(err, route){
+        if(err){
+            console.log(err);
+        }
+        else{
+            Route.findOne({routeId: routeId})
+            .populate('locInfo.loc')
+            .exec(function(err, result){
+                if(err)
+                    console.log(err);
+                else if(result.locInfo.length == 0)
+                    res.send("No locations")
+                else{
+                    var output = "<h5>Route ID: " + routeId + "</h5>" +
+                        "<h5>Route direction: " + (result.locInfo[0].dir == "I" ? "Inbound" : "Outbound") + "</h5>";
+                    for(var i = 0; i < result.locInfo.length; i++){
+                        output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result.locInfo[i].loc.locId + "</span><br>" +
+                        "Bus stop name: <span>" + result.locInfo[i].loc.name + "</span><br>" +
+                        "Bus stop location (latitude, longitude): (<span>" + result.locInfo[i].loc.latitude + "</span>, <span>" + result.locInfo[i].loc.longitude + "</span>)<br>" +
+                        "Bus stop sequence number: <span>" + result.locInfo[i].seq + "</span></div>";
                     }
-                });
-            }
-        });
-    }
+                    res.send(output);
+                }
+            });
+        }
+    });
 });
 
 //update location
@@ -423,7 +414,7 @@ app.put("/admin/location", function(req,res){
             }
         });
     }
-    else {
+    else if (req.body['newLocName'] != undefined){
         Location.findOne({name: req.body['newLocName']})
         .exec(function(err, nloc) {
             if (err){
@@ -433,17 +424,39 @@ app.put("/admin/location", function(req,res){
                 res.send("The Location Name already exists!");
             }
             else{
-                Location.updateOne({name: req.body['locName']},{name: req.body['newLocName']})
+                Location.updateOne({locId: req.body['locId']},{name: req.body['newLocName']})
                 .exec(function(err, result) {
                     if (err) {
                         res.send(err);
                     }
                     else {
-                        console.log(req.body['locName']);
+                        console.log(req.body['locId']);
                         console.log(req.body['newLocName']);
                         res.send("Location Name Updated");
                     }
                 });
+            }
+        });
+    }
+    else if (req.body['newLocLat'] != undefined){
+        Location.updateOne({locId: req.body['locId']},{latitude: req.body['newLocLat']})
+        .exec(function(err, result) {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send("Location Latitude Updated");
+            }
+        });
+    }
+    else{
+        Location.updateOne({locId: req.body['locId']},{logitude: req.body['newLocLong']})
+        .exec(function(err, result) {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send("Location Longitude Updated");
             }
         });
     }
@@ -452,7 +465,7 @@ app.put("/admin/location", function(req,res){
 //delete location
                                                             //retrieve locations for delete
 
-app.get("/admin/location_del_retr", function(req, res) {
+/*app.get("/admin/location_del_retr", function(req, res) {
     Location.find().select('locId name latitude longitude').exec(function(err, loc) {
         if(err){
                 console.log(err);
@@ -472,16 +485,33 @@ app.get("/admin/location_del_retr", function(req, res) {
                 res.send(output);
             }
     })
-});
+});*/
 
 app.delete("/admin/location", function(req,res){
-    Location.remove({locId: req.body['locId']})
-    .exec(function(err, user) {
-        if (err) {
-            res.send(err);
+    Location.findOne({locId: req.body['locId']})
+    .exec(function(err, loc){
+        if(err){
+            console.log(err);
         }
-        else {
-            res.send();
+        else{
+            Route.update({"locInfo.loc": loc._id}, {$pull: {locInfo: {loc: loc._id}}, $inc: {stopCount: -1 }}, { multi: true })
+            .exec(function(err, result) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    Location.remove({locId: req.body['locId']})
+                    .exec(function(err, result) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        else {
+                            console.log(loc);res.send();
+                            res.send();
+                        }
+                    });
+                }
+            });
         }
     });
 });
