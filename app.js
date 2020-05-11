@@ -51,9 +51,11 @@ var RouteSchema = mongoose.Schema({
 	startLocId: { type: Number, required: true },
 	endLocId: { type: Number, required: true },
 	stopCount: { type: Number, required: true },
-    locInfo: [{ loc: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
+    locInfo: { type: Array, required: true }
+            /*[{ loc: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
                 dir: { type: String, required: true },
                 seq: { type: Number, required: true } }]      //array of location(including dir, seq)
+                */
 });
 var Route = mongoose.model('Route', RouteSchema);
 
@@ -258,29 +260,47 @@ app.post("/admin/flush", function(req, res){
         res.write("Location Data Completed<br>");
 
         // obtain location info of each route
-        var locInfo = [];
+/*        var locInfo = [];
         await (async()=>{
-            for(var i = 0; i < arr_route.length; i++){
-                var locId = []; // all locId in a route
-                for (var loc of arr_routeLoc[i].loc){
-                    locId.push(loc.locId);
+            for(var i = 0; i < arr_route.length; i++){      //1-10 routes
+                var locId_in = []; // all locId in a route
+                for (var loc of arr_routeLoc[i].loc[0]){        //inbound
+                    locId_in.push(loc.locId);
                 }
 
-                var arr = [];
+                var locId_out = []; // all locId in a route
+                for (var loc of arr_routeLoc[i].loc[1]){        //outbound
+                    locId_out.push(loc.locId);
+                }
+
+                var arr_in = [];
                 var j = 0;
-                for (var id of locId){
+                for (var id of locId_in){
                     await Location.findOne({locId: id}) // synchronised?
                         .then(function(loc){
                             arr.push({loc: loc._id,
-                                      dir: arr_routeLoc[i].loc[j].dir,
-                                      seq: arr_routeLoc[i].loc[j].seq});
+                                      dir: arr_routeLoc[i].loc[0][j].dir,
+                                      seq: arr_routeLoc[i].loc[0][j].seq});
                             j++;
                     });
                 }
-                locInfo.push(arr);
+                locInfo.push(arr_in);
+
+                var arr_out = [];
+                var j = 0;
+                for (var id of locId_out){
+                    await Location.findOne({locId: id}) // synchronised?
+                        .then(function(loc){
+                            arr.push({loc: loc._id,
+                                      dir: arr_routeLoc[i].loc[1][j].dir,
+                                      seq: arr_routeLoc[i].loc[1][j].seq});
+                            j++;
+                    });
+                }
+                locInfo.push(arr_out);
             }
         })();
-
+*/
         // store routes
         var i = 0;
         for await (var route of arr_route){
@@ -290,7 +310,7 @@ app.post("/admin/flush", function(req, res){
                     startLocId: route.startLocId,
                     endLocId: route.endLocId,
                     stopCount: route.stopCount,
-                    locInfo: locInfo[i]});
+                    locInfo: arr_routeLoc[i].loc});            //locInfo[i]
 
                 await r.save().then();
                 i++;

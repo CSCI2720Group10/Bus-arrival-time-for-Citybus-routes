@@ -18,7 +18,7 @@ async function getRoute(){                                      //get details fo
     return data;
 }
 
-async function getRouteLoc(){                                   //get all locations in each route
+async function getRouteLoc_in(){                                   //get all locations in each route
     var data = [];
     var promises;
 
@@ -26,6 +26,30 @@ async function getRouteLoc(){                                   //get all locati
         promises = routes.map(async route => {
             return await $.ajax({
                 url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/route-stop/CTB/" + route + "/inbound",
+                type: "GET"
+            })
+            .done(function(res){
+                data.push(res.data);
+            });
+        });
+        for(var p of promises) {
+            await p;
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+    return data;
+}
+
+async function getRouteLoc_out(){                                   //get all locations in each route
+    var data = [];
+    var promises;
+
+    try{
+        promises = routes.map(async route => {
+            return await $.ajax({
+                url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/route-stop/CTB/" + route + "/outbound",
                 type: "GET"
             })
             .done(function(res){
@@ -94,14 +118,23 @@ async function flushData(){
     $("#msg").removeClass("text-success");
     $("#msg").html("Flushing...");
 
-    let routeLoc;
+    let routeLoc_in;
+    let routeLoc_out;
     let loc; // 1D array of location data
     try{
-        routeLoc = await getRouteLoc();
+        routeLoc_in = await getRouteLoc_in();
+        routeLoc_out = await getRouteLoc_out();
 
         // get all non-duplicate locId
         var arr_locId = [];
-        for(var locs of routeLoc){
+        for(var locs of routeLoc_in){       //inbound
+            for(var l of locs){
+                if (!arr_locId.includes(l.stop)) {
+                    arr_locId.push(l.stop);
+                }
+            }
+        }
+        for(var locs of routeLoc_out){      //outound
             for(var l of locs){
                 if (!arr_locId.includes(l.stop)) {
                     arr_locId.push(l.stop);
@@ -109,12 +142,13 @@ async function flushData(){
             }
         }
 
+
         loc = await getLoc(arr_locId);
     } catch(err) {
         console.log(err);
     }
 
-    console.log(routeLoc);
+    //console.log(routeLoc);
     console.log(loc);
 
     let routeData = [];
@@ -122,21 +156,34 @@ async function flushData(){
     let locData = [];
 
     for(var i = 0; i < 10; i++){
+        let arr_in = [];
+        let arr_out = [];
         let arr = [];
-        routeData.push({routeId : routeLoc[i][0].route,
-                        startLocId: routeLoc[i][0].stop,
-                        endLocId: routeLoc[i][routeLoc[i].length - 1].stop,
-                        stopCount: routeLoc[i].length});
+        routeData.push({routeId : routeLoc_in[i][0].route,
+                        startLocId: routeLoc_in[i][0].stop,
+                        endLocId: routeLoc_in[i][routeLoc_in[i].length - 1].stop,
+                        stopCount: routeLoc_in[i].length});
 
-        for(var j = 0; j < routeLoc[i].length; j++){
-            arr.push({
-                locId: routeLoc[i][j].stop,
-                dir: routeLoc[i][j].dir,
-                seq: routeLoc[i][j].seq});
+        for(var j = 0; j < routeLoc_in[i].length; j++){
+            arr_in.push({
+                locId: routeLoc_in[i][j].stop,
+                dir: routeLoc_in[i][j].dir,
+                seq: routeLoc_in[i][j].seq});
         }
+        for(var j = 0; j < routeLoc_out[i].length; j++){
+            arr_out.push({
+                locId: routeLoc_out[i][j].stop,
+                dir: routeLoc_out[i][j].dir,
+                seq: routeLoc_out[i][j].seq});
+        }
+        arr.push(arr_in);
+        arr.push(arr_out);
 
-        routeLocData.push({routeId : routes[i],
+        routeLocData.push({routeId : routeLoc_in[i][0].route,
                            loc: arr});
+        arr_in = [];
+        arr_out = [];
+        arr = [];
     }
     console.log(routeData);
     console.log(routeLocData);
@@ -525,7 +572,7 @@ $(document).ready(function() {
         });
     });
 
-    //update users
+                                                                        //update users
     $(document).on("click", "#updateUser", function(e){
         e.preventDefault();
         changeNavbar($("#updateUser"));
@@ -639,8 +686,7 @@ $(document).ready(function() {
             '<div class="row">' +
                 '<div class="row" id="parsed_csv_list">'+
                 '</div > '+
-            '</div >' +
-            '<h3 id="msg"></h3>'+
+            '</div >'+
            '</div>';
         $("title").html("Location Data Create");
         $("#adminContent").html(locDataForm);
@@ -666,6 +712,7 @@ $(document).ready(function() {
                 continue;
             }
 
+
             for (j = 0; j <4; j++)
             {
                 table += "<td>";
@@ -674,25 +721,6 @@ $(document).ready(function() {
             }
             if (i > 0)
             {
-                $.ajax({
-                    url: "./admin/csv",
-                    type: "POST",
-                    data: {
-                        locId: cells[0],
-                        locName: cells[1],
-                        locLat: cells[2],
-                        locLong: cells[3]
-                    }
-                })
-                    .done(function (res) {
-                        if (res == "Create CSV location successfully!")
-                        {
-                            $("#msg").addClass("text-success");
-                            //$("form").trigger("reset");
-                        }
-                        $("#msg").html(res);
-                    });
-
                 console.log("locId:  " + cells[0]);
                 console.log("name: " + cells[1]);
                 console.log("lat: " + cells[2]);
@@ -700,6 +728,8 @@ $(document).ready(function() {
             }
             table += "</tr>";
         }
+
+
        // console.log(data.length);
         table += "</table>";
         $("#parsed_csv_list").html(table);
