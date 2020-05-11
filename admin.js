@@ -674,10 +674,10 @@ $(document).ready(function() {
             }
             if (i > 0)
             {
-                console.log("locId:  " + Locid);
-                console.log("name: " + name);
-                console.log("lat: " + lat);
-                console.log("log: " + long);
+                console.log("locId:  " + cells[0]);
+                console.log("name: " + cells[1]);
+                console.log("lat: " + cells[2]);
+                console.log("log: " + cells[3]);
             }
             table += "</tr>";
         }
