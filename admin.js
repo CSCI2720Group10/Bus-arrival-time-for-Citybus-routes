@@ -148,65 +148,65 @@ async function flushData(){
         console.log(err);
     }
 
-    //console.log(routeLoc);
-    console.log(loc);
-
-    let routeData = [];
-    let routeLocData_in = [];
-    let routeLocData_out = [];
+    let routeInData = [];
+    let routeOutData = [];
+    let routeLocInData = [];
+    let routeLocOutData = [];
     let locData = [];
 
     for(var i = 0; i < 10; i++){
         let arr_in = [];
         let arr_out = [];
         let arr = [];
-        routeData.push({routeId : routeLoc_in[i][0].route,
+
+        routeInData.push({routeId : routeLoc_in[i][0].route,
                         startLocId: routeLoc_in[i][0].stop,
                         endLocId: routeLoc_in[i][routeLoc_in[i].length - 1].stop,
                         stopCount: routeLoc_in[i].length});
 
+        routeOutData.push({routeId : routeLoc_out[i][0].route,
+                        startLocId: routeLoc_out[i][0].stop,
+                        endLocId: routeLoc_out[i][routeLoc_out[i].length - 1].stop,
+                        stopCount: routeLoc_out[i].length});
+
         for(var j = 0; j < routeLoc_in[i].length; j++){
             arr_in.push({
                 locId: routeLoc_in[i][j].stop,
-                dir: routeLoc_in[i][j].dir,
                 seq: routeLoc_in[i][j].seq});
         }
         for(var j = 0; j < routeLoc_out[i].length; j++){
             arr_out.push({
                 locId: routeLoc_out[i][j].stop,
-                dir: routeLoc_out[i][j].dir,
                 seq: routeLoc_out[i][j].seq});
         }
-//        arr.push(arr_in);
- //       arr.push(arr_out);
+        arr.push(arr_in);
+        arr.push(arr_out);
 
-        routeLocData_in.push({routeId : routeLoc_in[i][0].route,
-                           loc_in: arr_in});
-        routeLocData_out.push({routeId : routeLoc_out[i][0].route,
-                           loc_out: arr_out});
-
-        arr_in = [];
-        arr_out = [];
-        arr = [];
+        routeLocInData.push({routeId : routeLoc_in[i][0].route,
+                             loc: arr_in});
+        routeLocOutData.push({routeId : routeLoc_out[i][0].route,
+                              loc: arr_out});
     }
-    console.log(routeData);
-    console.log(routeLocData_in);
-    console.log(routeLocData_out);
     for(var i = 0; i < loc.length; i++){
         locData.push({locId : loc[i].stop,
                       name: loc[i].name_en,
                       latitude: loc[i].lat,
                       longitude: loc[i].long});
     }
+    console.log(routeInData);
+    console.log(routeOutData);
+    console.log(routeLocInData);
+    console.log(routeLocOutData);
     console.log(locData);
 
     try {
         await $.ajax({
             url: "./admin/flush",
             type: "POST",
-            data: {route: routeData,
-                   routeLoc_in: routeLocData_in,
-                   routeLoc_out: routeLocData_out,
+            data: {routeIn: routeInData,
+                   routeOut: routeOutData,
+                   routeLocIn: routeLocInData,
+                   routeLocOut: routeLocOutData,
                    loc: locData}
         })
         .done(function(res){
