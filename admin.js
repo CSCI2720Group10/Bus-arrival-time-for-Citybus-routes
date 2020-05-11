@@ -281,9 +281,72 @@ $(document).ready(function() {
         });
     });
 
+                                                                        //update location
     $(document).on("click", "#updateLoc", function(e){
         e.preventDefault();
         changeNavbar($("#updateLoc"));
+
+        $.ajax({
+            url: "./admin/location_del_retr",
+            type: "GET"
+        })
+        .done(function(res){
+            $("title").html("Update Location");
+            $("#adminContent").html("<h1>Location Information</h1>" +
+                                    "<div align='right'><a href='#locBottom'>Go to bottom</a></div>" + res);
+            $(".locInfo").append('<br><button type="button" class="btn btn-warning editLocId mr-3">Edit Location ID</button>' +
+                                  '<button type="button" class="btn btn-warning editLocName mr-3">Edit Location Name</button>'
+                                 //+ '<button type="button" class="btn btn-warning editLocLat mr-3">Edit Location Latitude</button>' +
+                                //  '<button type="button" class="btn btn-warning editLocLong">Edit Location Longitude</button>'
+                                 );
+            history.pushState({content: $("#content").html(), nav: $("nav").html(), title: $("title").html()}, null, "/update_location.html");
+        });
+    });
+
+    $(document).on("click", ".editLocId", function(){
+        var newLocId = prompt("Please enter the new location ID");
+        if(newLocId != null){
+            var $this = $(this);
+            var locId = $this.parent().find("span").eq(0).html();
+            $.ajax({
+                url: "./admin/location",
+                type: "PUT",
+                data: {locId: locId,
+                       newLocId: newLocId}
+            })
+            .done(function(res){
+                if(res != "Location ID Updated"){
+                    alert(res);
+                }
+                else{
+                    $this.parent().find("span").eq(0).html(newLocId);
+                    alert(res);
+                }
+            });
+        }
+    });
+
+    $(document).on("click", ".editLocName", function(){
+        var newLocName = prompt("Please enter the new location name");
+        if(newLocName != null){
+            var $this = $(this);
+            var locName = $this.parent().find("span").eq(1).html();
+            $.ajax({
+                url: "./admin/location",
+                type: "PUT",
+                data: {locName: locName,
+                       newLocName: newLocName}
+            })
+            .done(function(res){
+                if(res != "Location Name Updated"){
+                    alert(res);
+                }
+                else{
+                    $this.parent().find("span").eq(1).html(newLocName);
+                    alert(res);
+                }
+            });
+        }
     });
 
                                                                         //delete location

@@ -401,7 +401,52 @@ app.get("/admin/location", function(req, res){
 
 //update location
 app.put("/admin/location", function(req,res){
-
+    if(req.body['newLocId'] != undefined){
+        Location.findOne({locId: req.body['newLocId']})
+        .exec(function(err, nloc) {
+            if (err){
+                res.send(err);
+            }
+            else if (nloc != null){
+                res.send("The Location ID already exists!");
+            }
+            else{
+                Location.updateOne({locId: req.body['locId']},{locId: req.body['newLocId']})
+                .exec(function(err, result) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        res.send("Location ID Updated");
+                    }
+                });
+            }
+        });
+    }
+    else {
+        Location.findOne({name: req.body['newLocName']})
+        .exec(function(err, nloc) {
+            if (err){
+                res.send(err);
+            }
+            else if (nloc != null){
+                res.send("The Location Name already exists!");
+            }
+            else{
+                Location.updateOne({name: req.body['locName']},{name: req.body['newLocName']})
+                .exec(function(err, result) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        console.log(req.body['locName']);
+                        console.log(req.body['newLocName']);
+                        res.send("Location Name Updated");
+                    }
+                });
+            }
+        });
+    }
 });
 
 //delete location
@@ -419,9 +464,9 @@ app.get("/admin/location_del_retr", function(req, res) {
                 var output = "";
                 for(var i = 0; i < loc.length; i++){
                     output += "<div class='mb-3 locInfo'>Location ID: <span>" + loc[i].locId + "</span><br>" +
-                        "Location Name: " + loc[i].name + "<br>" +
-                        "Location Latitude: " + loc[i].latitude + "<br>" +
-                        "Location Longitude: " + loc[i].longitude + "</div><br><br>";
+                        "Location Name: <span>" + loc[i].name + "</span><br>" +
+                        "Location Latitude: <span>" + loc[i].latitude + "</span><br>" +
+                        "Location Longitude: <span>" + loc[i].longitude + "</span></div><br><br>";
                 }
                 output += "<div id='locBottom' align='right'><a href='#locTop'>Go to top.</a></div>"
                 res.send(output);
