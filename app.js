@@ -148,8 +148,7 @@ app.post("/signup", function(req, res){
         });
     }
 });
-
-                                                                //Login page
+                                                               //Login page
 app.post("/login", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please enter username and password!");
@@ -181,7 +180,6 @@ app.post("/login", function(req, res){
         });
     }
 });
-
                                                                 //User page
 app.get('/user', function(req, res) {
 	if (req.session['login']) {
