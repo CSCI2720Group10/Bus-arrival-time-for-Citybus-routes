@@ -525,7 +525,7 @@ $(document).ready(function() {
         });
     });
 
-                                                                        //update users
+    //update users
     $(document).on("click", "#updateUser", function(e){
         e.preventDefault();
         changeNavbar($("#updateUser"));
@@ -639,7 +639,8 @@ $(document).ready(function() {
             '<div class="row">' +
                 '<div class="row" id="parsed_csv_list">'+
                 '</div > '+
-            '</div >'+
+            '</div >' +
+            '<h3 id="msg"></h3>'+
            '</div>';
         $("title").html("Location Data Create");
         $("#adminContent").html(locDataForm);
@@ -665,7 +666,6 @@ $(document).ready(function() {
                 continue;
             }
 
-
             for (j = 0; j <4; j++)
             {
                 table += "<td>";
@@ -674,6 +674,25 @@ $(document).ready(function() {
             }
             if (i > 0)
             {
+                $.ajax({
+                    url: "./admin/csv",
+                    type: "POST",
+                    data: {
+                        locId: cells[0],
+                        locName: cells[1],
+                        locLat: cells[2],
+                        locLong: cells[3]
+                    }
+                })
+                    .done(function (res) {
+                        if (res == "Create CSV location successfully!")
+                        {
+                            $("#msg").addClass("text-success");
+                            //$("form").trigger("reset");
+                        }
+                        $("#msg").html(res);
+                    });
+
                 console.log("locId:  " + cells[0]);
                 console.log("name: " + cells[1]);
                 console.log("lat: " + cells[2]);
@@ -681,8 +700,6 @@ $(document).ready(function() {
             }
             table += "</tr>";
         }
-
-
        // console.log(data.length);
         table += "</table>";
         $("#parsed_csv_list").html(table);

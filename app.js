@@ -195,7 +195,7 @@ app.post("/logout", function(req, res){
 	res.send("/root.html");
 });
 
-                                                                //Admin page
+                                                             //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
     res.redirect('./admin');
@@ -464,7 +464,6 @@ app.put("/admin/location", function(req,res){
 
 //delete location
                                                             //retrieve locations for delete
-
 /*app.get("/admin/location_del_retr", function(req, res) {
     Location.find().select('locId name latitude longitude').exec(function(err, loc) {
         if(err){
@@ -516,16 +515,46 @@ app.delete("/admin/location", function(req,res){
     });
 });
 
+//write the CSV data into the location databse by the admin
 
-/*app.post("/admin/csv", function (req, res) {
+app.post("/admin/csv", function (req, res)
+{
+    //Bug Case 1: Empty location.
+    //Solved:  the empty lcoation would be skipped in the admin.js already.
 
-    Location.findOne().sort([['locId', -1]]).exec(function (err, doc)
-    {	
-        var result = new Location(
-        { 
+    Location.findOne({ locId: req.body['locId'] }).exec(function (err, loc)
+    {
+        if (err) {
+            res.send(err);
+        }
 
+        //Bug Case 2: Duplicated Location
+        //Solved: != NULL of location.
+        else if (loc != null)
+        {
+            res.send("The location already exists!");
+        }
+        else
+        {
+            var result = new Location(
+                {
+                    locId: req.body['locId'],
+                    name: req.body['locName'],
+                    latitude: req.body['locLat'],
+                    longitude: req.body['locLong']
+                });
+            result.save(function (error) {
 
-});*/
+                if (error) {
+                    res.send(error);
+                    return;
+                }
+                console.log("CSV Location Post by Admin successfully !");
+                res.send("Create CSV location successfully!");
+            });
+        }
+    });
+});
 
                                                 // Admin CRUD actions for user data
 //create users
