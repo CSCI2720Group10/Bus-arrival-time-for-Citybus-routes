@@ -517,6 +517,15 @@ app.delete("/admin/location", function(req,res){
 });
 
 
+/*app.post("/admin/csv", function (req, res) {
+
+    Location.findOne().sort([['locId', -1]]).exec(function (err, doc)
+    {	
+        var result = new Location(
+        { 
+
+
+});*/
 
                                                 // Admin CRUD actions for user data
 //create users

@@ -624,9 +624,9 @@ $(document).ready(function() {
         var locDataForm = '<div class="container" >'+
             '<h1>Create the Location Data</h1>' +
             '<h4>Please follow the structure below:</h4>'+
-            '<h4>Date Feature: | Location Name | Location Latitude | Location Longitude | </h4>'+
+            '<h4>Date Feature: |Location ID | Location Name | Location Latitude | Location Longitude | </h4>'+
             '<img src="CSV_format.PNG" alt="Format of CSV file" width="50%" height ="50%" >'+
-            '<h3><i>Reminder that the name should <strong>not</strong> include any "," </i></h3>'+
+            '<h6><i>Reminder that the name should <strong>not</strong> include any "," </i></h6>'+
             '<form class="form-inline">' +
                 '<div class="form-group">' +
                     '<label for="files">Please Upload a CSV file here: <br></label>' +
@@ -638,7 +638,7 @@ $(document).ready(function() {
             ' </form>' +
             '<div class="row">' +
                 '<div class="row" id="parsed_csv_list">'+
-                '</div > '  +
+                '</div > '+
             '</div >'+
            '</div>';
         $("title").html("Location Data Create");
@@ -648,24 +648,47 @@ $(document).ready(function() {
     var imported = document.createElement('script');
     document.head.appendChild(imported);
 
-
     function displayHTMLTable(results)
     {
         var table = "<table class='table'>";
         var data = results.data;
+        var Locid = 0;
+        var name = "name";
+        var lat = 0;
+        var long = 0;
 
-        for (i = 0; i < data.length; i++) {
+        for (i = 0; i < data.length; i++)
+        {
             table += "<tr>";
             var row = data[i];
             var cells = row.join(",").split(",");
 
-            for (j = 0; j < cells.length; j++) {
+            //Skip the feature line and empty data
+            if (cells[0] == "")
+            {
+                continue;
+            }
+            if (i > 0)
+            {
+                Locid = cells[0];
+                name = cells[1];
+                lat = cells[2];
+                long = cells[3];
+            }
+
+            for (j = 0; j <4; j++)
+            {
                 table += "<td>";
                 table += cells[j];
                 table += "</th>";
             }
+            console.log("locId:  " + Locid);
+            console.log("name: " + name);
+            console.log("lat: " + lat);
+            console.log("log: " + long);
             table += "</tr>";
         }
+       // console.log(data.length);
         table += "</table>";
         $("#parsed_csv_list").html(table);
     }
