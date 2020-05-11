@@ -617,20 +617,73 @@ $(document).ready(function() {
     });
 
 
-    $(document).on("click", "#createLocData", function(e){
+    $(document).on("click", "#createLocData", function (e)
+    {
         e.preventDefault();
         changeNavbar($("#createLocData"));
-        var locDataForm = '<h1>Create the location Data</h1>' +
-            '<form class="form-inline">'+
-            '<div class="form-group">'+
-            '<label for="files">Please Upload a CSV file here:</label>' +
-            '<input type="file" id="files" class="form-control" accept=".csv" required />' +
-            '</div>' +
-            '<div class="form-group">' +
-            '<button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>' +
-            '</div>' +
-            ' </form>';
+        var locDataForm = '<div class="container" >'+
+            '<h1>Create the location Data</h1>' +
+            '<form class="form-inline">' +
+                '<div class="form-group">' +
+                    '<label for="files">Please Upload a CSV file here: <br></label>' +
+                    '<input type="file" id="files" class="form-control" accept=".csv" required />' +
+                '</div>' +
+                 '<div class="form-group">' +
+                    '<button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>' +
+                    '</div>' +
+            ' </form>' +
+            '<div class="row">' +
+                '<div class="row" id="parsed_csv_list">'+
+                '</div > '  +
+            '</div >'+
+           '</div>';
         $("title").html("Location Data Create");
         $("#adminContent").html(locDataForm);
+        history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/csv_location.html");
+    });
+    var imported = document.createElement('script');
+    document.head.appendChild(imported);
+
+
+    function displayHTMLTable(results)
+    {
+        var table = "<table class='table'>";
+        var data = results.data;
+
+        for (i = 0; i < data.length; i++) {
+            table += "<tr>";
+            var row = data[i];
+            var cells = row.join(",").split(",");
+
+            for (j = 0; j < cells.length; j++) {
+                table += "<td>";
+                table += cells[j];
+                table += "</th>";
+            }
+            table += "</tr>";
+        }
+        table += "</table>";
+        $("#parsed_csv_list").html(table);
+    }
+    $.getScript('papaparse.min.js', function () {
+        $(document).on("click", "#submit-file", function (e) {
+            e.preventDefault();
+            $('#files').parse(
+                {
+                    config: {
+                        delimiter: "auto",
+                        complete: displayHTMLTable,
+                    },
+                    before: function (file, inputElem) {
+                        console.log("Parsing file...", file);
+                    },
+                    error: function (err, file) {
+                        console.log("ERROR:", err, file);
+                    },
+                    complete: function () {
+                        console.log("Done with all files");
+                    }
+                });
+        });
     });
 });
