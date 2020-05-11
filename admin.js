@@ -152,7 +152,8 @@ async function flushData(){
     console.log(loc);
 
     let routeData = [];
-    let routeLocData = [];
+    let routeLocData_in = [];
+    let routeLocData_out = [];
     let locData = [];
 
     for(var i = 0; i < 10; i++){
@@ -176,17 +177,21 @@ async function flushData(){
                 dir: routeLoc_out[i][j].dir,
                 seq: routeLoc_out[i][j].seq});
         }
-        arr.push(arr_in);
-        arr.push(arr_out);
+//        arr.push(arr_in);
+ //       arr.push(arr_out);
 
-        routeLocData.push({routeId : routeLoc_in[i][0].route,
-                           loc: arr});
+        routeLocData_in.push({routeId : routeLoc_in[i][0].route,
+                           loc_in: arr_in});
+        routeLocData_out.push({routeId : routeLoc_out[i][0].route,
+                           loc_out: arr_out});
+
         arr_in = [];
         arr_out = [];
         arr = [];
     }
     console.log(routeData);
-    console.log(routeLocData);
+    console.log(routeLocData_in);
+    console.log(routeLocData_out);
     for(var i = 0; i < loc.length; i++){
         locData.push({locId : loc[i].stop,
                       name: loc[i].name_en,
@@ -200,7 +205,8 @@ async function flushData(){
             url: "./admin/flush",
             type: "POST",
             data: {route: routeData,
-                   routeLoc: routeLocData,
+                   routeLoc_in: routeLocData_in,
+                   routeLoc_out: routeLocData_out,
                    loc: locData}
         })
         .done(function(res){

@@ -51,7 +51,7 @@ var RouteSchema = mongoose.Schema({
 	startLocId: { type: Number, required: true },
 	endLocId: { type: Number, required: true },
 	stopCount: { type: Number, required: true },
-    locInfo: { type: Array, required: true }
+    locInfo: { type: Array, required: true }                //0: inbound, 1: outbound
             /*[{ loc: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
                 dir: { type: String, required: true },
                 seq: { type: Number, required: true } }]      //array of location(including dir, seq)
@@ -238,7 +238,8 @@ app.post("/admin/flush", function(req, res){
 
         // store data
         var arr_route = req.body['route'];
-        var arr_routeLoc = req.body['routeLoc'];
+        var arr_routeLoc_in = req.body['routeLoc_in'];
+        var arr_routeLoc_out = req.body['routeLoc_out'];
         var arr_loc = req.body['loc'];
 
         // store locations
@@ -260,16 +261,17 @@ app.post("/admin/flush", function(req, res){
         res.write("Location Data Completed<br>");
 
         // obtain location info of each route
-/*        var locInfo = [];
+/*
+        var locInfo = [];
         await (async()=>{
             for(var i = 0; i < arr_route.length; i++){      //1-10 routes
                 var locId_in = []; // all locId in a route
-                for (var loc of arr_routeLoc[i].loc[0]){        //inbound
+                for (var loc of arr_routeLoc_in[i].loc_in){        //inbound
                     locId_in.push(loc.locId);
                 }
 
                 var locId_out = []; // all locId in a route
-                for (var loc of arr_routeLoc[i].loc[1]){        //outbound
+                for (var loc of arr_routeLoc_out[i].loc_out){        //outbound
                     locId_out.push(loc.locId);
                 }
 
@@ -301,6 +303,20 @@ app.post("/admin/flush", function(req, res){
             }
         })();
 */
+
+        var locInfo = [];
+        var arr1 = [];
+        for(var i = 0; i < 10; i++){                                        //combine the inbound and outbound arr with corresponding routeId
+            for (var j = 0; j < 10; j++){
+                if(arr_routeLoc_in[i].routeId == arr_routeLoc_out[j].routeId){
+                    arr1.push(arr_routeLoc_in[i]);
+                    arr1.push(arr_routeLoc_out[j]);
+                    locInfo.push(arr1);
+                    arr1 = [];
+                }
+            }
+        }
+
         // store routes
         var i = 0;
         for await (var route of arr_route){
@@ -310,7 +326,7 @@ app.post("/admin/flush", function(req, res){
                     startLocId: route.startLocId,
                     endLocId: route.endLocId,
                     stopCount: route.stopCount,
-                    locInfo: arr_routeLoc[i].loc});            //locInfo[i]
+                    locInfo: locInfo[i]});            //since arr_route and locInfo is sorted according to loc_in, no need to compare routeId
 
                 await r.save().then();
                 i++;
