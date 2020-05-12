@@ -195,7 +195,7 @@ app.post("/logout", function(req, res){
 	res.send("/root.html");
 });
 
-                                                             //Admin page
+                                                         //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
     res.redirect('./admin');

@@ -286,8 +286,6 @@ $(document).ready(function() {
             $("#msg").html(res);
         });
     });
-
-
                                                                         //retrieve locations
     $(document).on("click", "#retrieveLoc", function(e){
         e.preventDefault();
@@ -692,7 +690,8 @@ $(document).ready(function() {
             '<div class="row">' +
                 '<div class="row" id="parsed_csv_list">'+
                 '</div > '+
-            '</div >'+
+            '</div >' +
+            '<h3 id="msg"></h3>'+
            '</div>';
         $("title").html("Location Data Create");
         $("#adminContent").html(locDataForm);
@@ -718,7 +717,6 @@ $(document).ready(function() {
                 continue;
             }
 
-
             for (j = 0; j <4; j++)
             {
                 table += "<td>";
@@ -727,10 +725,23 @@ $(document).ready(function() {
             }
             if (i > 0)
             {
-                console.log("locId:  " + cells[0]);
-                console.log("name: " + cells[1]);
-                console.log("lat: " + cells[2]);
-                console.log("log: " + cells[3]);
+                $.ajax({
+                    url: "./admin/location",
+                    type: "POST",
+                    data: {
+                        locId: cells[0],
+                        locName: cells[1],
+                        locLat: cells[2],
+                        locLong: cells[3]
+                    }
+                })
+                    .done(function (res) {
+                        if (res == "Create CSV location successfully!") {
+                            $("#msg").addClass("text-success");
+                           // $("form").trigger("reset");
+                        }
+                        $("#msg").html(res);
+                    });
             }
             table += "</tr>";
         }
