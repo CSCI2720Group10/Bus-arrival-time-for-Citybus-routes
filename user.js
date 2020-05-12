@@ -1,6 +1,57 @@
-
 $(document).ready(function ()
 {
+    function changeNavbar($clickedLink){
+        var $otherLinks = $("nav > div > a, nav div.dropdown-menu > a").not($clickedLink);
+        $otherLinks.removeClass("disabled");
+        $otherLinks.removeClass("text-danger");
+        $otherLinks.addClass("text-success");
+        $clickedLink.addClass("disabled");
+        $clickedLink.addClass("text-danger");
+    }
+
+    $(document).on("click", "#home", function(e){
+        e.preventDefault();
+        changeNavbar($("#home"));
+
+        $("#userContent").load("/user.html #userContent", function(){
+            $("title").html("Home");
+            history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/home.html");
+        });
+    });
+
+    $(document).on("click", "#listLoc", function(e){
+        e.preventDefault();
+        changeNavbar($("#listLoc"));
+
+        $.ajax({
+            url: "./user/location",
+            type: "GET"
+        })
+        .done(function(res){
+            $("title").html("List Locations");
+            $("#userContent").html(res);
+            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/list_location.html");
+        });
+    });
+
+    var locIdOrder = 1;
+
+    $(document).on("click", "#locIdCol", function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: "./user/location?locIdOrder=" + locIdOrder,
+            type: "GET"
+        })
+        .done(function(res){
+            $("title").html("List Locations");
+            $("thead").find("th").find("a").html("Location ID" + (locIdOrder == 1 ? "▲" : "▼"));
+            $("tbody").html(res);
+            locIdOrder = -locIdOrder;
+        });
+    });
+
+
     $("#trying").click(function () {
         getLocation();
     });
