@@ -71,9 +71,9 @@ $(document).ready(function() {
         .done(function(res){
             if(res == "/user.html"){
                 $("body").load(res + " #content", function(){
-                    $("title").html("Home");
+                    $("title").html("user");
                     $("#userName").html(user);
-                    history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/home.html");
+                    history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
                 });
             }
             else{
