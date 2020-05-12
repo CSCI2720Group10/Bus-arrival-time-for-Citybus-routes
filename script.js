@@ -61,6 +61,7 @@ $(document).ready(function() {
 
     $(document).on("click", "#loginUser", function(e) {
         e.preventDefault();
+        var user = $("#username").val();
         $.ajax({
             url: "./login",
             type: "POST",
@@ -71,6 +72,7 @@ $(document).ready(function() {
             if(res == "/user.html"){
                 $("body").load(res + " #content", function(){
                     $("title").html("Home");
+                    $("#userName").html(user);
                     history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/home.html");
                 });
             }

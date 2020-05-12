@@ -34,8 +34,8 @@ $(document).ready(function ()
         });
     });
 
+    // sort table according to locId
     var locIdOrder = 1;
-
     $(document).on("click", "#locIdCol", function(e){
         e.preventDefault();
 
@@ -50,7 +50,54 @@ $(document).ready(function ()
             locIdOrder = -locIdOrder;
         });
     });
+
+    // search location
+    $(document).on("click", "#searchLoc", function(e){
+        e.preventDefault();
+        changeNavbar($("#searchLoc"));
+
+        //$form.find("input[name=inputcolor]:checked").val()
+        var content = '<h1>Search Location</h1>' +
+        '<form>' +
+        'Choose a search criterion<br>' +
+        '<div class="custom-control custom-radio custom-control-inline">' +
+        '<input class="custom-control-input" id="locId" type="radio" name="criterion" value="locId">' +
+        '<label class="custom-control-label" for="locId">Location ID</label>' +
+        '</div>' +
+        '<div class="custom-control custom-radio custom-control-inline">' +
+        '<input class="custom-control-input" id="locName" type="radio" name="criterion" value="locName">' +
+        '<label class="custom-control-label" for="locName">Location name</label>' +
+        '</div>' +
+        '<div class="form-group mt-2"></div>' +
+        '<div id="btn"></div>' +
+        '</form>' +
+        '<div id="result"></div>';
+
+        $("title").html("Search Locations");
+        $("#userContent").html(content);
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/search_location.html");
+    });
+
+    $(document).on("change", "input[name=criterion]", function(e){
+        $(".form-group").html('<label for="value">' + (e.target.value == "locId" ? "Locarion ID" : "Location name") + '</label><br>' +
+        '<input class="form-control" style="width: 300px" type="text" name="value" id="value">');
+        $("#btn").html('<button type="submit" class="btn btn-success" id="searchBtn">Search</button>');
+    });
+
+    $(document).on("click", "#searchBtn", function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: "./user/location?" + $("form").find("input[name=criterion]:checked").val() + "=" + $("#value").val(),
+            type: "GET"
+        })
+        .done(function(res){
+            $("#result").html(res);
+            $("#value").val("");
+        });
+    });
 });
+
 
 var map, infoWindow;
 

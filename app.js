@@ -214,9 +214,69 @@ app.post("/logoutAdmin", function(req, res){
 	res.send("/root.html");
 });
 
-// list all locations in a table
+// list locations in a table
 app.get("/user/location", function(req, res){
-    if(req.query['locIdOrder'] != undefined){
+    if(req.query['locId'] != undefined){
+        Location.find({locId: req.query['locId']})
+        .exec(function(err, loc) {
+            if(err){
+                console.log(err);
+            }
+            else if(loc.length == 0){
+                res.send("No locations!")
+            }
+            else{
+                var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
+                '<thead class="thead-light"><tr>' +
+                '<th>Location ID</th>' +
+                '<th>Name</th>' +
+                '<th>Latitude</th>' +
+                '<th>Longitude</th>' +
+                '</tr></thead><tbody>';
+                for(l of loc){
+                    table += '<tr>' +
+                    '<td>' + l.locId + '</td>' +
+                    '<td>' + l.name + '</td>' +
+                    '<td>' + l.latitude + '</td>' +
+                    '<td>' + l.longitude + '</td>' +
+                    '</tr>';
+                }
+                table += '</tbody></table>';;
+                res.send(table);
+            }
+        });
+    }
+    else if(req.query['locName'] != undefined){
+        Location.find({name: req.query['locName']})
+        .exec(function(err, loc) {
+            if(err){
+                console.log(err);
+            }
+            else if(loc.length == 0){
+                res.send("No locations!")
+            }
+            else{
+                var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
+                '<thead class="thead-light"><tr>' +
+                '<th>Location ID</th>' +
+                '<th>Name</th>' +
+                '<th>Latitude</th>' +
+                '<th>Longitude</th>' +
+                '</tr></thead><tbody>';
+                for(l of loc){
+                    table += '<tr>' +
+                    '<td>' + l.locId + '</td>' +
+                    '<td>' + l.name + '</td>' +
+                    '<td>' + l.latitude + '</td>' +
+                    '<td>' + l.longitude + '</td>' +
+                    '</tr>';
+                }
+                table += '</tbody></table>';;
+                res.send(table);
+            }
+        });
+    }
+    else if(req.query['locIdOrder'] != undefined){
         Location.find()
         .sort({locId: req.query['locIdOrder']})
         .exec(function(err, loc) {
