@@ -29,7 +29,7 @@ var UserSchema = mongoose.Schema({
 	userId: { type: Number, required: true, unique: true },
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
-	fav_locId: [{ type: Number }],
+	fav_loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
 	fav_routeId: [{ type: Number }],
 	homeLoc: { latitude: { type: Number },
                longitude: { type: Number } }
@@ -47,15 +47,13 @@ var Location = mongoose.model('Location', LocationSchema);
 
                                                                 //Route Schema
 var RouteSchema = mongoose.Schema({
-	routeId: { type: String, required: true, unique: true },
+	routeId: { type: String, required: true },
 	startLocId: { type: Number, required: true },
 	endLocId: { type: Number, required: true },
 	stopCount: { type: Number, required: true },
-    locInfo: { type: Array, required: true }                //0: inbound, 1: outbound
-            /*[{ loc: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
-                dir: { type: String, required: true },
-                seq: { type: Number, required: true } }]      //array of location(including dir, seq)
-                */
+    dir: { type: String, required: true },
+    locInfo: [{ loc: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
+                seq: { type: Number, required: true } }]
 });
 var Route = mongoose.model('Route', RouteSchema);
 
@@ -237,9 +235,10 @@ app.post("/admin/flush", function(req, res){
         });
 
         // store data
-        var arr_route = req.body['route'];
-        var arr_routeLoc_in = req.body['routeLoc_in'];
-        var arr_routeLoc_out = req.body['routeLoc_out'];
+        var arr_routeIn = req.body['routeIn'];
+        var arr_routeOut = req.body['routeOut'];
+        var arr_routeLocIn = req.body['routeLocIn'];
+        var arr_routeLocOut = req.body['routeLocOut'];
         var arr_loc = req.body['loc'];
 
         // store locations
@@ -260,73 +259,64 @@ app.post("/admin/flush", function(req, res){
         console.log("Location Data Completed");
         res.write("Location Data Completed<br>");
 
-        // obtain location info of each route
-/*
-        var locInfo = [];
+        // obtain location info of each inbound direction route
+        var locInInfo = [];
         await (async()=>{
-            for(var i = 0; i < arr_route.length; i++){      //1-10 routes
+            for(var i = 0; i < arr_routeIn.length; i++){      //1-10 routes
                 var locId_in = []; // all locId in a route
-                for (var loc of arr_routeLoc_in[i].loc_in){        //inbound
+                for (var loc of arr_routeLocIn[i].loc){        //inbound
                     locId_in.push(loc.locId);
-                }
-
-                var locId_out = []; // all locId in a route
-                for (var loc of arr_routeLoc_out[i].loc_out){        //outbound
-                    locId_out.push(loc.locId);
                 }
 
                 var arr_in = [];
                 var j = 0;
                 for (var id of locId_in){
-                    await Location.findOne({locId: id}) // synchronised?
+                    await Location.findOne({locId: id})
                         .then(function(loc){
-                            arr.push({loc: loc._id,
-                                      dir: arr_routeLoc[i].loc[0][j].dir,
-                                      seq: arr_routeLoc[i].loc[0][j].seq});
+                            arr_in.push({loc: loc._id,
+                                      seq: arr_routeLocIn[i].loc[j].seq});
                             j++;
                     });
                 }
-                locInfo.push(arr_in);
+                locInInfo.push(arr_in);
+            }
+        })();
+
+        // obtain location info of each outbound direction route
+        var locOutInfo = [];
+        await (async()=>{
+            for(var i = 0; i < arr_routeOut.length; i++){      //1-10 routes
+                var locId_out = []; // all locId in a route
+                j = 0;
+                for (var loc of arr_routeLocOut[i].loc){        //outbound
+                    locId_out.push(loc.locId);
+                }
 
                 var arr_out = [];
                 var j = 0;
                 for (var id of locId_out){
-                    await Location.findOne({locId: id}) // synchronised?
+                    await Location.findOne({locId: id})
                         .then(function(loc){
-                            arr.push({loc: loc._id,
-                                      dir: arr_routeLoc[i].loc[1][j].dir,
-                                      seq: arr_routeLoc[i].loc[1][j].seq});
+                            arr_out.push({loc: loc._id,
+                                      seq: arr_routeLocOut[i].loc[j].seq});
                             j++;
                     });
                 }
-                locInfo.push(arr_out);
+                locOutInfo.push(arr_out);
             }
         })();
-*/
-
-        var locInfo = [];
-        var arr1 = [];
-        for(var i = 0; i < 10; i++){                                        //combine the inbound and outbound arr with corresponding routeId
-            for (var j = 0; j < 10; j++){
-                if(arr_routeLoc_in[i].routeId == arr_routeLoc_out[j].routeId){
-                    arr1.push(arr_routeLoc_in[i]);
-                    arr1.push(arr_routeLoc_out[j]);
-                    locInfo.push(arr1);
-                    arr1 = [];
-                }
-            }
-        }
 
         // store routes
         var i = 0;
-        for await (var route of arr_route){
+        for await (var route of arr_routeIn){
             try{
                 var r = new Route({
                     routeId: route.routeId,
                     startLocId: route.startLocId,
                     endLocId: route.endLocId,
                     stopCount: route.stopCount,
-                    locInfo: locInfo[i]});            //since arr_route and locInfo is sorted according to loc_in, no need to compare routeId
+                    dir: "I",
+                    locInfo: locInInfo[i]});            //locInfo[i]
 
                 await r.save().then();
                 i++;
@@ -334,6 +324,25 @@ app.post("/admin/flush", function(req, res){
                 console.log(err);
             }
         }
+
+        i = 0;
+        for await (var route of arr_routeOut){
+            try{
+                var r = new Route({
+                    routeId: route.routeId,
+                    startLocId: route.startLocId,
+                    endLocId: route.endLocId,
+                    stopCount: route.stopCount,
+                    dir: "O",
+                    locInfo: locOutInfo[i]});            //locInfo[i]
+
+                await r.save().then();
+                i++;
+            } catch(err){
+                console.log(err);
+            }
+        }
+
         console.log("Route Data Completed");
         res.write("Route Data Completed<br>");
 
@@ -397,31 +406,40 @@ app.post("/admin/location", function(req,res){
 //retrieve location
 app.get("/admin/location", function(req, res){
     var routeId = req.query['routeId'];
-    Route.findOne({routeId: routeId})
-    .exec(function(err, route){
+    Route.find({routeId: routeId})
+    .sort({dir: 1})
+    .populate('locInfo.loc')
+    .exec(function(err, result){
         if(err){
             console.log(err);
         }
         else{
-            Route.findOne({routeId: routeId})
-            .populate('locInfo.loc')
-            .exec(function(err, result){
-                if(err)
-                    console.log(err);
-                else if(result.locInfo.length == 0)
-                    res.send("No locations")
-                else{
-                    var output = "<h5>Route ID: " + routeId + "</h5>" +
-                        "<h5>Route direction: " + (result.locInfo[0].dir == "I" ? "Inbound" : "Outbound") + "</h5>";
-                    for(var i = 0; i < result.locInfo.length; i++){
-                        output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result.locInfo[i].loc.locId + "</span><br>" +
-                        "Bus stop name: <span>" + result.locInfo[i].loc.name + "</span><br>" +
-                        "Bus stop location (latitude, longitude): (<span>" + result.locInfo[i].loc.latitude + "</span>, <span>" + result.locInfo[i].loc.longitude + "</span>)<br>" +
-                        "Bus stop sequence number: <span>" + result.locInfo[i].seq + "</span></div>";
-                    }
-                    res.send(output);
+            var output = "<h5>Route ID: " + routeId + "</h5>" +
+                "<h5>Route direction: Inbound</h5>";
+            if(result[0].locInfo.length == 0){
+                output += "No locations";
+            }
+            else{
+                for(var i = 0; i < result[0].locInfo.length; i++){
+                    output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result[0].locInfo[i].loc.locId + "</span><br>" +
+                    "Bus stop name: <span>" + result[0].locInfo[i].loc.name + "</span><br>" +
+                    "Bus stop location (latitude, longitude): (<span>" + result[0].locInfo[i].loc.latitude + "</span>, <span>" + result[0].locInfo[i].loc.longitude + "</span>)<br>" +
+                    "Bus stop sequence number: <span>" + result[0].locInfo[i].seq + "</span></div>";
                 }
-            });
+            }
+            output += "<h5>Route direction: Outbound</h5>";
+            if(result[1].locInfo.length == 0){
+                output += "No locations";
+            }
+            else{
+                for(var i = 0; i < result[1].locInfo.length; i++){
+                    output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result[1].locInfo[i].loc.locId + "</span><br>" +
+                    "Bus stop name: <span>" + result[1].locInfo[i].loc.name + "</span><br>" +
+                    "Bus stop location (latitude, longitude): (<span>" + result[1].locInfo[i].loc.latitude + "</span>, <span>" + result[1].locInfo[i].loc.longitude + "</span>)<br>" +
+                    "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span></div>";
+                }
+            }
+            res.send(output);
         }
     });
 });
