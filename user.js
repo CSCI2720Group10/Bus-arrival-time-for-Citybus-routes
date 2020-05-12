@@ -246,6 +246,8 @@ async function initMap()
                         lng: position.coords.longitude
                     };
                     map.setCenter(pos);
+
+                    //Setting the marker of home location.
                     marker = new google.maps.Marker({
                         position: map.center,
                         map: map
@@ -267,19 +269,40 @@ async function initMap()
 
             }
 
-            for (var i = 0; i < res.length; i++) {
+
+            /*Marking each location and 
+              write the details of each location in the infoWindow */
+
+            for (var i = 0; i < res.length; i++)
+            {
                 var pos =
                 {
                     lat: res[i].latitude,
                     lng: res[i].longitude
                 };
-                marker = new google.maps.Marker({
-                    position: pos,
+                
+                var locationMarker = new google.maps.Marker({
+                    position:pos,
                     map: map
                 });
+               
+                google.maps.event.addListener(locationMarker, 'click', (function (locationMarker, i) {
+                    return function () {
+                        var contentLocation = '<div id="contentLocation">'+
+                        '<h6>Location ID: ' + res[i].locId + '</h6>' +
+                        '<h6>Location Name: ' + res[i].name + '</h6>'+
+                        '<h6>Location Latitude: ' + res[i].latitude + '</h6>'+
+                            '<h6>Location Longitude: ' + res[i].longitude + '</h6>' +
+                            '</div>';
+                        map.setCenter(locationMarker.position);
+                        map.setZoom(17);
+                        infoWindow.setContent(contentLocation);
+                        infoWindow.open(map, locationMarker);
+                    }
+
+                }
+                )(locationMarker, i));
             }
-
-
         });
 }
 
