@@ -9,13 +9,14 @@ $(document).ready(function ()
         $clickedLink.addClass("text-danger");
     }
 
-    $(document).on("click", "#home", function(e){
-        e.preventDefault();
+    $(document).on("click", "#home", function (e)
+    {
+
         changeNavbar($("#home"));
 
         $("#userContent").load("/user.html #userContent", function(){
-            $("title").html("Home");
-            history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/home.html");
+            $("title").html("user");
+            history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
         });
     });
 
@@ -27,9 +28,9 @@ $(document).ready(function ()
             url: "./user/location",
             type: "GET"
         })
-        .done(function(res){
-            $("title").html("List Locations");
-            $("#userContent").html(res);
+            .done(function (res) {
+                $("title").html("List Locations");
+                $("#userContent").html(res);
             history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/list_location.html");
         });
     });
@@ -96,159 +97,193 @@ $(document).ready(function ()
             $("#value").val("");
         });
     });
+
+    $(document).on("click", "#showLoc", function (e)
+    {
+        e.preventDefault();
+        changeNavbar($("#searchLoc"));
+
+        var content = '<h1>mapping to location</h1>' +
+            '<div>' +
+            '<div id="mapresult"></div>' +
+            '</div>';
+
+        $.ajax({
+            url: "./user/mapping/003505",
+            type: "GET"
+        })
+            .done(function (res) {
+
+                console.log(res.latitude);
+                $("title").html("Map Locations");
+                $("#userContent").html(res);
+                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
+            });
+    });
+
 });
-
-
-var map, infoWindow;
+var map, infoWindow, marker;
 
 //Function for initialize the new map
-function initMap()
+async function initMap()
 {
     //Model for setting the property of a google map at the beginning.
-    map = new google.maps.Map(document.getElementById('googleMap'), {
-            //setting the google map initial location by (lat)
-            center: { lat: 22.283948, lng: 114.156309 },
+    $.ajax({
+        url: "./user/mapping",
+        type: "GET"
+    })
+        .done(function (res)
+        {
+                map = new google.maps.Map(document.getElementById('googleMap'), {
+                    //setting the google map initial location by (lat)
+                    center: { lat: 22.283948, lng: 114.156309 },
+                    /* Zoom Level
+                       1: World
+                       5: Landmass/continent
+                       10: City
+                       15: Streets
+                       20: Building
+                    */
+                    zoom: 15,
 
-            /* Zoom Level
-               1: World
-               5: Landmass/continent
-               10: City
-               15: Streets
-               20: Building
-            */
-            zoom: 15,
+                    //The class style of google map
+                    styles:
+                    [
+                        { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+                        { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+                        { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+                        {
+                            featureType: 'administrative.locality',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#d59563' }]
+                        },
+                        {
+                            featureType: 'poi',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#d59563' }]
+                        },
+                        {
+                            featureType: 'poi.park',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#263c3f' }]
+                        },
+                        {
+                            featureType: 'poi.park',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#6b9a76' }]
+                        },
+                        {
+                            featureType: 'road',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#38414e' }]
+                        },
+                        {
+                            featureType: 'road',
+                            elementType: 'geometry.stroke',
+                            stylers: [{ color: '#212a37' }]
+                        },
+                        {
+                            featureType: 'road',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#9ca5b3' }]
+                        },
+                        {
+                            featureType: 'road.highway',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#746855' }]
+                        },
+                        {
+                            featureType: 'road.highway',
+                            elementType: 'geometry.stroke',
+                            stylers: [{ color: '#1f2835' }]
+                        },
+                        {
+                            featureType: 'road.highway',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#f3d19c' }]
+                        },
+                        {
+                            featureType: 'transit',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#2f3948' }]
+                        },
+                        {
+                            featureType: 'transit.station',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#d59563' }]
+                        },
+                        {
+                            featureType: 'water',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#17263c' }]
+                        },
+                        {
+                            featureType: 'water',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#515c6d' }]
+                        },
+                        {
+                            featureType: 'water',
+                            elementType: 'labels.text.stroke',
+                            stylers: [{ color: '#17263c' }]
+                        }
+                    ]
+                });
+            /*An InfoWindow displays content (usually text or images) in a popup window above the map, 
+            at a given location.*/
+            var inforString = '<div><h1>This is your home location.</h1></div>';
+            infoWindow = new google.maps.InfoWindow({
+                content: inforString
+            });
 
-            //The class style of google map
-        styles:
-            [
-                { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
-                { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
-                { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
-                {
-                    featureType: 'administrative.locality',
-                    elementType: 'labels.text.fill',
-                    stylers: [{ color: '#d59563' }]
-                },
-                {
-                    featureType: 'poi',
-                    elementType: 'labels.text.fill',
-                    stylers: [{ color: '#d59563' }]
-                },
-                {
-                    featureType: 'poi.park',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#263c3f' }]
-                },
-                {
-                    featureType: 'poi.park',
-                    elementType: 'labels.text.fill',
-                    stylers: [{ color: '#6b9a76' }]
-                },
-                {
-                    featureType: 'road',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#38414e' }]
-                },
-                {
-                    featureType: 'road',
-                    elementType: 'geometry.stroke',
-                    stylers: [{ color: '#212a37' }]
-                },
-                {
-                    featureType: 'road',
-                    elementType: 'labels.text.fill',
-                    stylers: [{ color: '#9ca5b3' }]
-                },
-                {
-                    featureType: 'road.highway',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#746855' }]
-                },
-                {
-                    featureType: 'road.highway',
-                    elementType: 'geometry.stroke',
-                    stylers: [{ color: '#1f2835' }]
-                },
-                {
-                    featureType: 'road.highway',
-                    elementType: 'labels.text.fill',
-                    stylers: [{ color: '#f3d19c' }]
-                },
-                {
-                    featureType: 'transit',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#2f3948' }]
-                },
-                {
-                    featureType: 'transit.station',
-                    elementType: 'labels.text.fill',
-                    stylers: [{ color: '#d59563' }]
-                },
-                {
-                    featureType: 'water',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#17263c' }]
-                },
-                {
-                    featureType: 'water',
-                    elementType: 'labels.text.fill',
-                    stylers: [{ color: '#515c6d' }]
-                },
-                {
-                    featureType: 'water',
-                    elementType: 'labels.text.stroke',
-                    stylers: [{ color: '#17263c' }]
-                }
-        ]
-    });
-
-   
-
-    /*An InfoWindow displays content (usually text or images) in a popup window above the map, 
-    at a given location.*/
-    var inforString = '<div><h1>This is your home location.</h1></div>';
-    infoWindow = new google.maps.InfoWindow({
-        content: inforString
-    });
-
-
-    //Geolocation here and reset the location of map.
-    if (navigator.geolocation)
-    {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var pos =
+            //Geolocation here and reset the location of map.
+            if (navigator.geolocation)
             {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-            map.setCenter(pos);
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos =
+                    {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(pos);
+                    marker = new google.maps.Marker({
+                        position: map.center,
+                        map: map
+                    });
 
-            var marker = new google.maps.Marker({
-                position: map.center,
-                map: map
-            });
-
-            marker.addListener('click', function () {
-                infoWindow.open(map, marker);
-            });
+                    marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
 
 
-        }, function () {
-            handleLocationError(true, infoWindow, map.getCenter());
+                }, function () {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                });
+            }
+            else
+            {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+
+            }
+
+            for (var i = 0; i < res.length; i++) {
+                var pos =
+                {
+                    lat: res[i].latitude,
+                    lng: res[i].longitude
+                };
+                marker = new google.maps.Marker({
+                    position: pos,
+                    map: map
+                });
+            }
+
+
         });
-    }
-    else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-    }
-    var marker = new google.maps.Marker
-    ({
-            position: map.center,
-            map: map
-    });
 }
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos)
+async function handleLocationError(browserHasGeolocation, infoWindow, pos)
 {
     infoWindow.setPosition(pos);
     infoWindow.setContent(browserHasGeolocation ?

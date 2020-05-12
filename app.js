@@ -215,8 +215,10 @@ app.post("/logoutAdmin", function(req, res){
 });
 
 // list locations in a table
-app.get("/user/location", function(req, res){
-    if(req.query['locId'] != undefined){
+app.get("/user/location", function (req, res)
+{
+    if (req.query['locId'] != undefined)
+    {
         Location.find({locId: req.query['locId']})
         .exec(function(err, loc) {
             if(err){
@@ -225,7 +227,7 @@ app.get("/user/location", function(req, res){
             else if(loc.length == 0){
                 res.send("No locations!")
             }
-            else{
+            else {
                 var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
                 '<thead class="thead-light"><tr>' +
                 '<th>Location ID</th>' +
@@ -233,7 +235,8 @@ app.get("/user/location", function(req, res){
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
                 '</tr></thead><tbody>';
-                for(l of loc){
+                for (l of loc)
+                {
                     table += '<tr>' +
                     '<td>' + l.locId + '</td>' +
                     '<td>' + l.name + '</td>' +
@@ -309,7 +312,8 @@ app.get("/user/location", function(req, res){
             else if(loc.length == 0){
                 res.send("No locations!")
             }
-            else{
+            else
+            {
                 var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
                 '<thead class="thead-light"><tr>' +
                 '<th><a id="locIdCol" class="text-dark" href="">Location ID</a></th>' +
@@ -331,6 +335,29 @@ app.get("/user/location", function(req, res){
         });
     }
 });
+
+//mapping all the location into the google map
+app.get("/user/mapping", function (req, res)
+{
+    var locationData = [];
+    console.log("passing all map");
+
+    Location.find({}, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log("Finding all location");
+            for (var i = 0; i < result.length; i++) {
+                locationData.push(result[i]);
+            }
+            //console.log(locationData);
+            res.send(locationData);
+        }
+    });
+});
+
+
 
                                                 //admin flush data
 app.post("/admin/flush", function(req, res){
@@ -873,6 +900,7 @@ app.delete("/admin/user", function(req,res){
 
 // RESTful API
 app.get("/locations", function (req, res) {
+
 
 
 });
