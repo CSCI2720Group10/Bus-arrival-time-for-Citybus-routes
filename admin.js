@@ -726,7 +726,7 @@ $(document).ready(function() {
             if (i > 0)
             {
                 $.ajax({
-                    url: "./admin/location",
+                    url: "./admin/csv",
                     type: "POST",
                     data: {
                         locId: cells[0],
