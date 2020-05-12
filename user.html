@@ -12,19 +12,30 @@
     <script src="user.js"></script>
 </head>
 <body>
-
-    <div id="googleMap" style="width:100%;height:100%;"></div>
-
-    <!--GOOGLE MAP API KEY: AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE free for 12 Month-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&callback=myMap"></script>
-
-
-    <button id="trying">Try It</button>
-    <p id="demo"></p>
     <div id="content" class="m-2">
-        <button type="button" class="btn btn-dark" id="logout">Logout</button>
+        <nav class="mb-2 navbar navbar-expand-md bg-dark">
+            <div class="navbar-nav nav-fill justify-content-around w-100">
+                <a id="adminHome" class="nav-link text-danger disabled" href="">Home</a>
+                <div class="dropdown">
+                    <a id="locDropdown" class="nav-link text-success dropdown-toggle" data-toggle="dropdown" href="">Location</a>
+                    <div id="locDropdownMenu" class="dropdown-menu">
+                        <a id="listLoc" class="dropdown-item text-success" href="">List Locations in Table</a>
+                        <a id="showLoc" class="dropdown-item text-success" href="">Show Locations in Map</a>
+                        <a id="searchLoc" class="dropdown-item text-success" href="">Search Locations</a>
+                    </div>
+                </div>
+                <a id="seeFavLoc" class="nav-link text-success" href="">See Favourite Locations</a>
+                <a id="logout" class="nav-link text-success" href="">Logout</a>
+            </div>
+        </nav>
+        <div id="googleMap" style="width:100%;height:100%;"></div>
+
+        <!--GOOGLE MAP API KEY: AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE free for 12 Month-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&callback=myMap"></script>
+
+        <button id="trying">Try It</button>
+        <p id="demo"></p>
         <p>Welcome!</p>
     </div>
-
 </body>
 </html>
