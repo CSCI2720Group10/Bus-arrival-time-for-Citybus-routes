@@ -1,15 +1,18 @@
 
 $(document).ready(function ()
 {
-
     $("#trying").click(function () {
         getLocation();
     });
 
+
+    //This control the user location testing by the trying click.
     var x = document.getElementById("demo");
 
-    function getLocation() {
-        if (navigator.geolocation) {
+    function getLocation()
+    {
+        if (navigator.geolocation)
+        {
             navigator.geolocation.getCurrentPosition(showPosition);
         } else {
             x.innerHTML = "Geolocation is not supported by this browser.";
@@ -23,19 +26,25 @@ $(document).ready(function ()
 
 });
 
-function myMap()
-    {
-        var mapProp = {
-            center: new google.maps.LatLng(22.283948, 114.156309),
-            /* Zoom Level 
+var map, infoWindow;
+//Function for initialize the new map
+function initMap()
+{
+    //Model for setting the property of a google map at the beginning.
+    map = new google.maps.Map(document.getElementById('googleMap'), {
+            //setting the google map initial location by (lat)
+            center: { lat: 22.283948, lng: 114.156309 },
+
+            /* Zoom Level
                1: World
                5: Landmass/continent
                10: City
                15: Streets
                20: Building
             */
-            zoom: 20,
+            zoom: 15,
 
+            //The class style of google map
             styles: [
                 { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
                 { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
@@ -116,16 +125,41 @@ function myMap()
                     stylers: [{ color: '#17263c' }]
                 }
             ]
-        };
+    });
 
-        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+    /*To displays content (usually text or images) in a popup window above the map, 
+    at a given location.*/
 
-    var marker = new google.maps.Marker
-        (
-            {
-                position: mapProp.center,
-                map: map
-            }
-    );
+    infoWindow = new google.maps.InfoWindow;
 
+    //Geolocation of use location.
+    if (navigator.geolocation)
+    {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Location found.');
+            infoWindow.open(map);
+            map.setCenter(pos);
+        }, function () {
+            handleLocationError(true, infoWindow, map.getCenter());
+        });
     }
+    else
+    {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+    }
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+    infoWindow.open(map);
+}
