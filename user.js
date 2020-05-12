@@ -155,26 +155,37 @@ function initMap()
         ]
     });
 
-    //Geolocation 
-    infoWindow = new google.maps.InfoWindow;
-    var marker = new google.maps.Marker
-        ({
-            position: map.center,
-            map: map
-        });
+   
 
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
+    /*An InfoWindow displays content (usually text or images) in a popup window above the map, 
+    at a given location.*/
+    var inforString = '<div><h1>This is your home location.</h1></div>';
+    infoWindow = new google.maps.InfoWindow({
+        content: inforString
+    });
+
+
+    //Geolocation here and reset the location of map.
+    if (navigator.geolocation)
+    {
         navigator.geolocation.getCurrentPosition(function (position) {
-            var pos = {
+            var pos =
+            {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('You are here !');
-            infoWindow.open(map);
             map.setCenter(pos);
+
+            var marker = new google.maps.Marker({
+                position: map.center,
+                map: map
+            });
+
+            marker.addListener('click', function () {
+                infoWindow.open(map, marker);
+            });
+
+
         }, function () {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -183,6 +194,11 @@ function initMap()
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
     }
+    var marker = new google.maps.Marker
+    ({
+            position: map.center,
+            map: map
+    });
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos)
