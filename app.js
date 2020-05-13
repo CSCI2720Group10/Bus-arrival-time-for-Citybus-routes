@@ -437,8 +437,8 @@ app.post("/user/favourite", function (req, res)
             }
             userdoc.fav_loc.push(location_id);
             userdoc.save();
-            res.send(userdoc);
-            console.log("Favourite stored successfully !");
+            console.log(userdoc);
+            res.send("Favourite location stored successfully !");
         });
     });
 });

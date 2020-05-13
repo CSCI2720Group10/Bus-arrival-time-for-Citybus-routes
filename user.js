@@ -277,13 +277,13 @@ $(document).on("click", "#sepBtn", function (e)
                 var favContent = '<button type="button" class="btn btn-outline-dark" id="favBtn">Add to Favourite</button>';
 
                 $("#favouriteContent").html(favContent);
-                $("#output").html('<h5 class="text-success">' + res.name + ' ! </h5>');
+                $("#topic").html('<h5 class="text-success"> Here is ' + res.name + ' </h5>');
             }
             else
             {
                 //Error message for not found the location
-                $("#output").addClass("text-warning");
-                $("#output").html("<h5>Location is not found, please try again later!</h5>");
+                $("#topic").addClass("text-warning");
+                $("#topic").html("<h5>Location is not found, please try again later!</h5>");
             }
         });
 
@@ -303,10 +303,16 @@ $(document).on("click", "#favBtn", function (e) {
     })
         .done(function (res)
         {
-            console.log(res);
+            if (res == "You have already added this location!") {
+                $("#favmsg").addClass("text-warning");
+                $("#favmsg").html("<h6>The location is already added,<br> please try again!</h6>");
+            }
+            else
+            {
+                $("#favmsg").html('<h6 class="text-success">' + res + ' ! </h6>')
+                
+            }
         });
-
-    $("#topic").html($("#sepValue").val());
 });
 
 $(document).ready(function ()
