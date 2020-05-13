@@ -112,7 +112,8 @@ async function initMap() {
 
             //Geolocation here and reset the location of map.
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
+                navigator.geolocation.getCurrentPosition(function (position)
+                {
                     var pos =
                     {
                         lat: position.coords.latitude,
@@ -131,7 +132,7 @@ async function initMap() {
                     });
 
 
-                }, function () {
+                },function () {
                     handleLocationError(true, infoWindow, map.getCenter());
                 });
             }
@@ -185,11 +186,25 @@ async function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.open(map);
 }
 
-var sepMap;
+var sepMap, mk1, mk2;
 /*A separate view for one single location, containing: 
 a.a map showing the location 
 b.the location details
 c.user comments, where users can add new comments(non - threaded) */
+
+//Measure the distance between two point
+function haversine_distance(pt1Lat, pt1Long, pt2Lat, pt2Long)
+{
+    var R = 6371.0710; //using kilometers
+    var rlat1 = pt1Lat * (Math.PI / 180); // Convert degrees to radians
+    var rlat2 = pt2Lat * (Math.PI / 180); // Convert degrees to radians
+    var difflat = rlat2 - rlat1; // Radian difference (latitudes)
+    var difflon = (pt2Long - pt1Long) * (Math.PI / 180); // Radian difference (longitudes)
+
+    var d = 2 * R * Math.asin(Math.sqrt(Math.sin(difflat / 2) * Math.sin(difflat / 2) + Math.cos(rlat1) * Math.cos(rlat2) * Math.sin(difflon / 2) * Math.sin(difflon / 2)));
+    return d;
+}
+
 
 async function seperateMap()
 {
@@ -203,24 +218,56 @@ async function seperateMap()
 $(document).on("click", "#sepBtn", function (e)
 {
     e.preventDefault();
-
     $.ajax({
         url: "./user/mapping/" + $("#sepValue").val(),
         type: "GET"
     })
         .done(function (res)
         {
-            if (res != "No this locations!") {
+
+
+            if (res != "No this locations!" && res.latitude != undefined)
+            {
                 var sepCenter =
                 {
-                    lat: res.latitude,
-                    lng: res.longitude
+                    lat: res.latitude, lng: res.longitude
                 };
-                sepMap.setCenter(sepCenter);
-                console.log(res.latitude);
-                console.log(res.longitude);
-                $("#output").addClass("text-success");
-                $("#output").html("<h5>Succeed!</h5>");
+
+                //display User location here for measuring the distance.
+                navigator.geolocation.getCurrentPosition(function (position)
+                {
+                    var userCenter =
+                    {
+                        lat: position.coords.latitude, lng: position.coords.longitude
+                    }
+                    var usercontent = '<h6>User Location</h6>' +
+                        '<p> Latitude: ' +
+                        position.coords.latitude.toFixed(3) +
+                        ' | Longitude: ' +
+                        position.coords.longitude.toFixed(3) +
+                        '</p > ';
+                    sepMap.setCenter(sepCenter);
+
+                    //found location marker
+                    mk1 = new google.maps.Marker({ position: sepCenter, map: sepMap });
+
+                    //User location marker
+                    mk2 = new google.maps.Marker({ position: userCenter, map: sepMap });
+
+                    //mark the line between user location and found location
+                    var line = new google.maps.Polyline({ path: [sepCenter, userCenter], map: sepMap });
+                    var distance = haversine_distance(sepCenter.lat, sepCenter.lng, userCenter.lat, userCenter.lng);
+                    console.log(distance);
+
+                    //input the user location into html
+                    $("#userlocation").html(usercontent);
+
+                    //Measure the distance between user location and found location into html
+                    $("#measureDistance").html("nearby " + distance.toFixed(2) + " km to home location");
+                    console.log(res.latitude);
+                    console.log(res.longitude);
+                });
+                $("#output").html('<h5 class="text-success">Succeed!</h5>');
             }
             else
             {
@@ -320,23 +367,26 @@ $(document).ready(function ()
         history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/search_location.html");
     });
 
-    $(document).on("change", "input[name=criterion]", function(e){
+    $(document).on("change", "input[name=criterion]", function (e)
+    {
         $(".form-group").html('<label for="value">' + (e.target.value == "locId" ? "Location ID" : "Location name") + '</label><br>' +
         '<input class="form-control" style="width: 300px" type="text" name="value" id="value">');
         $("#btn").html('<button type="submit" class="btn btn-success" id="searchBtn">Search</button>');
     });
 
-    $(document).on("click", "#searchBtn", function(e){
+    $(document).on("click", "#searchBtn", function (e)
+    {
         e.preventDefault();
 
         $.ajax({
             url: "./user/location?" + $("form").find("input[name=criterion]:checked").val() + "=" + $("#value").val(),
             type: "GET"
         })
-        .done(function(res){
-            $("#result").html(res);
-            $("#value").val("");
-        });
+            .done(function (res)
+            {
+                $("#result").html(res);
+                $("#value").val("");
+            });
     });
 
     // show top 5 locations with most comments
