@@ -224,8 +224,9 @@ $(document).on("click", "#sepBtn", function (e)
             }
             else
             {
+                //Error message for not found the location
                 $("#output").addClass("text-warning");
-                $("#output").html("<h5>An error occurred, please try again later!</h5>");
+                $("#output").html("<h5>Location is not found, please try again later!</h5>");
             }
         });
 
