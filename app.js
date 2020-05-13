@@ -402,6 +402,45 @@ app.get("/user/mapping/:locId", function (req, res)
     });
 });
 
+//Adding the favourite location to fav list.
+app.post("/user/favourite", function (req, res)
+{
+
+    console.log("get in the fav list");
+    var location_id;
+    Location.findOne({ locId: req.body['locId'] }, function (error, doc)
+    {
+        //First find the locId of found location
+        if (error) {
+            res.send(error);
+        }
+        location_id = doc._id;
+
+        //Then find the user information refer to the user name
+        User.findOne({ username: req.body['username'] }, function (error, userdoc)
+        {
+            if (error) {
+                res.send(error);
+            }
+            //To prevent the duplicated case of fav adding.
+            for (prevent of userdoc.fav_loc)
+            {
+                console.log(prevent);
+                if (prevent.toString().trim() === location_id.toString().trim())
+                {
+                    res.send("You have already added this location!");
+                    return;
+                }
+            }
+            userdoc.fav_loc.push(location_id);
+            userdoc.save();
+            res.send(userdoc);
+            console.log("Favourite stored successfully !");
+        });
+    });
+});
+
+
                                                          //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;

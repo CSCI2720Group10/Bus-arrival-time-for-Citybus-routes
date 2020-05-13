@@ -289,6 +289,25 @@ $(document).on("click", "#sepBtn", function (e)
 
 });
 
+$(document).on("click", "#favBtn", function (e) {
+    e.preventDefault();
+    console.log($("#sepValue").val());
+    console.log($("#userName").html());
+    $.ajax({
+        url: "./user/favourite",
+        type: "POST",
+        data: {
+            locId: $("#sepValue").val(),
+            username: $("#userName").html()
+        }
+    })
+        .done(function (res)
+        {
+            console.log(res);
+        });
+
+    $("#topic").html($("#sepValue").val());
+});
 
 $(document).ready(function ()
 {
@@ -300,7 +319,6 @@ $(document).ready(function ()
         $clickedLink.addClass("disabled");
         $clickedLink.addClass("text-danger");
     }
-
 
     $(document).on("click", "#home", function(e)
     {
