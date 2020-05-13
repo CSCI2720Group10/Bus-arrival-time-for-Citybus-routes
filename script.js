@@ -69,15 +69,15 @@ $(document).ready(function() {
                    password: $("#password").val()}
         })
         .done(function(res){
-            if(res == 'Please login to view this page!'){
-                $("#msg").html(res);
-            }
-            else{
+            if(res[0] == '<'){
                 var $temp = $('<div></div>').append(res);
                 $("#content").html($temp.find("#content").html());
                 $("title").html("Home");
                 $("#userName").html(user);
                 history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
+            }
+            else{
+                $("#msg").html(res);
             }
         });
     });
