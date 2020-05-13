@@ -309,7 +309,7 @@ $(document).on("click", "#favBtn", function (e) {
             }
             else
             {
-                $("#favmsg").html('<h6 class="text-success">' + res + ' ! </h6>')
+                $("#favmsg").html('<h6 class="text-success">' + res + '</h6>')
                 
             }
         });
@@ -317,7 +317,7 @@ $(document).on("click", "#favBtn", function (e) {
 
 $(document).ready(function ()
 {
-    function changeNavbar($clickedLink){
+    function changeNavbar($clickedLink) {
         var $otherLinks = $("nav > div > a, nav div.dropdown-menu > a").not($clickedLink);
         $otherLinks.removeClass("disabled");
         $otherLinks.removeClass("text-danger");
@@ -326,8 +326,7 @@ $(document).ready(function ()
         $clickedLink.addClass("text-danger");
     }
 
-    $(document).on("click", "#home", function(e)
-    {
+    $(document).on("click", "#home", function (e) {
         e.preventDefault();
         changeNavbar($("#home"));
 
@@ -335,15 +334,15 @@ $(document).ready(function ()
             url: "./user",
             type: "GET"
         })
-        .done(function(res){
-            var $temp = $('<div></div>').append(res);
-            $("#userContent").html($temp.find("#userContent").html());
-            $("title").html("Home");
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
-        });
+            .done(function (res) {
+                var $temp = $('<div></div>').append(res);
+                $("#userContent").html($temp.find("#userContent").html());
+                $("title").html("Home");
+                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/user.html");
+            });
     });
 
-    $(document).on("click", "#listLoc", function(e){
+    $(document).on("click", "#listLoc", function (e) {
         e.preventDefault();
         changeNavbar($("#listLoc"));
 
@@ -354,78 +353,75 @@ $(document).ready(function ()
             .done(function (res) {
                 $("title").html("List Locations");
                 $("#userContent").html(res);
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/list_location.html");
-        });
+                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/list_location.html");
+            });
     });
 
     // sort table according to locId
     var locIdOrder = 1;
-    $(document).on("click", "#locIdCol", function(e){
+    $(document).on("click", "#locIdCol", function (e) {
         e.preventDefault();
 
         $.ajax({
             url: "./user/location?locIdOrder=" + locIdOrder,
             type: "GET"
         })
-        .done(function(res){
-            $("title").html("List Locations");
-            $("thead").find("th").find("a").html("Location ID" + (locIdOrder == 1 ? "▲" : "▼"));
-            $("tbody").html(res);
-            locIdOrder = -locIdOrder;
-        });
+            .done(function (res) {
+                $("title").html("List Locations");
+                $("thead").find("th").find("a").html("Location ID" + (locIdOrder == 1 ? "▲" : "▼"));
+                $("tbody").html(res);
+                locIdOrder = -locIdOrder;
+            });
     });
 
     // search location
-    $(document).on("click", "#searchLoc", function(e){
+    $(document).on("click", "#searchLoc", function (e) {
         e.preventDefault();
         changeNavbar($("#searchLoc"));
 
         //$form.find("input[name=inputcolor]:checked").val()
         var content = '<h1>Search Location</h1>' +
-        '<form>' +
-        'Choose a search criterion<br>' +
-        '<div class="custom-control custom-radio custom-control-inline">' +
-        '<input class="custom-control-input" id="locId" type="radio" name="criterion" value="locId">' +
-        '<label class="custom-control-label" for="locId">Location ID</label>' +
-        '</div>' +
-        '<div class="custom-control custom-radio custom-control-inline">' +
-        '<input class="custom-control-input" id="locName" type="radio" name="criterion" value="locName">' +
-        '<label class="custom-control-label" for="locName">Location name</label>' +
-        '</div>' +
-        '<div class="form-group mt-2"></div>' +
-        '<div id="btn"></div>' +
-        '</form>' +
-        '<div id="result"></div>';
+            '<form>' +
+            'Choose a search criterion<br>' +
+            '<div class="custom-control custom-radio custom-control-inline">' +
+            '<input class="custom-control-input" id="locId" type="radio" name="criterion" value="locId">' +
+            '<label class="custom-control-label" for="locId">Location ID</label>' +
+            '</div>' +
+            '<div class="custom-control custom-radio custom-control-inline">' +
+            '<input class="custom-control-input" id="locName" type="radio" name="criterion" value="locName">' +
+            '<label class="custom-control-label" for="locName">Location name</label>' +
+            '</div>' +
+            '<div class="form-group mt-2"></div>' +
+            '<div id="btn"></div>' +
+            '</form>' +
+            '<div id="result"></div>';
 
         $("title").html("Search Locations");
         $("#userContent").html(content);
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/search_location.html");
+        history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/search_location.html");
     });
 
-    $(document).on("change", "input[name=criterion]", function (e)
-    {
+    $(document).on("change", "input[name=criterion]", function (e) {
         $(".form-group").html('<label for="value">' + (e.target.value == "locId" ? "Location ID" : "Location name") + '</label><br>' +
-        '<input class="form-control" style="width: 300px" type="text" name="value" id="value">');
+            '<input class="form-control" style="width: 300px" type="text" name="value" id="value">');
         $("#btn").html('<button type="submit" class="btn btn-success" id="searchBtn">Search</button>');
     });
 
-    $(document).on("click", "#searchBtn", function (e)
-    {
+    $(document).on("click", "#searchBtn", function (e) {
         e.preventDefault();
 
         $.ajax({
             url: "./user/location?" + $("form").find("input[name=criterion]:checked").val() + "=" + $("#value").val(),
             type: "GET"
         })
-            .done(function (res)
-            {
+            .done(function (res) {
                 $("#result").html(res);
                 $("#value").val("");
             });
     });
 
     // show top 5 locations with most comments
-    $(document).on("click", "#seeTop5Loc", function(e){
+    $(document).on("click", "#seeTop5Loc", function (e) {
         e.preventDefault();
         changeNavbar($("#seeTop5Loc"));
 
@@ -433,97 +429,96 @@ $(document).ready(function ()
             url: "./user/top5",
             type: "GET"
         })
-        .done(function(res){
-            if(res == "No locations!"){
-                $("#userContent").html(res);
-            }
-            else{
-                var content = '<div class="mx-auto w-75 mb-4"><canvas id="barChart"></canvas></div>' +
-                '<div class="mx-auto w-75"><canvas id="pieChart"></canvas></div>';
-                $("#userContent").html(content);
+            .done(function (res) {
+                if (res == "No locations!") {
+                    $("#userContent").html(res);
+                }
+                else {
+                    var content = '<div class="mx-auto w-75 mb-4"><canvas id="barChart"></canvas></div>' +
+                        '<div class="mx-auto w-75"><canvas id="pieChart"></canvas></div>';
+                    $("#userContent").html(content);
 
-                var barChart = new Chart($("#barChart"), {
-                    type: 'bar',
-                    data: {
-                        labels: res.locName,
-                        datasets: [{
-                            data: res.locCommentNum,
-                            backgroundColor: [
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(153, 102, 255, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(153, 102, 255, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        legend: {
-                            display: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'Number of Comments'
-                                },
-                                ticks: {
-                                    beginAtZero:true,
-                                    stepSize: 1
-                                }
+                    var barChart = new Chart($("#barChart"), {
+                        type: 'bar',
+                        data: {
+                            labels: res.locName,
+                            datasets: [{
+                                data: res.locCommentNum,
+                                backgroundColor: [
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(153, 102, 255, 1)'
+                                ],
+                                borderWidth: 1
                             }]
                         },
-                        title: {
-                            display: true,
-                            text: 'Top 5 Locations with Most Comments',
-                            position: 'top',
-                            fontSize: 14
+                        options: {
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Number of Comments'
+                                    },
+                                    ticks: {
+                                        beginAtZero: true,
+                                        stepSize: 1
+                                    }
+                                }]
+                            },
+                            title: {
+                                display: true,
+                                text: 'Top 5 Locations with Most Comments',
+                                position: 'top',
+                                fontSize: 14
+                            }
                         }
-                    }
-                });
+                    });
 
-                var pieChart = new Chart($("#pieChart"), {
-                    type: 'pie',
-                    data: {
-                        labels: res.locName,
-                        datasets: [{
-                            data: res.locCommentNum,
-                            backgroundColor: [
-                                'rgba(153, 102, 255, 1.0)',
-                                'rgba(28, 78, 244, 1.0)',
-                                'rgba(85, 211, 100, 1.0)',
-                                'rgba(201, 201, 68, 1.0)',
-                                'rgba(234, 141, 49, 1.0)'
-                            ],
-                            labels: res.locName
-                        }]
-                    },
-                    options: {
-                        title: {
-                            display: true,
-                            text: 'Top 5 Locations with Most Comments',
-                            position: 'top',
-                            fontSize: 14
+                    var pieChart = new Chart($("#pieChart"), {
+                        type: 'pie',
+                        data: {
+                            labels: res.locName,
+                            datasets: [{
+                                data: res.locCommentNum,
+                                backgroundColor: [
+                                    'rgba(153, 102, 255, 1.0)',
+                                    'rgba(28, 78, 244, 1.0)',
+                                    'rgba(85, 211, 100, 1.0)',
+                                    'rgba(201, 201, 68, 1.0)',
+                                    'rgba(234, 141, 49, 1.0)'
+                                ],
+                                labels: res.locName
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Top 5 Locations with Most Comments',
+                                position: 'top',
+                                fontSize: 14
+                            }
                         }
-                    }
-                });
-            }
-            $("title").html("Top 5 Locations");
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/user_top5_locations.html");
-        });
+                    });
+                }
+                $("title").html("Top 5 Locations");
+                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/user_top5_locations.html");
+            });
     });
 
     // May be replaced with the home page.
-    $(document).on("click", "#showLoc", function (e)
-    {
+    $(document).on("click", "#showLoc", function (e) {
         e.preventDefault();
         changeNavbar($("#showLoc"));
 
@@ -533,5 +528,24 @@ $(document).ready(function ()
         history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
     });
 
+
+    //see favourite location
+    $(document).on("click", "#seeFavLoc", function (e)
+    {
+        e.preventDefault();
+        changeNavbar($("#seeFavLoc"));
+        var redata, i;
+        $.ajax({
+            url: "./user/favourite/" + $("#userName").html(),
+            type: "GET"
+        })
+            .done(function (res)
+            {
+                console.log($("#userName").html());
+                $("title").html("Fav Locations");
+                $("#userContent").html(res);
+                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/fav_location.html");
+            });
+    });
 });
 

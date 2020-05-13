@@ -24,20 +24,6 @@ db.on('error', console.error.bind(console, 'Connection error:'));
 db.once('open', function () {
 	console.log("Connection is open...");
 });
-                                                                //User Schema
-var UserSchema = mongoose.Schema({
-	userId: { type: Number, required: true, unique: true },
-	username: { type: String, required: true, unique: true },
-	password: { type: String, required: true },
-	fav_loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
-	fav_routeId: [{ type: Number }],
-    commentNum: { type: Number, required: true },
-    favLocNum: { type: Number, required: true },
-	homeLoc: { latitude: { type: Number },
-               longitude: { type: Number } }
-});
-var User = mongoose.model('User', UserSchema);
-
                                                                 //Location Schema
 var LocationSchema = mongoose.Schema({
     locId: { type: String, required: true, unique: true },
@@ -47,6 +33,23 @@ var LocationSchema = mongoose.Schema({
     commentNum: { type: Number, required: true }
 });
 var Location = mongoose.model('Location', LocationSchema);
+
+//User Schema
+var UserSchema = mongoose.Schema({
+    userId: { type: Number, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    fav_loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
+    fav_routeId: [{ type: Number }],
+    commentNum: { type: Number, required: true },
+    favLocNum: { type: Number, required: true },
+    homeLoc:
+    {
+        latitude: { type: Number },
+        longitude: { type: Number }
+    }
+});
+var User = mongoose.model('User', UserSchema);
 
                                                                 //Route Schema
 var RouteSchema = mongoose.Schema({
@@ -318,7 +321,7 @@ app.get("/user/location", function (req, res)
                 '<th>Longitude</th>' +
                 '<th>#Comment</th>' +
                 '</tr></thead><tbody>';
-                for(l of loc){
+                for (l of loc ){
                     table += '<tr>' +
                     '<td>' + l.locId + '</td>' +
                     '<td>' + l.name + '</td>' +
@@ -408,7 +411,6 @@ app.get("/user/mapping/:locId", function (req, res)
 //Adding the favourite location to fav list.
 app.post("/user/favourite", function (req, res)
 {
-
     console.log("get in the fav list");
     var location_id;
     Location.findOne({ locId: req.body['locId'] }, function (error, doc)
@@ -437,13 +439,50 @@ app.post("/user/favourite", function (req, res)
             }
             userdoc.fav_loc.push(location_id);
             userdoc.save();
-            console.log(userdoc);
             res.send("Favourite location stored successfully !");
         });
     });
 });
 
+//Show all the favourite location of the user.
+app.get("/user/favourite/:username", function (req, res)
+{
+    User.find({ username: req.params['username'] })
+        .populate('fav_loc')
+        .exec(function (err, result)
+        {
+            //console.log(result);
+        if (err) {
+            console.log(err);
+        }
+        else
+        {
+            var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
+                '<thead class="thead-light"><tr>' +
+                '<th><a id="locIdCol" class="text-dark" href="">Location ID</a></th>' +
+                '<th>Name</th>' +
+                '<th>Latitude</th>' +
+                '<th>Longitude</th>' +
+                '<th>#Comment</th>' +
+                '</tr></thead><tbody>';
 
+            for (var i = 0; i < result[0].fav_loc.length; i++)
+            {
+                table += '<tr>' +
+                    '<td>' + result[0].fav_loc[i].locId + '</td>' +
+                    '<td>' + result[0].fav_loc[i].name + '</td>' +
+                    '<td>' + result[0].fav_loc[i].latitude + '</td>' +
+                    '<td>' + result[0].fav_loc[i].longitude + '</td>' +
+                    '<td>' + result[0].fav_loc[i].commentNum + '</td>' +
+                    '</tr>';
+            }
+            table += '</tbody></table>';
+            res.send(table);         
+        }
+    });
+});
+
+//set home location
                                                          //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
@@ -1017,7 +1056,8 @@ app.delete("/admin/user", function(req,res){
             res.send(err);
         }
         else {
-            res.send("User " + del_user +" is deleted!");
+            res.send("User " + del_user + " is deleted!");
+
         }
     });
 });
