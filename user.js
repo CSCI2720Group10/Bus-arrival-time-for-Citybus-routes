@@ -442,6 +442,7 @@ $(document).ready(function ()
                                 },
                                 ticks: {
                                     beginAtZero:true,
+                                    stepSize: 1
                                 }
                             }]
                         },
