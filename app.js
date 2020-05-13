@@ -41,7 +41,8 @@ var LocationSchema = mongoose.Schema({
     locId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true }
+    longitude: { type: Number, required: true },
+    commentNum: { type: Number, required: true }
 });
 var Location = mongoose.model('Location', LocationSchema);
 
@@ -183,7 +184,7 @@ app.post("/login", function(req, res){
                                                                 //User page
 app.get('/user', function(req, res) {
 	if (req.session['login']) {
-		res.send("/user.html");
+		res.sendFile(__dirname + "/user.html");
 	} else {
 		res.send('Please login to view this page!');
 	}
@@ -205,7 +206,7 @@ app.get("/admin", function(req,res){
     if (req.session['loginAdmin']) {
         res.send("/admin.html");
 	} else {
-		res.send('Please login as dmin to view this page!');
+		res.send('Please login as admin to view this page!');
 	}
 });
 
@@ -392,7 +393,14 @@ app.post("/admin/flush", function(req, res){
         await (async () => {
             try{
                 promises = arr_loc.map(async loc => {
-                    var l = new Location(loc);
+                    var l = new Location(
+                    {
+                        locId: loc.locId,
+                        name: loc.name,
+                        latitude: loc.latitude,
+                        longitude: loc.longitude,
+                        commentNum: 0
+                    });
                     return l.save().then();
                 });
                 for(var p of promises) {
@@ -529,11 +537,13 @@ app.post("/admin/location", function(req,res){
                 res.send("The location already exists!");
             }
             else{
-                l = new Location({
+                var l = new Location(
+                {
                     locId: req.body['locId'],
                     name: req.body['locName'],
                     latitude: req.body['locLat'],
-                    longitude: req.body['locLong']
+                    longitude: req.body['locLong'],
+                    commentNum: 0
                 });
 
                 l.save(function(err) {
@@ -741,7 +751,8 @@ app.post("/admin/csv", function (req, res)
                     locId: req.body['locId'],
                     name: req.body['locName'],
                     latitude: req.body['locLat'],
-                    longitude: req.body['locLong']
+                    longitude: req.body['locLong'],
+                    commentNum: 0
                 });
             result.save(function (error) {
 

@@ -69,15 +69,15 @@ $(document).ready(function() {
                    password: $("#password").val()}
         })
         .done(function(res){
-            if(res == "/user.html"){
-                $("body").load(res + " #content", function(){
-                    $("title").html("user");
-                    $("#userName").html(user);
-                    history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
-                });
+            if(res == 'Please login to view this page!'){
+                $("#msg").html(res);
             }
             else{
-                $("#msg").html(res);
+                var $temp = $('<div></div>').append(res);
+                $("#content").html($temp.find("#content").html());
+                $("title").html("Home");
+                $("#userName").html(user);
+                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
             }
         });
     });
@@ -95,7 +95,7 @@ $(document).ready(function() {
         .done(function(res){
             $("body").load(res + " #content", function(){
                 $("title").html("Admin Home");
-                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/admin_home.html");
+                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/admin.html");
             });
         });
     });
