@@ -43,19 +43,33 @@
             <!--GOOGLE MAP API KEY: AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE free for 12 Month-->
             <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&callback=initMap"></script>
             <h2 style="text-align: left; background-color: #DDDDDD">Seperate Location Map: </h2>
-            <div id="singleMap" style="width:30%;height:50%;"></div>
+            <div class="row">
+                <div class="col">
+                    <!-- Left Column in the Row-->
+                    <div id="singleMap" style="width:100%;height:200%;"></div>
+                    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&amp;callback=seperateMap"></script>
 
-            <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&amp;callback=seperateMap"></script>
-            <form>
-                <h6>Seperate View of Location</h6>
-                <div class="custom-control-inline">
-                    <input class="form-control" style="width: 300px" type="text" name="sepValue" id="sepValue">
-                    <button type="submit" class="btn btn-success" id="sepBtn">Search</button>
+                    <h6>Seperate View of Location</h6>
+
+                    <div class="custom-control-inline">
+                        <input class="form-control" style="width: 300px" type="text" name="sepValue" id="sepValue">
+                        <button type="submit" class="btn btn-success" id="sepBtn">Search</button>
+                    </div>
+
+                    <div id="output"></div>
+                    <div id="userlocation"></div>
+                    <div id="measureDistance"></div>
                 </div>
-                <div id="output"></div>
-                <div id="userlocation"></div>
-                <div id="measureDistance"></div>
-            </form>
+
+                <div class="col">
+
+                    <!-- Right Column in the Row-->
+                    <h1>Second Column</h1>
+                    <div id="favouriteContent"></div>
+
+                </div>
+            </div>
+
         </div>
     </div>
 </body>

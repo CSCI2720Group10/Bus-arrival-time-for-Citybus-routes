@@ -1,7 +1,8 @@
 var map, infoWindow, marker;
 
 //Function for initialize the new map
-async function initMap() {
+async function initMap()
+{
     //Model for setting the property of a google map at the beginning.
     $.ajax({
         url: "./user/mapping",
@@ -111,7 +112,8 @@ async function initMap() {
             });
 
             //Geolocation here and reset the location of map.
-            if (navigator.geolocation) {
+            if (navigator.geolocation)
+            {
                 navigator.geolocation.getCurrentPosition(function (position)
                 {
                     var pos =
@@ -122,9 +124,12 @@ async function initMap() {
                     map.setCenter(pos);
 
                     //Setting the marker of home location.
+                    //marker with custom make-up and animation
                     marker = new google.maps.Marker({
                         position: map.center,
-                        map: map
+                        icon: "http://maps.google.com/mapfiles/kml/pal3/icon23.png",
+                        map: map,
+                        animation: google.maps.Animation.BOUNCE
                     });
 
                     marker.addListener('click', function () {
@@ -205,7 +210,6 @@ function haversine_distance(pt1Lat, pt1Long, pt2Lat, pt2Long)
     return d;
 }
 
-
 async function seperateMap()
 {
     sepMap = new google.maps.Map(document.getElementById('singleMap'),
@@ -224,8 +228,6 @@ $(document).on("click", "#sepBtn", function (e)
     })
         .done(function (res)
         {
-
-
             if (res != "No this locations!" && res.latitude != undefined)
             {
                 var sepCenter =
@@ -252,7 +254,11 @@ $(document).on("click", "#sepBtn", function (e)
                     mk1 = new google.maps.Marker({ position: sepCenter, map: sepMap });
 
                     //User location marker
-                    mk2 = new google.maps.Marker({ position: userCenter, map: sepMap });
+                    mk2 = new google.maps.Marker({
+                        position: userCenter,
+                        icon:"http://maps.google.com/mapfiles/kml/pal3/icon23.png",
+                        map: sepMap
+                    });
 
                     //mark the line between user location and found location 
                     var line = new google.maps.Polyline({ path: [sepCenter, userCenter], map: sepMap });
@@ -267,7 +273,11 @@ $(document).on("click", "#sepBtn", function (e)
                     console.log(res.latitude);
                     console.log(res.longitude);
                 });
-                $("#output").html('<h5 class="text-success">Succeed!</h5>');
+
+                var favContent = '<button type="button" class="btn btn-outline-dark" id="favBtn">Add to Favourite</button>';
+
+                $("#favouriteContent").html(favContent);
+                $("#output").html('<h5 class="text-success">' + res.name + ' ! </h5>');
             }
             else
             {
@@ -290,6 +300,7 @@ $(document).ready(function ()
         $clickedLink.addClass("disabled");
         $clickedLink.addClass("text-danger");
     }
+
 
     $(document).on("click", "#home", function(e)
     {
