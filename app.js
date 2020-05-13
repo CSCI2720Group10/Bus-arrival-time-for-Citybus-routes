@@ -196,25 +196,6 @@ app.post("/logout", function(req, res){
 	res.send("/root.html");
 });
 
-                                                         //Admin page
-app.post("/loginAdmin", function(req, res){
-    req.session['loginAdmin'] = true;
-    res.redirect('./admin');
-});
-
-app.get("/admin", function(req,res){
-    if (req.session['loginAdmin']) {
-        res.send("/admin.html");
-	} else {
-		res.send('Please login as admin to view this page!');
-	}
-});
-
-app.post("/logoutAdmin", function(req, res){
-    req.session['loginAdmin'] = false;
-	res.send("/root.html");
-});
-
 // list locations in a table
 app.get("/user/location", function (req, res)
 {
@@ -356,6 +337,27 @@ app.get("/user/mapping", function (req, res)
             res.send(locationData);
         }
     });
+});
+
+
+
+                                                         //Admin page
+app.post("/loginAdmin", function(req, res){
+    req.session['loginAdmin'] = true;
+    res.redirect('./admin');
+});
+
+app.get("/admin", function(req,res){
+    if (req.session['loginAdmin']) {
+        res.send("/admin.html");
+	} else {
+		res.send('Please login as admin to view this page!');
+	}
+});
+
+app.post("/logoutAdmin", function(req, res){
+    req.session['loginAdmin'] = false;
+	res.send("/root.html");
 });
 
 
