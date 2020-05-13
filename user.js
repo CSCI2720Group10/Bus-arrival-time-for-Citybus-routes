@@ -249,7 +249,7 @@ $(document).on("click", "#sepBtn", function (e)
                         position.coords.longitude.toFixed(3) +
                         '</p > ';
                     sepMap.setCenter(sepCenter);
-
+                    sepMap.setZoom(17);
                     //found location marker
                     mk1 = new google.maps.Marker({ position: sepCenter, map: sepMap });
 
@@ -270,14 +270,17 @@ $(document).on("click", "#sepBtn", function (e)
 
                     //Measure the distance between user location and found location into html
                     $("#measureDistance").html("nearby " + distance.toFixed(2) + " km to home location");
-                    console.log(res.latitude);
-                    console.log(res.longitude);
+                    //console.log(res.latitude);
+                    //console.log(res.longitude);
                 });
 
                 var favContent = '<button type="button" class="btn btn-outline-dark" id="favBtn">Add to Favourite</button>';
 
                 $("#favouriteContent").html(favContent);
-                $("#topic").html('<h5 class="text-success"> Here is ' + res.name + ' </h5>');
+                var topicCon = '<h5 class="text-success"> Here is ' + res.name + ' at latlng (' +
+                    res.latitude.toFixed(1) + ',' + res.longitude.toFixed(1) + ')</h5>';
+                        
+                $("#topic").html(topicCon);
             }
             else
             {
