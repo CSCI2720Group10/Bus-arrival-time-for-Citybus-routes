@@ -51,7 +51,8 @@ var UserSchema = mongoose.Schema({
 });
 var User = mongoose.model('User', UserSchema);
 
-                                                                //Route Schema
+
+                                                                  //Route Schema
 var RouteSchema = mongoose.Schema({
 	routeId: { type: String, required: true },
 	startLocId: { type: Number, required: true },
@@ -437,6 +438,7 @@ app.post("/user/favourite", function (req, res)
                     return;
                 }
             }
+            userdoc.favLocNum += 1;
             userdoc.fav_loc.push(location_id);
             userdoc.save();
             res.send("Favourite location stored successfully !");
@@ -501,7 +503,6 @@ app.post("/logoutAdmin", function(req, res){
     req.session['loginAdmin'] = false;
 	res.send("/root.html");
 });
-
 
 
                                                 //admin flush data

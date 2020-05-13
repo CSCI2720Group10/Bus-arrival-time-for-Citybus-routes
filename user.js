@@ -242,7 +242,7 @@ $(document).on("click", "#sepBtn", function (e)
                     {
                         lat: position.coords.latitude, lng: position.coords.longitude
                     }
-                    var usercontent = '<h6>User Location</h6>' +
+                    var usercontent = '<h6>User Home Location</h6>' +
                         '<p> Latitude: ' +
                         position.coords.latitude.toFixed(3) +
                         ' | Longitude: ' +
