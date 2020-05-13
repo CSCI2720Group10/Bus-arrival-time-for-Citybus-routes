@@ -216,6 +216,7 @@ app.get("/user/location", function (req, res)
                 '<th>Name</th>' +
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
+                '<th>#Comment</th>' +
                 '</tr></thead><tbody>';
                 for (l of loc)
                 {
@@ -224,6 +225,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
+                    '<td>' + l.commentNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -247,6 +249,7 @@ app.get("/user/location", function (req, res)
                 '<th>Name</th>' +
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
+                '<th>#Comment</th>' +
                 '</tr></thead><tbody>';
                 for(l of loc){
                     table += '<tr>' +
@@ -254,6 +257,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
+                    '<td>' + l.commentNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -279,6 +283,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
+                    '<td>' + l.commentNum + '</td>' +
                     '</tr>';
                 }
                 res.send(tableBody);
@@ -302,6 +307,7 @@ app.get("/user/location", function (req, res)
                 '<th>Name</th>' +
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
+                '<th>#Comment</th>' +
                 '</tr></thead><tbody>';
                 for(l of loc){
                     table += '<tr>' +
@@ -309,6 +315,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
+                    '<td>' + l.commentNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -316,6 +323,33 @@ app.get("/user/location", function (req, res)
             }
         });
     }
+});
+
+//find top 5 locations with most comments
+app.get("/user/top5", function (req, res)
+{
+    Location.find()
+    .limit(5)
+    .sort({commentNum: -1})
+    .exec(function(err, loc) {
+        if(err){
+            console.log(err);
+        }
+        else if(loc.length == 0){
+            res.send("No locations!")
+        }
+        else
+        {
+            var locName = [];
+            var locCommentNum = [];
+            for(var l of loc){
+                locName.push(l.name);
+                locCommentNum.push(l.commentNum);
+            }
+            res.send({locName: locName,
+                locCommentNum: locCommentNum});
+        }
+    });
 });
 
 //mapping all the location into the google map
@@ -604,7 +638,8 @@ app.get("/admin/location", function(req, res){
                     output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result[0].locInfo[i].loc.locId + "</span><br>" +
                     "Bus stop name: <span>" + result[0].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[0].locInfo[i].loc.latitude + "</span>, <span>" + result[0].locInfo[i].loc.longitude + "</span>)<br>" +
-                    "Bus stop sequence number: <span>" + result[0].locInfo[i].seq + "</span></div>";
+                    "Bus stop sequence number: <span>" + result[0].locInfo[i].seq + "</span><br>" +
+                    "Number of comments: " + result[0].locInfo[i].loc.commentNum + "</div>";
                 }
             }
             output += "<h5>Route direction: Outbound</h5>";
@@ -616,7 +651,8 @@ app.get("/admin/location", function(req, res){
                     output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result[1].locInfo[i].loc.locId + "</span><br>" +
                     "Bus stop name: <span>" + result[1].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[1].locInfo[i].loc.latitude + "</span>, <span>" + result[1].locInfo[i].loc.longitude + "</span>)<br>" +
-                    "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span></div>";
+                    "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span><br>" +
+                    "Number of comments: " + result[1].locInfo[i].loc.commentNum + "</div>";
                 }
             }
             res.send(output);
