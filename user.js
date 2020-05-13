@@ -206,14 +206,20 @@ $(document).ready(function ()
         $clickedLink.addClass("text-danger");
     }
 
-    $(document).on("click", "#home", function (e)
+    $(document).on("click", "#home", function(e)
     {
-
+        e.preventDefault();
         changeNavbar($("#home"));
 
-        $("#userContent").load("/user.html #userContent", function(){
-            $("title").html("user");
-            history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
+        $.ajax({
+            url: "./user",
+            type: "GET"
+        })
+        .done(function(res){
+            var $temp = $('<div></div>').append(res);
+            $("#userContent").html($temp.find("#userContent").html());
+            $("title").html("Home");
+            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
         });
     });
 
@@ -277,7 +283,7 @@ $(document).ready(function ()
     });
 
     $(document).on("change", "input[name=criterion]", function(e){
-        $(".form-group").html('<label for="value">' + (e.target.value == "locId" ? "Locarion ID" : "Location name") + '</label><br>' +
+        $(".form-group").html('<label for="value">' + (e.target.value == "locId" ? "Location ID" : "Location name") + '</label><br>' +
         '<input class="form-control" style="width: 300px" type="text" name="value" id="value">');
         $("#btn").html('<button type="submit" class="btn btn-success" id="searchBtn">Search</button>');
     });
@@ -295,6 +301,102 @@ $(document).ready(function ()
         });
     });
 
+    // show top 5 locations with most comments
+    $(document).on("click", "#seeTop5Loc", function(e){
+        e.preventDefault();
+        changeNavbar($("#seeTop5Loc"));
+
+        $.ajax({
+            url: "./user/top5",
+            type: "GET"
+        })
+        .done(function(res){
+            if(res == "No locations!"){
+                $("#userContent").html(res);
+            }
+            else{
+                var content = '<div class="mx-auto w-75 mb-4"><canvas id="barChart"></canvas></div>' +
+                '<div class="mx-auto w-75"><canvas id="pieChart"></canvas></div>';
+                $("#userContent").html(content);
+
+                var barChart = new Chart($("#barChart"), {
+                    type: 'bar',
+                    data: {
+                        labels: res.locName,
+                        datasets: [{
+                            data: res.locCommentNum,
+                            backgroundColor: [
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '#comments'
+                                },
+                                ticks: {
+                                    beginAtZero:true,
+                                }
+                            }]
+                        },
+                        title: {
+                            display: true,
+                            text: 'Top 5 Locations with Most Comments',
+                            position: 'top',
+                            fontSize: 14
+                        }
+                    }
+                });
+
+                var pieChart = new Chart($("#pieChart"), {
+                    type: 'pie',
+                    data: {
+                        labels: res.locName,
+                        datasets: [{
+                            data: res.locCommentNum,
+                            backgroundColor: [
+                                'rgba(153, 102, 255, 1.0)',
+                                'rgba(28, 78, 244, 1.0)',
+                                'rgba(85, 211, 100, 1.0)',
+                                'rgba(201, 201, 68, 1.0)',
+                                'rgba(234, 141, 49, 1.0)'
+                            ],
+                            labels: res.locName
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Top 5 Locations with Most Comments',
+                            position: 'top',
+                            fontSize: 14
+                        }
+                    }
+                });
+            }
+            $("title").html("Top 5 Locations");
+            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/user_top5_locations.html");
+        });
+    });
+
     $(document).on("click", "#showLoc", function (e)
     {
         e.preventDefault();
@@ -309,13 +411,13 @@ $(document).ready(function ()
             url: "./user/mapping/003505",
             type: "GET"
         })
-            .done(function (res) {
+        .done(function (res) {
 
-                console.log(res.latitude);
-                $("title").html("Map Locations");
-                $("#userContent").html(res);
-                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
-            });
+            console.log(res.latitude);
+            $("title").html("Map Locations");
+            $("#userContent").html(res);
+            history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
+        });
     });
 
 });
