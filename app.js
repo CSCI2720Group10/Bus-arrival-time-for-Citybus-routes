@@ -32,6 +32,7 @@ var UserSchema = mongoose.Schema({
 	fav_loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
 	fav_routeId: [{ type: Number }],
     commentNum: { type: Number, required: true },
+    favLocNum: { type: Number, required: true },
 	homeLoc: { latitude: { type: Number },
                longitude: { type: Number } }
 });
@@ -127,7 +128,8 @@ app.post("/signup", function(req, res){
                                 userId: 1,
                                 username: req.body['username'],
 	                            password: bcrypt.hashSync(req.body['password'], 8),
-                                commentNum: 0
+                                commentNum: 0,
+                                favLocNum: 0
                             });
                         }
                         else {
@@ -135,7 +137,8 @@ app.post("/signup", function(req, res){
                                 userId: result.userId + 1,
                                 username: req.body['username'],
                                 password: bcrypt.hashSync(req.body['password'], 8),
-                                commentNum: 0
+                                commentNum: 0,
+                                favLocNum: 0
                             });
                         }
                         u.save(function(err) {
@@ -205,7 +208,7 @@ app.get("/user/location", function (req, res)
 {
     if (req.query['locId'] != undefined)
     {
-        Location.find({locId: req.query['locId']})
+        Location.find({locId: new RegExp(req.query['locId'])})
         .exec(function(err, loc) {
             if(err){
                 console.log(err);
@@ -239,7 +242,7 @@ app.get("/user/location", function (req, res)
         });
     }
     else if(req.query['locName'] != undefined){
-        Location.find({name: req.query['locName']})
+        Location.find({name: new RegExp(req.query['locName'])})
         .exec(function(err, loc) {
             if(err){
                 console.log(err);
@@ -908,7 +911,8 @@ app.post("/admin/user", function(req,res){
                                 userId: 1,
                                 username: req.body['username'],
 	                            password: bcrypt.hashSync(req.body['password'], 8),
-                                commentNum: 0
+                                commentNum: 0,
+                                favLocNum: 0
                             });
                         }
                         else {
@@ -916,7 +920,8 @@ app.post("/admin/user", function(req,res){
                                 userId: result.userId + 1,
                                 username: req.body['username'],
                                 password: bcrypt.hashSync(req.body['password'], 8),
-                                commentNum: 0
+                                commentNum: 0,
+                                favLocNum: 0
                             });
                         }
                         u.save(function(err) {
@@ -1021,7 +1026,13 @@ app.delete("/admin/user", function(req,res){
 //Top 5 User Chart
 app.get("/admin/top5", function (req, res)
 {
-    User.find()
+    userName_comment = [];
+    userCommentNum = [];
+    userName_favLoc = [];
+    userFavLocNum = [];
+
+
+    User.find()                                         //comments part
     .limit(5)
     .sort({commentNum: -1})
     .exec(function(err, user) {
@@ -1033,18 +1044,38 @@ app.get("/admin/top5", function (req, res)
         }
         else
         {
-            var userName = [];
-            var userCommentNum = [];
             for(var u of user){
-                console.log(u.username);
-                userName.push(u.username);
+                userName_comment.push(u.username);
                 userCommentNum.push(u.commentNum);
             }
-            res.send({userName: userName,
-                userCommentNum: userCommentNum});
+
+            User.find()                                         //favLoc part
+            .limit(5)
+            .sort({favLocNum: -1})
+            .exec(function(err, user) {
+                if(err){
+                    console.log(err);
+                }
+                else if(user.length == 0){
+                    res.send("No Users!")
+                }
+                else
+                {
+                    for(var u of user){
+                        userName_favLoc.push(u.username);
+                        userFavLocNum.push(u.favLocNum);
+                    }
+                }
+                res.send({userName_comment: userName_comment,
+                          userCommentNum: userCommentNum,
+                          userName_favLoc: userName_favLoc,
+                          userFavLocNum: userFavLocNum});
+            });
+
         }
     });
 });
+
 
 // RESTful API
 app.get("/locations", function (req, res) {
