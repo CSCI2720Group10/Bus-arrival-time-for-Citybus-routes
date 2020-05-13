@@ -993,9 +993,9 @@ app.get("/admin/top5", function (req, res)
             var userName = [];
             var userCommentNum = [];
             for(var u of user){
-                console.log(user.username);
-                userName.push(user.username);
-                userCommentNum.push(user.commentNum);
+                console.log(u.username);
+                userName.push(u.username);
+                userCommentNum.push(u.commentNum);
             }
             res.send({userName: userName,
                 userCommentNum: userCommentNum});
