@@ -823,7 +823,7 @@ $(document).ready(function() {
                             yAxes: [{
                                 scaleLabel: {
                                     display: true,
-                                    labelString: 'Number of comments posted'
+                                    labelString: 'Number of Comments Posted'
                                 },
                                 ticks: {
                                     beginAtZero:true,

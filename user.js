@@ -438,7 +438,7 @@ $(document).ready(function ()
                             yAxes: [{
                                 scaleLabel: {
                                     display: true,
-                                    labelString: '#comments'
+                                    labelString: 'Number of Comments'
                                 },
                                 ticks: {
                                     beginAtZero:true,
