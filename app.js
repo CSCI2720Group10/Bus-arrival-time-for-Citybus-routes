@@ -205,7 +205,7 @@ app.get("/user/location", function (req, res)
 {
     if (req.query['locId'] != undefined)
     {
-        Location.find({locId: req.query['locId']})
+        Location.find({locId: new RegExp(req.query['locId'])})
         .exec(function(err, loc) {
             if(err){
                 console.log(err);
@@ -239,7 +239,7 @@ app.get("/user/location", function (req, res)
         });
     }
     else if(req.query['locName'] != undefined){
-        Location.find({name: req.query['locName']})
+        Location.find({name: new RegExp(req.query['locName'])})
         .exec(function(err, loc) {
             if(err){
                 console.log(err);
