@@ -667,7 +667,7 @@ $(document).ready(function() {
         });
     });
 
-
+                                                                        //CSV Location Import
     $(document).on("click", "#createLocData", function (e)
     {
         e.preventDefault();
@@ -773,4 +773,14 @@ $(document).ready(function() {
                 });
         });
     });
+
+                                                                        //Top 5 Users
+    $(document).on("click", "#seeTop5Users", function (e){
+        e.preventDefault();
+        changeNavbar($("#seeTop5Users"));
+
+    });
+
+
+
 });
