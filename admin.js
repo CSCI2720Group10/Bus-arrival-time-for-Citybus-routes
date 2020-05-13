@@ -779,8 +779,69 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#seeTop5Users"));
 
+        $.ajax({
+            url: "./admin/top5",
+            type: "GET"
+        })
+        .done(function(res){
+            if(res == "No Users!"){
+                $("#adminContent").html(res);
+            }
+            else{
+                var content = '<div class="mx-auto w-75 mb-4"><canvas id="admin_barChart"></canvas></div>' +
+                '<div class="mx-auto w-75"><canvas id="admin_pieChart"></canvas></div>';
+                $("#adminContent").html(content);
+
+                var barChart = new Chart($("#admin_barChart"), {
+                    type: 'bar',
+                    data: {
+                        labels: res.userName,
+                        datasets: [{
+                            data: res.userCommentNum,
+                            backgroundColor: [
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(153, 102, 255, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '#comments'
+                                },
+                                ticks: {
+                                    beginAtZero:true,
+                                }
+                            }]
+                        },
+                        title: {
+                            display: true,
+                            text: 'Top 5 Users with Most Comments',
+                            position: 'top',
+                            fontSize: 14
+                        }
+                    }
+                });
+            }
+        });
+        $("title").html("Top 5 Locations");
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/user_top5_locations.html");
     });
-
-
 
 });

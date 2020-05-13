@@ -31,6 +31,7 @@ var UserSchema = mongoose.Schema({
 	password: { type: String, required: true },
 	fav_loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
 	fav_routeId: [{ type: Number }],
+    commentNum: { type: Number, required: true },
 	homeLoc: { latitude: { type: Number },
                longitude: { type: Number } }
 });
@@ -125,14 +126,16 @@ app.post("/signup", function(req, res){
                             u = new User({
                                 userId: 1,
                                 username: req.body['username'],
-	                            password: bcrypt.hashSync(req.body['password'], 8)
+	                            password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         else {
                             u = new User({
                                 userId: result.userId + 1,
                                 username: req.body['username'],
-                                password: bcrypt.hashSync(req.body['password'], 8)
+                                password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         u.save(function(err) {
@@ -962,6 +965,35 @@ app.delete("/admin/user", function(req,res){
         }
         else {
             res.send();
+        }
+    });
+});
+
+
+//Top 5 User Chart
+app.get("/admin/top5", function (req, res)
+{
+    User.find()
+    .limit(5)
+    .sort({commentNum: -1})
+    .exec(function(err, user) {
+        if(err){
+            console.log(err);
+        }
+        else if(user.length == 0){
+            res.send("No Users!")
+        }
+        else
+        {
+            var userName = [];
+            var userCommentNum = [];
+            for(var u of user){
+                console.log(user.username);
+                userName.push(user.username);
+                userCommentNum.push(user.commentNum);
+            }
+            res.send({userName: userName,
+                userCommentNum: userCommentNum});
         }
     });
 });
