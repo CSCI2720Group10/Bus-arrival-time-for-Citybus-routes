@@ -101,7 +101,7 @@ $(document).ready(function ()
     $(document).on("click", "#showLoc", function (e)
     {
         e.preventDefault();
-        changeNavbar($("#searchLoc"));
+        changeNavbar($("#showLoc"));
 
         var content = '<h1>mapping to location</h1>' +
             '<div>' +
