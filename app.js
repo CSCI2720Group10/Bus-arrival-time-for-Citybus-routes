@@ -339,7 +339,29 @@ app.get("/user/mapping", function (req, res)
     });
 });
 
-
+//finding a single location in the google map
+app.get("/user/mapping/:locId", function (req, res)
+{
+    console.log("passing targete location");
+    Location.findOne({ locId: req.params['locId'] }, function (error, result)
+    {
+        if (error) {
+            console.log(error);
+        }
+        else if (result == null) {
+            res.send("No this locations!")
+        }
+        else {
+            console.log("Finding this location");
+            res.send(
+                "Location ID:" + result.locId + "<br>\n" +
+                "Location name: " + result.name + "<br>\n" +
+                    "Location quota: " + result.latitude + "<br>\n" +
+                    "Location quota: " + result.longitude + "<br>\n"
+            );
+        }
+    });
+});
 
                                                          //Admin page
 app.post("/loginAdmin", function(req, res){

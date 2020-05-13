@@ -185,15 +185,33 @@ async function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.open(map);
 }
 
-
 var sepMap;
-function seperateMap() {
+/*A separate view for one single location, containing: 
+a.a map showing the location 
+b.the location details
+c.user comments, where users can add new comments(non - threaded) */
+
+async function seperateMap()
+{
     sepMap = new google.maps.Map(document.getElementById('singleMap'),
         {
             center: { lat: 22.324811, lng: 114.169589 },
             zoom: 15
         });
 }
+$(document).on("click", "#sepBtn", function (e) {
+    e.preventDefault();
+    $.ajax({
+        url: "./user/mapping/" + $("#sepValue").val(),
+        type: "GET"
+    })
+        .done(function (res) {
+            $("#output").html(res);
+        });
+
+});
+
+
 
 $(document).ready(function ()
 {
