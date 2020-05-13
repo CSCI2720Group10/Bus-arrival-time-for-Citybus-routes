@@ -868,14 +868,16 @@ app.post("/admin/user", function(req,res){
                             u = new User({
                                 userId: 1,
                                 username: req.body['username'],
-	                            password: bcrypt.hashSync(req.body['password'], 8)
+	                            password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         else {
                             u = new User({
                                 userId: result.userId + 1,
                                 username: req.body['username'],
-                                password: bcrypt.hashSync(req.body['password'], 8)
+                                password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         u.save(function(err) {
