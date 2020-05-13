@@ -31,6 +31,7 @@ var UserSchema = mongoose.Schema({
 	password: { type: String, required: true },
 	fav_loc: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
 	fav_routeId: [{ type: Number }],
+    commentNum: { type: Number, required: true },
 	homeLoc: { latitude: { type: Number },
                longitude: { type: Number } }
 });
@@ -125,14 +126,16 @@ app.post("/signup", function(req, res){
                             u = new User({
                                 userId: 1,
                                 username: req.body['username'],
-	                            password: bcrypt.hashSync(req.body['password'], 8)
+	                            password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         else {
                             u = new User({
                                 userId: result.userId + 1,
                                 username: req.body['username'],
-                                password: bcrypt.hashSync(req.body['password'], 8)
+                                password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         u.save(function(err) {
@@ -630,8 +633,8 @@ app.get("/admin/location", function(req, res){
             console.log(err);
         }
         else{
-            var output = "<h5>Route ID: " + routeId + "</h5>" +
-                "<h5>Route direction: Inbound</h5>";
+            var output = "<h3>Route ID: " + routeId + "</h3>" +
+                "<h3>Route direction: Inbound</h3>";
             if(result[0].locInfo.length == 0){
                 output += "No locations";
             }
@@ -644,7 +647,7 @@ app.get("/admin/location", function(req, res){
                     "Number of comments: " + result[0].locInfo[i].loc.commentNum + "</div>";
                 }
             }
-            output += "<h5>Route direction: Outbound</h5>";
+            output += "<br><br><h3>Route direction: Outbound</h3>";
             if(result[1].locInfo.length == 0){
                 output += "No locations";
             }
@@ -771,14 +774,15 @@ app.delete("/admin/location", function(req,res){
                     console.log(err);
                 }
                 else {
+                    var locId = req.body['locId'];
                     Location.remove({locId: req.body['locId']})
                     .exec(function(err, result) {
                         if (err) {
                             console.log(err);
                         }
                         else {
-                            console.log(loc);res.send();
-                            res.send();
+                            console.log(loc);
+                            res.send("Location " + locId + " is deleted.");
                         }
                     });
                 }
@@ -864,14 +868,16 @@ app.post("/admin/user", function(req,res){
                             u = new User({
                                 userId: 1,
                                 username: req.body['username'],
-	                            password: bcrypt.hashSync(req.body['password'], 8)
+	                            password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         else {
                             u = new User({
                                 userId: result.userId + 1,
                                 username: req.body['username'],
-                                password: bcrypt.hashSync(req.body['password'], 8)
+                                password: bcrypt.hashSync(req.body['password'], 8),
+                                commentNum: 0
                             });
                         }
                         u.save(function(err) {
@@ -960,13 +966,43 @@ app.put("/admin/user", function(req,res){
 
 //delete users
 app.delete("/admin/user", function(req,res){
+    var del_user = req.body['username'];
     User.remove({username: req.body['username']})
     .exec(function(err, user) {
         if (err) {
             res.send(err);
         }
         else {
-            res.send();
+            res.send("User " + del_user +" is deleted!");
+        }
+    });
+});
+
+
+//Top 5 User Chart
+app.get("/admin/top5", function (req, res)
+{
+    User.find()
+    .limit(5)
+    .sort({commentNum: -1})
+    .exec(function(err, user) {
+        if(err){
+            console.log(err);
+        }
+        else if(user.length == 0){
+            res.send("No Users!")
+        }
+        else
+        {
+            var userName = [];
+            var userCommentNum = [];
+            for(var u of user){
+                console.log(u.username);
+                userName.push(u.username);
+                userCommentNum.push(u.commentNum);
+            }
+            res.send({userName: userName,
+                userCommentNum: userCommentNum});
         }
     });
 });

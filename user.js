@@ -249,7 +249,7 @@ $(document).on("click", "#sepBtn", function (e)
                         position.coords.longitude.toFixed(3) +
                         '</p > ';
                     sepMap.setCenter(sepCenter);
-                   
+
                     //found location marker
                     mk1 = new google.maps.Marker({ position: sepCenter, map: sepMap });
 
@@ -260,7 +260,7 @@ $(document).on("click", "#sepBtn", function (e)
                         map: sepMap
                     });
 
-                    //mark the line between user location and found location 
+                    //mark the line between user location and found location
                     var line = new google.maps.Polyline({ path: [sepCenter, userCenter], map: sepMap });
                     var distance = haversine_distance(sepCenter.lat, sepCenter.lng, userCenter.lat, userCenter.lng);
                     console.log(distance);
@@ -449,10 +449,11 @@ $(document).ready(function ()
                             yAxes: [{
                                 scaleLabel: {
                                     display: true,
-                                    labelString: '#comments'
+                                    labelString: 'Number of Comments'
                                 },
                                 ticks: {
                                     beginAtZero:true,
+                                    stepSize: 1
                                 }
                             }]
                         },
