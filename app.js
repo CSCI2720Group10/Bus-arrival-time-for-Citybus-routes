@@ -633,8 +633,8 @@ app.get("/admin/location", function(req, res){
             console.log(err);
         }
         else{
-            var output = "<h5>Route ID: " + routeId + "</h5>" +
-                "<h5>Route direction: Inbound</h5>";
+            var output = "<h3>Route ID: " + routeId + "</h3>" +
+                "<h3>Route direction: Inbound</h3>";
             if(result[0].locInfo.length == 0){
                 output += "No locations";
             }
@@ -647,7 +647,7 @@ app.get("/admin/location", function(req, res){
                     "Number of comments: " + result[0].locInfo[i].loc.commentNum + "</div>";
                 }
             }
-            output += "<h5>Route direction: Outbound</h5>";
+            output += "<br><br><h3>Route direction: Outbound</h3>";
             if(result[1].locInfo.length == 0){
                 output += "No locations";
             }
@@ -774,14 +774,15 @@ app.delete("/admin/location", function(req,res){
                     console.log(err);
                 }
                 else {
+                    var locId = req.body['locId'];
                     Location.remove({locId: req.body['locId']})
                     .exec(function(err, result) {
                         if (err) {
                             console.log(err);
                         }
                         else {
-                            console.log(loc);res.send();
-                            res.send();
+                            console.log(loc);
+                            res.send("Location " + locId + " is deleted.");
                         }
                     });
                 }
@@ -963,13 +964,14 @@ app.put("/admin/user", function(req,res){
 
 //delete users
 app.delete("/admin/user", function(req,res){
+    var del_user = req.body['username'];
     User.remove({username: req.body['username']})
     .exec(function(err, user) {
         if (err) {
             res.send(err);
         }
         else {
-            res.send();
+            res.send("User " + del_user +" is deleted!");
         }
     });
 });

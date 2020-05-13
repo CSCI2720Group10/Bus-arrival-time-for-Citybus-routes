@@ -516,6 +516,7 @@ $(document).ready(function() {
             data: {locId: locId}
         })
         .done(function(res){
+            alert(res);
             $this.parent().remove();
         });
     });
@@ -663,6 +664,7 @@ $(document).ready(function() {
             data: {username: username}
         })
         .done(function(res){
+            alert(res);
             $this.parent().remove();
         });
     });
