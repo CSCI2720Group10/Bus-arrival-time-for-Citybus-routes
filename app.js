@@ -196,6 +196,7 @@ app.post("/logout", function(req, res){
 	res.send("/root.html");
 });
 
+
 // list locations in a table
 app.get("/user/location", function (req, res)
 {
@@ -209,15 +210,16 @@ app.get("/user/location", function (req, res)
             else if(loc.length == 0){
                 res.send("No locations!")
             }
-            else {
+            else
+            {
                 var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
-                '<thead class="thead-light"><tr>' +
-                '<th>Location ID</th>' +
-                '<th>Name</th>' +
-                '<th>Latitude</th>' +
-                '<th>Longitude</th>' +
-                '<th>#Comment</th>' +
-                '</tr></thead><tbody>';
+                    '<thead class="thead-light"><tr>' +
+                    '<th>Location ID</th>' +
+                    '<th>Name</th>' +
+                    '<th>Latitude</th>' +
+                    '<th>Longitude</th>' +
+                    '<th>#Comment</th>' +
+                    '</tr></thead><tbody>';
                 for (l of loc)
                 {
                     table += '<tr>' +
@@ -251,7 +253,8 @@ app.get("/user/location", function (req, res)
                 '<th>Longitude</th>' +
                 '<th>#Comment</th>' +
                 '</tr></thead><tbody>';
-                for(l of loc){
+                for (l of loc)
+                {
                     table += '<tr>' +
                     '<td>' + l.locId + '</td>' +
                     '<td>' + l.name + '</td>' +
@@ -325,6 +328,7 @@ app.get("/user/location", function (req, res)
     }
 });
 
+
 //find top 5 locations with most comments
 app.get("/user/top5", function (req, res)
 {
@@ -379,10 +383,11 @@ app.get("/user/mapping/:locId", function (req, res)
     console.log("passing targete location");
     Location.findOne({ locId: req.params['locId'] }, function (error, result)
     {
+
         if (error) {
             console.log(error);
         }
-        else if (result == null) {
+        else if (result == null ) {
             console.log("Can not found the location in the seperate view map!")
             res.send("No this locations!")
         }
