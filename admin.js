@@ -751,6 +751,7 @@ $(document).ready(function() {
         table += "</table>";
         $("#parsed_csv_list").html(table);
     }
+
     $.getScript('papaparse.min.js', function () {
         $(document).on("click", "#submit-file", function (e) {
             e.preventDefault();

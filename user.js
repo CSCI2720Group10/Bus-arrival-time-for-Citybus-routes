@@ -199,18 +199,37 @@ async function seperateMap()
             zoom: 15
         });
 }
-$(document).on("click", "#sepBtn", function (e) {
+
+$(document).on("click", "#sepBtn", function (e)
+{
     e.preventDefault();
+
     $.ajax({
         url: "./user/mapping/" + $("#sepValue").val(),
         type: "GET"
     })
-        .done(function (res) {
-            $("#output").html(res);
+        .done(function (res)
+        {
+            if (res != "No this locations!") {
+                var sepCenter =
+                {
+                    lat: res.latitude,
+                    lng: res.longitude
+                };
+                sepMap.setCenter(sepCenter);
+                console.log(res.latitude);
+                console.log(res.longitude);
+                $("#output").addClass("text-success");
+                $("#output").html("<h5>Succeed!</h5>");
+            }
+            else
+            {
+                $("#output").addClass("text-warning");
+                $("#output").html("<h5>An error occurred, please try again later!</h5>");
+            }
         });
 
 });
-
 
 
 $(document).ready(function ()
@@ -415,8 +434,7 @@ $(document).ready(function ()
         });
     });
 
-
-    //may be replaced with the home page.
+    // May be replaced with the home page.
     $(document).on("click", "#showLoc", function (e)
     {
         e.preventDefault();

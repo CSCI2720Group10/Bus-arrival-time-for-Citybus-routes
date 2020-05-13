@@ -383,16 +383,13 @@ app.get("/user/mapping/:locId", function (req, res)
             console.log(error);
         }
         else if (result == null) {
+            console.log("Can not found the location in the seperate view map!")
             res.send("No this locations!")
         }
-        else {
-            console.log("Finding this location");
-            res.send(
-                "Location ID:" + result.locId + "<br>\n" +
-                "Location name: " + result.name + "<br>\n" +
-                    "Location quota: " + result.latitude + "<br>\n" +
-                    "Location quota: " + result.longitude + "<br>\n"
-            );
+        else
+        {
+            console.log("Finding this single location!");
+            res.send(result);
         }
     });
 });
