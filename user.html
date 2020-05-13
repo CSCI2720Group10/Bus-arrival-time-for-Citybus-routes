@@ -37,10 +37,23 @@
             </div>
         </nav>
         <div id="userContent">
+            <h1 style="text-align: center; background-color: #AAAAAA">Welcome to the Home Page! </h1>
+            <h2 style="text-align: left; background-color: #DDDDDD">All Location Map: </h2>
+
             <div id="googleMap" style="width:80%;height:80%;"></div>
             <!--GOOGLE MAP API KEY: AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE free for 12 Month-->
             <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&callback=initMap"></script>
-            <p>Welcome!</p>
+            <h2 style="text-align: left; background-color: #DDDDDD">Seperate Location Map: </h2>
+            <div id="singleMap" style="width:80%;height:80%;"></div>
+
+            <script defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&amp;callback=seperateMap"></script>
+            <form>
+                <h6>Seperate View of Location</h6>
+                <div class="custom-control-inline">
+                    <input class="form-control" style="width: 300px" type="text" name="sepValue" id="sepValue">
+                    <button type="submit" class="btn btn-success" id="sepBtn">Search</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

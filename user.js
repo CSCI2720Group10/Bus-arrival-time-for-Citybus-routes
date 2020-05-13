@@ -1,3 +1,200 @@
+var map, infoWindow, marker;
+
+//Function for initialize the new map
+async function initMap() {
+    //Model for setting the property of a google map at the beginning.
+    $.ajax({
+        url: "./user/mapping",
+        type: "GET"
+    })
+        .done(function (res) {
+            map = new google.maps.Map(document.getElementById('googleMap'), {
+                //setting the google map initial location by (lat)
+                center: { lat: 22.283948, lng: 114.156309 },
+                /* Zoom Level
+                   1: World
+                   5: Landmass/continent
+                   10: City
+                   15: Streets
+                   20: Building
+                */
+                zoom: 15,
+
+                //The class style of google map
+                styles:
+                    [
+                        { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+                        { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+                        { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+                        {
+                            featureType: 'administrative.locality',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#d59563' }]
+                        },
+                        {
+                            featureType: 'poi',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#d59563' }]
+                        },
+                        {
+                            featureType: 'poi.park',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#263c3f' }]
+                        },
+                        {
+                            featureType: 'poi.park',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#6b9a76' }]
+                        },
+                        {
+                            featureType: 'road',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#38414e' }]
+                        },
+                        {
+                            featureType: 'road',
+                            elementType: 'geometry.stroke',
+                            stylers: [{ color: '#212a37' }]
+                        },
+                        {
+                            featureType: 'road',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#9ca5b3' }]
+                        },
+                        {
+                            featureType: 'road.highway',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#746855' }]
+                        },
+                        {
+                            featureType: 'road.highway',
+                            elementType: 'geometry.stroke',
+                            stylers: [{ color: '#1f2835' }]
+                        },
+                        {
+                            featureType: 'road.highway',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#f3d19c' }]
+                        },
+                        {
+                            featureType: 'transit',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#2f3948' }]
+                        },
+                        {
+                            featureType: 'transit.station',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#d59563' }]
+                        },
+                        {
+                            featureType: 'water',
+                            elementType: 'geometry',
+                            stylers: [{ color: '#17263c' }]
+                        },
+                        {
+                            featureType: 'water',
+                            elementType: 'labels.text.fill',
+                            stylers: [{ color: '#515c6d' }]
+                        },
+                        {
+                            featureType: 'water',
+                            elementType: 'labels.text.stroke',
+                            stylers: [{ color: '#17263c' }]
+                        }
+                    ]
+            });
+            /*An InfoWindow displays content (usually text or images) in a popup window above the map, 
+            at a given location.*/
+            var inforString = '<div><h1>This is your home location.</h1></div>';
+            infoWindow = new google.maps.InfoWindow({
+                content: inforString
+            });
+
+            //Geolocation here and reset the location of map.
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos =
+                    {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(pos);
+
+                    //Setting the marker of home location.
+                    marker = new google.maps.Marker({
+                        position: map.center,
+                        map: map
+                    });
+
+                    marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
+
+
+                }, function () {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                });
+            }
+            else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+
+            }
+
+
+            /*Marking each location and 
+              write the details of each location in the infoWindow */
+
+            for (var i = 0; i < res.length; i++) {
+                var pos =
+                {
+                    lat: res[i].latitude,
+                    lng: res[i].longitude
+                };
+
+                var locationMarker = new google.maps.Marker({
+                    position: pos,
+                    map: map
+                });
+
+                google.maps.event.addListener(locationMarker, 'click', (function (locationMarker, i) {
+                    return function () {
+                        var contentLocation = '<div id="contentLocation">' +
+                            '<h6>Location ID: ' + res[i].locId + '</h6>' +
+                            '<h6>Location Name: ' + res[i].name + '</h6>' +
+                            '<h6>Location Latitude: ' + res[i].latitude + '</h6>' +
+                            '<h6>Location Longitude: ' + res[i].longitude + '</h6>' +
+                            '</div>';
+                        map.setCenter(locationMarker.position);
+                        map.setZoom(17);
+                        infoWindow.setContent(contentLocation);
+                        infoWindow.open(map, locationMarker);
+                    }
+
+                }
+                )(locationMarker, i));
+            }
+        });
+}
+
+async function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+    infoWindow.open(map);
+}
+
+
+var sepMap;
+function seperateMap() {
+    sepMap = new google.maps.Map(document.getElementById('singleMap'),
+        {
+            center: { lat: 22.324811, lng: 114.169589 },
+            zoom: 15
+        });
+}
+
 $(document).ready(function ()
 {
     function changeNavbar($clickedLink){
@@ -122,195 +319,4 @@ $(document).ready(function ()
     });
 
 });
-var map, infoWindow, marker;
 
-//Function for initialize the new map
-async function initMap()
-{
-    //Model for setting the property of a google map at the beginning.
-    $.ajax({
-        url: "./user/mapping",
-        type: "GET"
-    })
-        .done(function (res)
-        {
-                map = new google.maps.Map(document.getElementById('googleMap'), {
-                    //setting the google map initial location by (lat)
-                    center: { lat: 22.283948, lng: 114.156309 },
-                    /* Zoom Level
-                       1: World
-                       5: Landmass/continent
-                       10: City
-                       15: Streets
-                       20: Building
-                    */
-                    zoom: 15,
-
-                    //The class style of google map
-                    styles:
-                    [
-                        { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
-                        { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
-                        { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
-                        {
-                            featureType: 'administrative.locality',
-                            elementType: 'labels.text.fill',
-                            stylers: [{ color: '#d59563' }]
-                        },
-                        {
-                            featureType: 'poi',
-                            elementType: 'labels.text.fill',
-                            stylers: [{ color: '#d59563' }]
-                        },
-                        {
-                            featureType: 'poi.park',
-                            elementType: 'geometry',
-                            stylers: [{ color: '#263c3f' }]
-                        },
-                        {
-                            featureType: 'poi.park',
-                            elementType: 'labels.text.fill',
-                            stylers: [{ color: '#6b9a76' }]
-                        },
-                        {
-                            featureType: 'road',
-                            elementType: 'geometry',
-                            stylers: [{ color: '#38414e' }]
-                        },
-                        {
-                            featureType: 'road',
-                            elementType: 'geometry.stroke',
-                            stylers: [{ color: '#212a37' }]
-                        },
-                        {
-                            featureType: 'road',
-                            elementType: 'labels.text.fill',
-                            stylers: [{ color: '#9ca5b3' }]
-                        },
-                        {
-                            featureType: 'road.highway',
-                            elementType: 'geometry',
-                            stylers: [{ color: '#746855' }]
-                        },
-                        {
-                            featureType: 'road.highway',
-                            elementType: 'geometry.stroke',
-                            stylers: [{ color: '#1f2835' }]
-                        },
-                        {
-                            featureType: 'road.highway',
-                            elementType: 'labels.text.fill',
-                            stylers: [{ color: '#f3d19c' }]
-                        },
-                        {
-                            featureType: 'transit',
-                            elementType: 'geometry',
-                            stylers: [{ color: '#2f3948' }]
-                        },
-                        {
-                            featureType: 'transit.station',
-                            elementType: 'labels.text.fill',
-                            stylers: [{ color: '#d59563' }]
-                        },
-                        {
-                            featureType: 'water',
-                            elementType: 'geometry',
-                            stylers: [{ color: '#17263c' }]
-                        },
-                        {
-                            featureType: 'water',
-                            elementType: 'labels.text.fill',
-                            stylers: [{ color: '#515c6d' }]
-                        },
-                        {
-                            featureType: 'water',
-                            elementType: 'labels.text.stroke',
-                            stylers: [{ color: '#17263c' }]
-                        }
-                    ]
-                });
-            /*An InfoWindow displays content (usually text or images) in a popup window above the map, 
-            at a given location.*/
-            var inforString = '<div><h1>This is your home location.</h1></div>';
-            infoWindow = new google.maps.InfoWindow({
-                content: inforString
-            });
-
-            //Geolocation here and reset the location of map.
-            if (navigator.geolocation)
-            {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    var pos =
-                    {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    map.setCenter(pos);
-
-                    //Setting the marker of home location.
-                    marker = new google.maps.Marker({
-                        position: map.center,
-                        map: map
-                    });
-
-                    marker.addListener('click', function () {
-                        infoWindow.open(map, marker);
-                    });
-
-
-                }, function () {
-                    handleLocationError(true, infoWindow, map.getCenter());
-                });
-            }
-            else
-            {
-                // Browser doesn't support Geolocation
-                handleLocationError(false, infoWindow, map.getCenter());
-
-            }
-
-
-            /*Marking each location and 
-              write the details of each location in the infoWindow */
-
-            for (var i = 0; i < res.length; i++)
-            {
-                var pos =
-                {
-                    lat: res[i].latitude,
-                    lng: res[i].longitude
-                };
-                
-                var locationMarker = new google.maps.Marker({
-                    position:pos,
-                    map: map
-                });
-               
-                google.maps.event.addListener(locationMarker, 'click', (function (locationMarker, i) {
-                    return function () {
-                        var contentLocation = '<div id="contentLocation">'+
-                        '<h6>Location ID: ' + res[i].locId + '</h6>' +
-                        '<h6>Location Name: ' + res[i].name + '</h6>'+
-                        '<h6>Location Latitude: ' + res[i].latitude + '</h6>'+
-                            '<h6>Location Longitude: ' + res[i].longitude + '</h6>' +
-                            '</div>';
-                        map.setCenter(locationMarker.position);
-                        map.setZoom(17);
-                        infoWindow.setContent(contentLocation);
-                        infoWindow.open(map, locationMarker);
-                    }
-
-                }
-                )(locationMarker, i));
-            }
-        });
-}
-
-async function handleLocationError(browserHasGeolocation, infoWindow, pos)
-{
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-    infoWindow.open(map);
-}
