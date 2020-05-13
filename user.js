@@ -415,27 +415,17 @@ $(document).ready(function ()
         });
     });
 
+
+    //may be replaced with the home page.
     $(document).on("click", "#showLoc", function (e)
     {
         e.preventDefault();
         changeNavbar($("#showLoc"));
 
-        var content = '<h1>mapping to location</h1>' +
-            '<div>' +
-            '<div id="mapresult"></div>' +
-            '</div>';
-
-        $.ajax({
-            url: "./user/mapping/003505",
-            type: "GET"
-        })
-        .done(function (res) {
-
-            console.log(res.latitude);
-            $("title").html("Map Locations");
-            $("#userContent").html(res);
-            history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
-        });
+        var content = '<h1>Nothing Yet</h1>';
+        $("title").html("Map Locations");
+        $("#userContent").html(content);
+        history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
     });
 
 });
