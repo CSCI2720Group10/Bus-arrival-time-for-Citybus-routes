@@ -40,7 +40,6 @@ var UserSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     fav_locId: [{ type: String }],
-    fav_routeId: [{ type: String }],
     commentNum: { type: Number, required: true },
     favLocNum: { type: Number, required: true },
     homeLoc:
