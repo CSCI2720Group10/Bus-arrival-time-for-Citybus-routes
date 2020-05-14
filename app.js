@@ -464,10 +464,10 @@ app.post("/user/favourite", function (req, res)
                     return;
                 }
             }
+            doc.save();
             userdoc.favLocNum += 1;
             userdoc.fav_loc.push(location_id);
             userdoc.save();
-
             res.send("Favourite location stored successfully !");
         });
     });
