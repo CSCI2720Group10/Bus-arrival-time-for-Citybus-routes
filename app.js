@@ -546,6 +546,17 @@ app.post("/user/comment", function (req, res)
                 locId: req.body['locId'],
                 time: req.body['time']
             });
+
+            Location.findOne({ locId: req.body['locId']}, function(err, loc) {
+                if(err){
+                    res.send(err);
+                }
+                else {
+                    loc.commentNum += 1;                        //add loc commentNum
+                    loc.save();
+                }
+            })
+
             if (error) {
 
                 res.send(error);
