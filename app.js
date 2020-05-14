@@ -224,7 +224,7 @@ app.get("/user/location", function (req, res)
     if (req.query['locId'] != undefined)
     {
         Location.find({locId: new RegExp(req.query['locId'])})
-        .exec(function(err, loc) {
+        .exec(async function(err, loc) {
             if(err){
                 console.log(err);
             }
@@ -244,13 +244,27 @@ app.get("/user/location", function (req, res)
                     '</tr></thead><tbody>';
                 for (l of loc)
                 {
+                    var commentNum;
+                    var favLocNum;
+                    await Comment.find({locId: l.locId}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            commentNum = result.length;
+                    });
+                    await User.find({fav_loc: {$in: l._id}}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            favLocNum = result.length;
+                    });
                     table += '<tr>' +
                     '<td>' + l.locId + '</td>' +
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
-                    '<td>' + l.commentNum + '</td>' +
-                    '<td>' + l.favLocNum + '</td>' +
+                    '<td>' + commentNum + '</td>' +
+                    '<td>' + favLocNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -260,7 +274,7 @@ app.get("/user/location", function (req, res)
     }
     else if(req.query['locName'] != undefined){
         Location.find({name: new RegExp(req.query['locName'])})
-        .exec(function(err, loc) {
+        .exec(async function(err, loc) {
             if(err){
                 console.log(err);
             }
@@ -279,13 +293,27 @@ app.get("/user/location", function (req, res)
                 '</tr></thead><tbody>';
                 for (l of loc)
                 {
+                    var commentNum;
+                    var favLocNum;
+                    await Comment.find({locId: l.locId}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            commentNum = result.length;
+                    });
+                    await User.find({fav_loc: {$in: l._id}}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            favLocNum = result.length;
+                    });
                     table += '<tr>' +
                     '<td>' + l.locId + '</td>' +
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
-                    '<td>' + l.commentNum + '</td>' +
-                    '<td>' + l.favLocNum + '</td>' +
+                    '<td>' + commentNum + '</td>' +
+                    '<td>' + favLocNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -296,7 +324,7 @@ app.get("/user/location", function (req, res)
     else if(req.query['locIdOrder'] != undefined){
         Location.find()
         .sort({locId: req.query['locIdOrder']})
-        .exec(function(err, loc) {
+        .exec(async function(err, loc) {
             if(err){
                 console.log(err);
             }
@@ -306,13 +334,27 @@ app.get("/user/location", function (req, res)
             else{
                 var tableBody = '';
                 for(l of loc){
+                    var commentNum;
+                    var favLocNum;
+                    await Comment.find({locId: l.locId}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            commentNum = result.length;
+                    });
+                    await User.find({fav_loc: {$in: l._id}}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            favLocNum = result.length;
+                    });
                     tableBody += '<tr>' +
                     '<td>' + l.locId + '</td>' +
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
-                    '<td>' + l.commentNum + '</td>' +
-                    '<td>' + l.favLocNum + '</td>' +
+                    '<td>' + commentNum + '</td>' +
+                    '<td>' + favLocNum + '</td>' +
                     '</tr>';
                 }
                 res.send(tableBody);
@@ -321,7 +363,7 @@ app.get("/user/location", function (req, res)
     }
     else{
         Location.find()
-        .exec(function(err, loc) {
+        .exec(async function(err, loc) {
             if(err){
                 console.log(err);
             }
@@ -340,13 +382,27 @@ app.get("/user/location", function (req, res)
                 '<th>#Favourite</th>' +
                 '</tr></thead><tbody>';
                 for (l of loc ){
+                    var commentNum;
+                    var favLocNum;
+                    await Comment.find({locId: l.locId}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            commentNum = result.length;
+                    });
+                    await User.find({fav_loc: {$in: l._id}}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            favLocNum = result.length;
+                    });
                     table += '<tr>' +
                     '<td>' + l.locId + '</td>' +
                     '<td>' + l.name + '</td>' +
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
-                    '<td>' + l.commentNum + '</td>' +
-                    '<td>' + l.favLocNum + '</td>' +
+                    '<td>' + commentNum + '</td>' +
+                    '<td>' + favLocNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -546,6 +602,17 @@ app.post("/user/comment", function (req, res)
                 locId: req.body['locId'],
                 time: req.body['time']
             });
+
+            Location.findOne({ locId: req.body['locId']}, function(err, loc) {
+                if(err){
+                    res.send(err);
+                }
+                else {
+                    loc.commentNum += 1;                        //add loc commentNum
+                    loc.save();
+                }
+            })
+
             if (error) {
                 res.send(error);
             }
