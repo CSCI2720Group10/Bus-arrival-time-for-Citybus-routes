@@ -197,8 +197,6 @@ a.a map showing the location
 b.the location details
 c.user comments, where users can add new comments(non - threaded) */
 
-
-
 //Measure the distance between two point
 function haversine_distance(pt1Lat, pt1Long, pt2Lat, pt2Long)
 {
@@ -330,11 +328,11 @@ $(document).on("click", "#favBtn", function (e) {
 
 
 //Append comment in the corresponding location
-function processForm() {
+function processForm()
+{
 
-    var $new = $("<li><div><p></p></li>");
-    $new.addClass("media");
-    $new.find("div").addClass("media-body");
+    var $new = $('<li><p></p></li>');
+    $new.addClass("media"); 
     $new.find("p").html($("#inputcomment").val());
     $("#comments").append($new);
 }
@@ -343,9 +341,36 @@ function processForm() {
 $(document).on("click", "#addComment", function (e)
 {
     e.preventDefault();
-    processForm();
-    var nameOfUser = '<h6 class="text-primary">User: ' + $("#userName").html() + '</h6>';
-    $("#comments").append(nameOfUser);
+
+    //cal the time we click at that moment.
+    var nowDate = new Date();
+    var mm = nowDate.getMonth() + 1; mm = (mm < 10) ? '0' + mm : mm;
+    var dd = nowDate.getDate(); dd = (dd < 10) ? '0' + dd : dd;
+    var new_today = mm + '/' + dd + '/' + nowDate.getFullYear();
+    var mi = nowDate.getMinutes(); mi = (mi < 10) ? '0' + mi : mi;
+    var time = nowDate.getHours() + ":" + mi;
+    var $userTime = $("<p>" + "Date:" + new_today + " Time:" + time + "</p>");
+
+    $.ajax({
+        url: "./user/comment",
+        type: "POST",
+        data: {
+            username: $("#userName").html(),
+            content: $("#inputcomment").val(),
+            locId: $("#sepValue").val(),
+            time: $userTime.html()
+        }
+    })
+        .done(function (res)
+        {
+
+            console.log($("#inputcomment").val());
+            console.log($userTime.html());
+
+            processForm();
+            var nameOfUser = '<h6 class="text-primary">User: ' + $("#userName").html() + '</h6>';
+            $("#comments").append(nameOfUser);
+        });
 });
 
 $(document).ready(function ()
@@ -359,7 +384,8 @@ $(document).ready(function ()
         $clickedLink.addClass("text-danger");
     }
 
-    $(document).on("click", "#home", function (e) {
+    $(document).on("click", "#home", function (e)
+    {
         e.preventDefault();
         changeNavbar($("#home"));
 

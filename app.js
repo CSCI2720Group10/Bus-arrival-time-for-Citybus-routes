@@ -16,6 +16,7 @@ app.use(session({
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://123:123@localhost/proj');
+var newCommentId = 0;
 
 var db = mongoose.connection;
 // Upon connection failure
@@ -70,7 +71,7 @@ var CommentSchema = mongoose.Schema({
 	userId : { type: Number, required: true },
 	content: { type: String, required: true },
 	locId: { type: Number, required: true },
-    time: { type: Date, required: true }
+    time: { type: String, required: true }
 });
 var Comment= mongoose.model('Comment', CommentSchema);
 
@@ -517,10 +518,33 @@ app.get("/user/favourite/:username", function (req, res)
 app.post("/user/comment", function (req, res) {
 
     console.log("Comment is coming !");
-    Comment.findOne({ locId: req.body['locId'] }, function (error, doc) {
+    User.findOne({ username: req.body['username'] }, function (error, doc)
+    {
+        var newComment = new Comment({
 
+            commentId: parseInt(newCommentId),
+            userId: doc.userId,
+            content: req.body['content'],
+            locId: req.body['locId'],
+            time: req.body['time']
+        });
+        if (error) {
 
+            res.send(error);
 
+        }
+        else
+        {
+            
+            newComment.save(function (error) {
+                if (error) {
+                    res.send(error);
+                }
+                res.send("Save the Comment to data!");
+            });
+            //adding comment id by 1
+            newCommentId += 1;
+        }
     });
 });
                                                          //Admin page
