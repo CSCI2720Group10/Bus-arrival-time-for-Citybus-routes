@@ -1,23 +1,5 @@
 const routes = [20, 22, 70, 117, 260, 307, 592, 608, 681, 969];
 
-async function getRoute(){                                      //get details for each route
-    let data = [];
-    for(var r of routes){
-        try {
-            await $.ajax({
-                url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/route/CTB/" + r,
-                type: "GET"
-            })
-            .done(function(res){
-                data.push(res.data);
-            });
-        } catch (err) {
-            console.log(err);
-        }
-    }
-    return data;
-}
-
 async function getRouteLoc_in(){                                   //get all locations in each route
     var data = [];
     var promises;
