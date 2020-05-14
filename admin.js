@@ -606,10 +606,11 @@ $(document).ready(function() {
                        newUsername: newUsername}
             })
             .done(function(res){
-                if(res != ""){
+                if(res != "Username Updated!"){
                     alert(res);
                 }
                 else{
+                    alert(res);
                     $this.parent().find("span").eq(0).html(newUsername);
                 }
             });
@@ -632,6 +633,7 @@ $(document).ready(function() {
                     alert(res);
                 }
                 else{
+                    alert("User password Updated!");
                     $this.parent().find("span").eq(1).html(res);
                 }
             });

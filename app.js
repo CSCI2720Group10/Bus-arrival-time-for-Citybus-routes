@@ -1022,7 +1022,7 @@ app.put("/admin/user", function(req,res){
                             res.send(err);
                         }
                         else {
-                            res.send();
+                            res.send("Username Updated!");
                         }
                     });
                 }
