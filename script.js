@@ -111,10 +111,25 @@ $(document).ready(function() {
 
             '<h4><u>Technologies and Libraries</u></h4>' +
             '<br><br>' +
-            '<b><u>We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.</u></b>';
+            '<b><u>We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.</u></b>' +
+            '<br><a id="return" href="">Return to Login Page</a>';
         $("#content").html(content);
         $("title").html("About This Project");
         history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/about.html");
+    });
+
+    $(document).on("click", "#return", function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "./logout",
+            type: "POST"
+        })
+        .done(function(res){
+            $("body").load(res + " #content", function(){
+                $("title").html("Bus arrival time for Citybus Routes APP");
+                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
+            });
+        });
     });
 
     $(document).on("click", "#signup", function(e) {
