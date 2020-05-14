@@ -29,13 +29,13 @@ $(document).ready(function() {
             '<br><br>' +
 
             '<h4><u>"How to"</u></h4>' +
-            'Login page:<br>' +
+            '<b>Login page:</b><br>' +
             '-sign in form		(sign in as user)<br>' +
             '-sign up link<br>' +
             '-admin login link	(sign in as admin)<br>' +
             '-About this Proj<br>' +
 
-            '<br>Sign in as User:<br>' +
+            '<br><b>Sign in as User:</b><br>' +
             '-Home Page<br>' +
             '(Showing overall locations and separate view locations in map)<br>' +
             '-Location<br>' +
@@ -47,7 +47,7 @@ $(document).ready(function() {
             '-Username at top right corner<br>' +
             '(With a dropdown "Logout" which will return to Login Page)<br>' +
 
-            '<br>Sign in as Admin:<br>' +
+            '<br><b>Sign in as Admin:</b><br>' +
             '-Home Page<br>' +
             '(A welcome notice and a flush data function)<br>' +
             '-Location<br>' +
