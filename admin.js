@@ -327,21 +327,6 @@ $(document).ready(function() {
         e.preventDefault();
         changeNavbar($("#updateLoc"));
 
-        /*$.ajax({
-            url: "./admin/location",
-            type: "GET"
-        })
-        .done(function(res){
-            $("title").html("Update Location");
-            $("#adminContent").html("<h1>Location Information</h1>" +
-                                    "<div align='right'><a href='#locBottom'>Go to bottom</a></div>" + res);
-            $(".locInfo").append('<br><button type="button" class="btn btn-warning editLocId mr-3">Edit Location ID</button>' +
-                                  '<button type="button" class="btn btn-warning editLocName mr-3">Edit Location Name</button>'
-                                 //+ '<button type="button" class="btn btn-warning editLocLat mr-3">Edit Location Latitude</button>' +
-                                 // '<button type="button" class="btn btn-warning editLocLong">Edit Location Longitude</button>'
-                                 );
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/update_location.html");
-        });*/
         var selectMenu = '<option value="" hidden selected">Select Route</option>';
         for(var route of routes){
             selectMenu += '<option value="' + route + '">' + route + '</option>';
@@ -370,14 +355,13 @@ $(document).ready(function() {
         .done(function(res){
             $("#result").html(res);
             $("form").trigger("reset");
-            $(".locInfo").append('<br><button type="button" class="btn btn-warning editLocId mr-3">Edit Location ID</button>' +
-                                 '<button type="button" class="btn btn-warning editLocName mr-3">Edit Location Name</button>' +
+            $(".locInfo").append('<br><button type="button" class="btn btn-warning editLocName mr-3">Edit Location Name</button>' +
                                  '<button type="button" class="btn btn-warning editLocLat mr-3">Edit Location Latitude</button>' +
                                  '<button type="button" class="btn btn-warning editLocLong">Edit Location Longitude</button>');
         });
     });
 
-    $(document).on("click", ".editLocId", function(){
+    /*$(document).on("click", ".editLocId", function(){
         var newLocId = prompt("Please enter the new location ID");
         if(newLocId != null){
             var $this = $(this);
@@ -398,7 +382,7 @@ $(document).ready(function() {
                 }
             });
         }
-    });
+    });*/
 
     $(document).on("click", ".editLocName", function(){
         var newLocName = prompt("Please enter the new location name");
