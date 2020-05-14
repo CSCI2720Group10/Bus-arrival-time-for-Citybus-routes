@@ -16,23 +16,28 @@ $(document).ready(function() {
     $(document).on("click", "#about", function(e) {
         e.preventDefault();
         content = '<h1>About This Project</h1>' +
-            '<h4>Group Members</h4>' +
+            '<br>' +
+            '<h4><u>Group Members</u></h4>' +
             '<pre>Kwan Tsz Fung		        1155078864\n' +
             'Lee Kwan Hung		        1155108603\n' +
             'Wong Ching Yeung Wallace 	1155093534\n' +
             'Choi Chun Wa                    1155094180</pre>' +
+            '<br>' +
 
-            '<h4>Workload distribution</h4>' +
-            'Lee Kwan Hung: user action#1, 3, admin action#1, 2, 3, 5, non-user action#1, 2, charting statistics in user view' +
+            '<h4><u>Workload distribution</u></h4>' +
+            'Kwan Tsz Fung: user action#4, 6, admin action#1, 2, 3, charting statistics in admin view<br>' +
+            'Lee Kwan Hung: user action#1, 3, admin action#1, 2, 3, 5, non-user action#1, 2, charting statistics in user view<br>' +
+            'Together: Debug, design different schemas, demo practice' +
+            '<br><br>' +
 
-            '<h4>"How to"</h4>' +
-            'Login page:<br>' +
+            '<h4><u>"How to"</u></h4>' +
+            '<b>Login page:</b><br>' +
             '-sign in form		(sign in as user)<br>' +
             '-sign up link<br>' +
             '-admin login link	(sign in as admin)<br>' +
             '-About this Proj<br>' +
 
-            '<br>Sign in as User:<br>' +
+            '<br><b>Sign in as User:</b><br>' +
             '-Home Page<br>' +
             '(Showing overall locations and separate view locations in map)<br>' +
             '-Location<br>' +
@@ -44,7 +49,7 @@ $(document).ready(function() {
             '-Username at top right corner<br>' +
             '(With a dropdown "Logout" which will return to Login Page)<br>' +
 
-            '<br>Sign in as Admin:<br>' +
+            '<br><b>Sign in as Admin:</b><br>' +
             '-Home Page<br>' +
             '(A welcome notice and a flush data function)<br>' +
             '-Location<br>' +
@@ -58,7 +63,7 @@ $(document).ready(function() {
             '-Logout<br>' +
             '(Return to Login Page)<br><br>' +
 
-            '<h4>Data Schemas</h4>' +
+            '<h4><u>Data Schemas</u></h4>' +
             '<table class="table table-hover table-sm text-dark w-50">' +
             '<thead class="thead-light">' +
                 '<tr>' +
@@ -103,8 +108,10 @@ $(document).ready(function() {
                     '</ul></td>' +
                 '</tr>' +
             '</table>' +
-            '<h4>Technologies and Libraries</h4>' +
-            'We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.';
+
+            '<h4><u>Technologies and Libraries</u></h4>' +
+            '<br><br>' +
+            '<b><u>We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.</u></b>';
         $("#content").html(content);
         $("title").html("About This Project");
         history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/about.html");
