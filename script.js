@@ -21,11 +21,45 @@ $(document).ready(function() {
             'Lee Kwan Hung		        1155108603\n' +
             'Wong Ching Yeung Wallace 	1155093534\n' +
             'Choi Chun Wa                    1155094180</pre>' +
+
             '<h4>Workload distribution</h4>' +
             'Lee Kwan Hung: user action#1, 3, admin action#1, 2, 3, 5, non-user action#1, 2, charting statistics in user view' +
+
             '<h4>"How to"</h4>' +
+            'Login page:<br>' +
+            '-sign in form		(sign in as user)<br>' +
+            '-sign up link<br>' +
+            '-admin login link	(sign in as admin)<br>' +
+            '-About this Proj<br>' +
+
+            '<br>Sign in as User:<br>' +
+            '-Home Page<br>' +
+            '(Showing overall locations and separate view locations in map)<br>' +
+            '-Location<br>' +
+            '(List locations in table, Search locations)<br>' +
+            '-See Favourite Locations<br>' +
+            '(List favourite locations in table)<br>' +
+            '-See Top 5 Locations<br>' +
+            '(Bar Chart and Pie Chart showing locations with most comments)<br>' +
+            '-Username at top right corner<br>' +
+            '(With a dropdown "Logout" which will return to Login Page)<br>' +
+
+            '<br>Sign in as Admin:<br>' +
+            '-Home Page<br>' +
+            '(A welcome notice and a flush data function)<br>' +
+            '-Location<br>' +
+            '(Create, Retrieve, Update and Delete operations of location data)<br>' +
+            '-User<br>' +
+            '(Create, Retrieve, Update and Delete operations of user data)<br>' +
+            '-Create Location Data<br>' +
+            '(Import location data by uploading a format-satisfying .csv file)<br>' +
+            '-Top 5 Users<br>' +
+            '(Showing top 5 active users with most comments and most favourite locations in two bar charts)<br>' +
+            '-Logout<br>' +
+            '(Return to Login Page)<br><br>' +
+
             '<h4>Data Schemas</h4>' +
-            '<table class="table table-hover table-sm text-dark>' +
+            '<table class="table table-hover table-sm text-dark w-50">' +
             '<thead class="thead-light">' +
                 '<tr>' +
                     '<td>Location</td>' +
@@ -54,7 +88,7 @@ $(document).ready(function() {
                         '<li>fav_locId: Array of String</li>' +
                         '<li>commentNum: Number</li>' +
                         '<li>favLocNum: Number</li>' +
-                        '<li>homeLoc: {latitude: Numebr, longitude: Number}r</li>' +
+                        '<li>homeLoc: {latitude: Numebr, longitude: Number}</li>' +
                     '</ul></td>' +
                 '</tr>' +
                 '<tr>' +
