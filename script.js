@@ -21,9 +21,11 @@ $(document).ready(function() {
             'Lee Kwan Hung		        1155108603\n' +
             'Wong Ching Yeung Wallace 	1155093534\n' +
             'Choi Chun Wa                    1155094180</pre>' +
+            '<h4>Workload distribution</h4>' +
+            'Lee Kwan Hung: user action#1, 3, admin action#1, 2, 3, 5, non-user action#1, 2, charting statistics in user view' +
             '<h4>"How to"</h4>' +
-            '<h4>"Data Schemas"</h4>' +
-            '<h4>"Technologies and Libraries"</h4>' +
+            '<h4>Data Schemas</h4>' +
+            '<h4>Technologies and Libraries</h4>' +
             'We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.';
         $("#content").html(content);
         $("title").html("About This Project");
