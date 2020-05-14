@@ -81,12 +81,6 @@ app.get("/", function(req, res){
     else
         res.sendFile(__dirname + '/root.html');
 });
-
-                                                            //return login page from ATP
-app.post("/return", function(req, res){
-	res.send("/root.html");
-});
-
                                                                 //Sign up page
 app.get("/signup", function(req, res){
     if (req.session['login'] == true)
@@ -161,7 +155,7 @@ app.post("/signup", function(req, res){
         });
     }
 });
-                                                               //Loin page
+                                                               //Login page
 app.post("/login", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please enter username and password!");
