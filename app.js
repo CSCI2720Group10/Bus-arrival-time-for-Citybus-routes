@@ -360,7 +360,7 @@ app.get("/user/location", function (req, res)
 app.get("/user/top5", function (req, res)
 {
     Comment.aggregate([
-        {$group: {_id:'$locId',
+        {$group: {_id: '$locId',
                   commentNum: { $sum:1 }},
         },
         {$sort: { commentNum: -1 }},
@@ -586,202 +586,180 @@ app.post("/logoutAdmin", function(req, res){
 
 
                                                 //admin flush data
-app.post("/admin/flush", function(req, res){
-    /*console.log(req.body['route']);
-    console.log(req.body['routeLoc']);
-    console.log(req.body['loc']);*/
+app.post("/admin/flush", async function(req, res){
+    // remove routes and locations collections before storing data
+    await Location.remove({}, function(err, result){
+        if(err)
+            console.log(err);
+        else
+            console.log("Remove Location");
+    });
+    await Route.remove({}, function(err, result){
+        if(err)
+            console.log(err);
+        else
+            console.log("Remove Route");
+    });
 
-    (async () => {
-        // remove routes and locations collections before storing data
-        await Location.remove({}, function(err, result){
-            if(err)
-                console.log(err);
-            else
-                console.log("Remove Location");
-        });
-        await Route.remove({}, function(err, result){
-            if(err)
-                console.log(err);
-            else
-                console.log("Remove Route");
-        });
+    // store data
+    var arr_routeIn = req.body['routeIn'];
+    var arr_routeOut = req.body['routeOut'];
+    var arr_routeLocIn = req.body['routeLocIn'];
+    var arr_routeLocOut = req.body['routeLocOut'];
+    var arr_loc = req.body['loc'];
 
-        // store data
-        var arr_routeIn = req.body['routeIn'];
-        var arr_routeOut = req.body['routeOut'];
-        var arr_routeLocIn = req.body['routeLocIn'];
-        var arr_routeLocOut = req.body['routeLocOut'];
-        var arr_loc = req.body['loc'];
+    // store locations
+    var promises;
+    await (async () => {
+        try{
+            promises = arr_loc.map(async loc => {
+/*//===New Stuff===
+                var commentNum = 0;
+                var favLocNum = 0;
 
-        // store locations
-        var promises;
-        await (async () => {
-            try{
-                promises = arr_loc.map(async loc => {
-//===New Stuff===
-                    var commentNum = 0;
-                    var favLocNum = 0;
+                 Comment.find({locId: loc.locId})
+                .exec(function(err, com) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        commentNum = com.length;
 
-                     Comment.find({locId: loc.locId})
-                    .exec(function(err, com) {
-                        if (err) {
-                            res.send(err);
-                        }
-                        else {
-                            commentNum = com.length;
+                        FavLoc.find({locId: loc.locId})
+                        .exec(function(err, fav) {
+                            if (err) {
+                                res.send(err);
+                            }
+                            else {
+                                if(fav.length != 0)
+                                    favLocNum = fav.favNum;
 
-                            FavLoc.find({locId: loc.locId})
-                            .exec(function(err, fav) {
-                                if (err) {
-                                    res.send(err);
-                                }
-                                else {
-                                    if(fav.length != 0)
-                                        favLocNum = fav.favNum;
+                                var l = new Location({
+                                            locId: loc.locId,
+                                            name: loc.name,
+                                            latitude: loc.latitude,
+                                            longitude: loc.longitude,
+                                            commentNum: commentNum,
+                                            favLocNum: favLocNum
+                                });
 
-                                    var l = new Location({
-                                                locId: loc.locId,
-                                                name: loc.name,
-                                                latitude: loc.latitude,
-                                                longitude: loc.longitude,
-                                                commentNum: commentNum,
-                                                favLocNum: favLocNum
-                                    });
-
-                                    return l.save().then();
-                                }
-                            });
-                        }
-                     });
-//===New Stuff===
-                    /*  Original Code
-                    var l = new Location(
-                    {
-                        locId: loc.locId,
-                        name: loc.name,
-                        latitude: loc.latitude,
-                        longitude: loc.longitude,
-                        commentNum: 0,
-                        favLocNum: 0
-                    });
-                    return l.save().then();
-                    */
+                                return l.save().then();
+                            }
+                        });
+                    }
+                 });
+//===New Stuff===*/
+                // Original Code
+                var l = new Location(
+                {
+                    locId: loc.locId,
+                    name: loc.name,
+                    latitude: loc.latitude,
+                    longitude: loc.longitude,
+                    commentNum: 0,
+                    favLocNum: 0
                 });
-                for(var p of promises) {
-                    await p;
-                }
-            } catch(err) {
-                console.log(err);
+                return l.save().then();
+
+            });
+            for(var p of promises) {
+                await p;
             }
-        })();
-        console.log("Location Data Completed");
-        res.write("Location Data Completed<br>");
-
-        // obtain location info of each inbound direction route
-        var locInInfo = [];
-        await (async()=>{
-            for(var i = 0; i < arr_routeIn.length; i++){      //1-10 routes
-                var locId_in = []; // all locId in a route
-                for (var loc of arr_routeLocIn[i].loc){        //inbound
-                    locId_in.push(loc.locId);
-                }
-
-                var arr_in = [];
-                var j = 0;
-                for (var id of locId_in){
-                    await Location.findOne({locId: id})
-                        .then(function(loc){
-                            arr_in.push({loc: loc._id,
-                                      seq: arr_routeLocIn[i].loc[j].seq});
-                            j++;
-                    });
-                }
-                locInInfo.push(arr_in);
-            }
-        })();
-
-        // obtain location info of each outbound direction route
-        var locOutInfo = [];
-        await (async()=>{
-            for(var i = 0; i < arr_routeOut.length; i++){      //1-10 routes
-                var locId_out = []; // all locId in a route
-                j = 0;
-                for (var loc of arr_routeLocOut[i].loc){        //outbound
-                    locId_out.push(loc.locId);
-                }
-
-                var arr_out = [];
-                var j = 0;
-                for (var id of locId_out){
-                    await Location.findOne({locId: id})
-                        .then(function(loc){
-                            arr_out.push({loc: loc._id,
-                                      seq: arr_routeLocOut[i].loc[j].seq});
-                            j++;
-                    });
-                }
-                locOutInfo.push(arr_out);
-            }
-        })();
-
-        // store routes
-        var i = 0;
-        for await (var route of arr_routeIn){
-            try{
-                var r = new Route({
-                    routeId: route.routeId,
-                    startLocId: route.startLocId,
-                    endLocId: route.endLocId,
-                    stopCount: route.stopCount,
-                    dir: "I",
-                    locInfo: locInInfo[i]});            //locInfo[i]
-
-                await r.save().then();
-                i++;
-            } catch(err){
-                console.log(err);
-            }
+        } catch(err) {
+            console.log(err);
         }
-
-        i = 0;
-        for await (var route of arr_routeOut){
-            try{
-                var r = new Route({
-                    routeId: route.routeId,
-                    startLocId: route.startLocId,
-                    endLocId: route.endLocId,
-                    stopCount: route.stopCount,
-                    dir: "O",
-                    locInfo: locOutInfo[i]});            //locInfo[i]
-
-                await r.save().then();
-                i++;
-            } catch(err){
-                console.log(err);
-            }
-        }
-
-        console.log("Route Data Completed");
-        res.write("Route Data Completed<br>");
-
-        /*Route.findOne({routeId: "969"})
-        .populate('locInfo.loc')
-        .exec(function(err, result){
-            if(err)
-                console.log(err);
-            else if(result == null)
-                console.log("not found")
-            else{
-                for(var i = 0; i < result.locInfo.length; i++){
-                    console.log(result.locInfo[i].loc.locId)
-                    console.log(result.locInfo[i].seq);
-                    console.log(result.locInfo[i].dir);
-                }
-            }
-        });*/
-
-        res.end("Done!");
     })();
+    console.log("Location Data Completed");
+    res.write("Location Data Completed<br>");
+
+    // obtain location info of each inbound direction route
+    var locInInfo = [];
+    await (async()=>{
+        for(var i = 0; i < arr_routeIn.length; i++){      //1-10 routes
+            var locId_in = []; // all locId in a route
+            for (var loc of arr_routeLocIn[i].loc){        //inbound
+                locId_in.push(loc.locId);
+            }
+
+            var arr_in = [];
+            var j = 0;
+            for (var id of locId_in){
+                await Location.findOne({locId: id})
+                    .then(function(loc){
+                        arr_in.push({loc: loc._id,
+                                  seq: arr_routeLocIn[i].loc[j].seq});
+                        j++;
+                });
+            }
+            locInInfo.push(arr_in);
+        }
+    })();
+
+    // obtain location info of each outbound direction route
+    var locOutInfo = [];
+    await (async()=>{
+        for(var i = 0; i < arr_routeOut.length; i++){      //1-10 routes
+            var locId_out = []; // all locId in a route
+            j = 0;
+            for (var loc of arr_routeLocOut[i].loc){        //outbound
+                locId_out.push(loc.locId);
+            }
+
+            var arr_out = [];
+            var j = 0;
+            for (var id of locId_out){
+                await Location.findOne({locId: id})
+                    .then(function(loc){
+                        arr_out.push({loc: loc._id,
+                                  seq: arr_routeLocOut[i].loc[j].seq});
+                        j++;
+                });
+            }
+            locOutInfo.push(arr_out);
+        }
+    })();
+
+    // store routes
+    var i = 0;
+    for await (var route of arr_routeIn){
+        try{
+            var r = new Route({
+                routeId: route.routeId,
+                startLocId: route.startLocId,
+                endLocId: route.endLocId,
+                stopCount: route.stopCount,
+                dir: "I",
+                locInfo: locInInfo[i]});            //locInfo[i]
+
+            await r.save().then();
+            i++;
+        } catch(err){
+            console.log(err);
+        }
+    }
+
+    i = 0;
+    for await (var route of arr_routeOut){
+        try{
+            var r = new Route({
+                routeId: route.routeId,
+                startLocId: route.startLocId,
+                endLocId: route.endLocId,
+                stopCount: route.stopCount,
+                dir: "O",
+                locInfo: locOutInfo[i]});            //locInfo[i]
+
+            await r.save().then();
+            i++;
+        } catch(err){
+            console.log(err);
+        }
+    }
+
+    console.log("Route Data Completed");
+    res.write("Route Data Completed<br>");
+
+    res.end("Done!");
 });
 
                                                 // Admin CRUD actions for location data
@@ -858,7 +836,7 @@ app.get("/admin/location", function(req, res){
     Route.find({routeId: routeId})
     .sort({dir: 1})
     .populate('locInfo.loc')
-    .exec(function(err, result){
+    .exec(async function(err, result){
         if(err){
             console.log(err);
         }
@@ -870,12 +848,27 @@ app.get("/admin/location", function(req, res){
             }
             else{
                 for(var i = 0; i < result[0].locInfo.length; i++){
+                    var commentNum;
+                    var favLocNum;
+                    await Comment.find({locId: result[0].locInfo[i].loc.locId}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            commentNum = result.length;
+                    });
+                    await User.find({fav_loc: {$in: result[0].locInfo[i].loc._id}}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            favLocNum = result.length;
+                    });
+                    console.log(commentNum);
                     output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + result[0].locInfo[i].loc.locId + "</span></b><br>" +
                     "Bus stop name: <span>" + result[0].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[0].locInfo[i].loc.latitude + "</span>, <span>" + result[0].locInfo[i].loc.longitude + "</span>)<br>" +
                     "Bus stop sequence number: <span>" + result[0].locInfo[i].seq + "</span><br>" +
-                    "Number of comments: <span>" + result[0].locInfo[i].loc.commentNum + "</span><br>" +
-                    "Number of favourites: <span>" + result[0].locInfo[i].loc.favLocNum + "</span>" +
+                    "Number of comments: <span>" + commentNum  + "</span><br>" +
+                    "Number of favourites: <span>" + favLocNum + "</span>" +
                     "</div>";
                 }
             }
@@ -885,12 +878,27 @@ app.get("/admin/location", function(req, res){
             }
             else{
                 for(var i = 0; i < result[1].locInfo.length; i++){
+                    var commentNum;
+                    var favLocNum;
+                    await Comment.find({locId: result[1].locInfo[i].loc.locId}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            commentNum = result.length;
+                    });
+                    await User.find({fav_loc: {$in: result[1].locInfo[i].loc._id}}, function(err, result){
+                        if(err)
+                            console.log(err);
+                        else
+                            favLocNum = result.length;
+                    });
+                    console.log(commentNum);
                     output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + result[1].locInfo[i].loc.locId + "</span></b><br>" +
                     "Bus stop name: <span>" + result[1].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[1].locInfo[i].loc.latitude + "</span>, <span>" + result[1].locInfo[i].loc.longitude + "</span>)<br>" +
                     "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span><br>" +
-                    "Number of comments: <span>" + result[1].locInfo[i].loc.commentNum + "</span><br>" +
-                    "Number of favourites: <span>" + result[1].locInfo[i].loc.favLocNum + "</span>" +
+                    "Number of comments: <span>" + commentNum  + "</span><br>" +
+                    "Number of favourites: <span>" + favLocNum + "</span>" +
                     "</div>";
                 }
             }
