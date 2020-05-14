@@ -25,8 +25,8 @@ $(document).ready(function() {
             '<br>' +
 
             '<h4><u>Workload distribution</u></h4>' +
-            'Kwan Tsz Fung: user action#4, 6, admin action#1, 2, 3, charting statistics in admin view' +
-            'Lee Kwan Hung: user action#1, 3, admin action#1, 2, 3, 5, non-user action#1, 2, charting statistics in user view' +
+            'Kwan Tsz Fung: user action#4, 6, admin action#1, 2, 3, charting statistics in admin view<br>' +
+            'Lee Kwan Hung: user action#1, 3, admin action#1, 2, 3, 5, non-user action#1, 2, charting statistics in user view<br>' +
             'Together: Debug, design different schemas, demo practice' +
             '<br><br>' +
 
