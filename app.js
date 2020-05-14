@@ -716,26 +716,26 @@ app.get("/admin/location", function(req, res){
         }
         else{
             var output = "<h3>Route ID: " + routeId + "</h3>" +
-                "<h3>Route direction: Inbound</h3>";
+                "<h3>Route direction: Inbound</h3><br>";
             if(result[0].locInfo.length == 0){
                 output += "No locations";
             }
             else{
                 for(var i = 0; i < result[0].locInfo.length; i++){
-                    output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result[0].locInfo[i].loc.locId + "</span><br>" +
+                    output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + result[0].locInfo[i].loc.locId + "</span></b><br>" +
                     "Bus stop name: <span>" + result[0].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[0].locInfo[i].loc.latitude + "</span>, <span>" + result[0].locInfo[i].loc.longitude + "</span>)<br>" +
                     "Bus stop sequence number: <span>" + result[0].locInfo[i].seq + "</span><br>" +
                     "Number of comments: " + result[0].locInfo[i].loc.commentNum + "</div>";
                 }
             }
-            output += "<br><br><h3>Route direction: Outbound</h3>";
+            output += "<br><br><h3>Route direction: Outbound</h3><br>";
             if(result[1].locInfo.length == 0){
                 output += "No locations";
             }
             else{
                 for(var i = 0; i < result[1].locInfo.length; i++){
-                    output += "<div class='mb-3 locInfo'>Bus stop ID: <span>" + result[1].locInfo[i].loc.locId + "</span><br>" +
+                    output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + result[1].locInfo[i].loc.locId + "</span></b><br>" +
                     "Bus stop name: <span>" + result[1].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[1].locInfo[i].loc.latitude + "</span>, <span>" + result[1].locInfo[i].loc.longitude + "</span>)<br>" +
                     "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span><br>" +
@@ -807,7 +807,7 @@ app.put("/admin/location", function(req,res){
         });
     }
     else{
-        Location.updateOne({locId: req.body['locId']},{logitude: req.body['newLocLong']})
+        Location.updateOne({locId: req.body['locId']},{longitude: req.body['newLocLong']})
         .exec(function(err, result) {
             if (err) {
                 res.send(err);
@@ -990,9 +990,9 @@ app.get("/admin/user", function(req, res){
 		else if (users.length == 0)
 			res.send("No users!");
 		else {
-			var output = "";
+			var output = "<br>";
 			for(var i = 0; i < users.length; i++) {
-				output += '<div class="mb-3 userInfo">Username: <span>' + users[i].username + "</span><br>" +
+				output += '<div class="mb-3 userInfo"><b>Username: <span>' + users[i].username + "</span></b><br>" +
 				"Password: <span>" + users[i].password + "</span></div>";
             }
 			res.send(output);
