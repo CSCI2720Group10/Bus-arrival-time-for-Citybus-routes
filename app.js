@@ -30,9 +30,7 @@ var LocationSchema = mongoose.Schema({
     locId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-    commentNum: { type: Number, required: true },
-    favLocNum: { type: Number, required: true}
+    longitude: { type: Number, required: true }
 });
 var Location = mongoose.model('Location', LocationSchema);
 
@@ -42,7 +40,7 @@ var UserSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     fav_locId: [{ type: String }],
-    fav_routeId: [{ type: Number }],
+    fav_routeId: [{ type: String }],
     commentNum: { type: Number, required: true },
     favLocNum: { type: Number, required: true },
     homeLoc:
@@ -246,26 +244,22 @@ app.get("/user/location", function (req, res)
                 {
                     var commentNum;
                     var favLocNum;
-                    await Comment.find({locId: l.locId}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
-                            commentNum = result.length;
-                    });
-                    await User.find({fav_locId: {$in: l.locId}}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
+                    await Comment.find({locId: l.locId})
+                    .then(async function(result){
+                        commentNum = result.length;
+                        await User.find({fav_locId: {$in: l.locId}})
+                        .then(function(result){
                             favLocNum = result.length;
+                            table += '<tr>' +
+                            '<td>' + l.locId + '</td>' +
+                            '<td>' + l.name + '</td>' +
+                            '<td>' + l.latitude + '</td>' +
+                            '<td>' + l.longitude + '</td>' +
+                            '<td>' + commentNum + '</td>' +
+                            '<td>' + favLocNum + '</td>' +
+                            '</tr>';
+                        });
                     });
-                    table += '<tr>' +
-                    '<td>' + l.locId + '</td>' +
-                    '<td>' + l.name + '</td>' +
-                    '<td>' + l.latitude + '</td>' +
-                    '<td>' + l.longitude + '</td>' +
-                    '<td>' + commentNum + '</td>' +
-                    '<td>' + favLocNum + '</td>' +
-                    '</tr>';
                 }
                 table += '</tbody></table>';;
                 res.send(table);
@@ -295,26 +289,22 @@ app.get("/user/location", function (req, res)
                 {
                     var commentNum;
                     var favLocNum;
-                    await Comment.find({locId: l.locId}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
-                            commentNum = result.length;
-                    });
-                   await User.find({fav_locId: {$in: l.locId}}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
+                    await Comment.find({locId: l.locId})
+                    .then(async function(result){
+                        commentNum = result.length;
+                        await User.find({fav_locId: {$in: l.locId}})
+                        .then(function(result){
                             favLocNum = result.length;
+                            table += '<tr>' +
+                            '<td>' + l.locId + '</td>' +
+                            '<td>' + l.name + '</td>' +
+                            '<td>' + l.latitude + '</td>' +
+                            '<td>' + l.longitude + '</td>' +
+                            '<td>' + commentNum + '</td>' +
+                            '<td>' + favLocNum + '</td>' +
+                            '</tr>';
+                        });
                     });
-                    table += '<tr>' +
-                    '<td>' + l.locId + '</td>' +
-                    '<td>' + l.name + '</td>' +
-                    '<td>' + l.latitude + '</td>' +
-                    '<td>' + l.longitude + '</td>' +
-                    '<td>' + commentNum + '</td>' +
-                    '<td>' + favLocNum + '</td>' +
-                    '</tr>';
                 }
                 table += '</tbody></table>';;
                 res.send(table);
@@ -336,26 +326,22 @@ app.get("/user/location", function (req, res)
                 for(l of loc){
                     var commentNum;
                     var favLocNum;
-                    await Comment.find({locId: l.locId}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
-                            commentNum = result.length;
-                    });
-                    await User.find({fav_locId: {$in: l.locId}}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
+                    await Comment.find({locId: l.locId})
+                    .then(async function(result){
+                        commentNum = result.length;
+                        await User.find({fav_locId: {$in: l.locId}})
+                        .then(function(result){
                             favLocNum = result.length;
+                            tableBody += '<tr>' +
+                            '<td>' + l.locId + '</td>' +
+                            '<td>' + l.name + '</td>' +
+                            '<td>' + l.latitude + '</td>' +
+                            '<td>' + l.longitude + '</td>' +
+                            '<td>' + commentNum + '</td>' +
+                            '<td>' + favLocNum + '</td>' +
+                            '</tr>';
+                        });
                     });
-                    tableBody += '<tr>' +
-                    '<td>' + l.locId + '</td>' +
-                    '<td>' + l.name + '</td>' +
-                    '<td>' + l.latitude + '</td>' +
-                    '<td>' + l.longitude + '</td>' +
-                    '<td>' + commentNum + '</td>' +
-                    '<td>' + favLocNum + '</td>' +
-                    '</tr>';
                 }
                 res.send(tableBody);
             }
@@ -384,26 +370,22 @@ app.get("/user/location", function (req, res)
                 for (l of loc ){
                     var commentNum;
                     var favLocNum;
-                    await Comment.find({locId: l.locId}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
-                            commentNum = result.length;
-                    });
-                    await User.find({fav_locId: {$in: l.locId}}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
+                    await Comment.find({locId: l.locId})
+                    .then(async function(result){
+                        commentNum = result.length;
+                        await User.find({fav_locId: {$in: l.locId}})
+                        .then(function(result){
                             favLocNum = result.length;
+                            table += '<tr>' +
+                            '<td>' + l.locId + '</td>' +
+                            '<td>' + l.name + '</td>' +
+                            '<td>' + l.latitude + '</td>' +
+                            '<td>' + l.longitude + '</td>' +
+                            '<td>' + commentNum + '</td>' +
+                            '<td>' + favLocNum + '</td>' +
+                            '</tr>';
+                        });
                     });
-                    table += '<tr>' +
-                    '<td>' + l.locId + '</td>' +
-                    '<td>' + l.name + '</td>' +
-                    '<td>' + l.latitude + '</td>' +
-                    '<td>' + l.longitude + '</td>' +
-                    '<td>' + commentNum + '</td>' +
-                    '<td>' + favLocNum + '</td>' +
-                    '</tr>';
                 }
                 table += '</tbody></table>';;
                 res.send(table);
@@ -573,26 +555,22 @@ app.get("/user/favourite/:username", function (req, res)
                 {
                     var commentNum;
                     var favLocNum;
-                    await Comment.find({locId: l.locId}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
-                            commentNum = result.length;
-                    });
-                    await User.find({fav_locId: {$in: l.locId}}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
+                    await Comment.find({locId: l.locId})
+                    .then(async function(result){
+                        commentNum = result.length;
+                        await User.find({fav_locId: {$in: l.locId}})
+                        .then(function(result){
                             favLocNum = result.length;
+                            table += '<tr>' +
+                            '<td>' + l.locId + '</td>' +
+                            '<td>' + l.name + '</td>' +
+                            '<td>' + l.latitude + '</td>' +
+                            '<td>' + l.longitude + '</td>' +
+                            '<td>' + commentNum + '</td>' +
+                            '<td>' + favLocNum + '</td>' +
+                            '</tr>';
+                        });
                     });
-                    table += '<tr>' +
-                        '<td>' + l.locId + '</td>' +
-                        '<td>' + l.name + '</td>' +
-                        '<td>' + l.latitude + '</td>' +
-                        '<td>' + l.longitude + '</td>' +
-                        '<td>' + commentNum + '</td>' +
-                        '<td>' + favLocNum + '</td>' +
-                        '</tr>';
                 }
                 table += '</tbody></table>';
                 res.send(table);
@@ -616,7 +594,6 @@ app.post("/user/comment", function (req, res)
         }
         User.findOne({ username: req.body['username'] }, function (error, doc) {
             var newComment = new Comment({
-
                 commentId: parseInt(newCommentId)+1,
                 userId: doc.userId,
                 username: doc.username,
@@ -625,28 +602,19 @@ app.post("/user/comment", function (req, res)
                 time: req.body['time']
             });
 
-            Location.findOne({ locId: req.body['locId']}, function(err, loc) {
-                if(err){
-                    res.send(err);
-                }
-                else {
-                    loc.commentNum += 1;                        //add loc commentNum
-                    loc.save();
-                }
-            })
-
             if (error) {
                 res.send(error);
             }
             else {
-
                 newComment.save(function (error) {
                     if (error) {
                         res.send(error);
                     }
-                    doc.commentNum += 1;
-                    doc.save();
-                    res.send("Save the Comment to data!");
+                    else{
+                        doc.commentNum += 1;
+                        doc.save();
+                        res.send("Save the Comment to data!");
+                    }
                 });
             }
         });
@@ -726,51 +694,12 @@ app.post("/admin/flush", async function(req, res){
     await (async () => {
         try{
             promises = arr_loc.map(async loc => {
-/*//===New Stuff===
-                var commentNum = 0;
-                var favLocNum = 0;
-
-                 Comment.find({locId: loc.locId})
-                .exec(function(err, com) {
-                    if (err) {
-                        res.send(err);
-                    }
-                    else {
-                        commentNum = com.length;
-
-                        FavLoc.find({locId: loc.locId})
-                        .exec(function(err, fav) {
-                            if (err) {
-                                res.send(err);
-                            }
-                            else {
-                                if(fav.length != 0)
-                                    favLocNum = fav.favNum;
-
-                                var l = new Location({
-                                            locId: loc.locId,
-                                            name: loc.name,
-                                            latitude: loc.latitude,
-                                            longitude: loc.longitude,
-                                            commentNum: commentNum,
-                                            favLocNum: favLocNum
-                                });
-
-                                return l.save().then();
-                            }
-                        });
-                    }
-                 });
-//===New Stuff===*/
-                // Original Code
                 var l = new Location(
                 {
                     locId: loc.locId,
                     name: loc.name,
                     latitude: loc.latitude,
-                    longitude: loc.longitude,
-                    commentNum: 0,
-                    favLocNum: 0
+                    longitude: loc.longitude
                 });
                 return l.save().then();
 
@@ -903,9 +832,7 @@ app.post("/admin/location", function(req,res){
                     locId: req.body['locId'],
                     name: req.body['locName'],
                     latitude: req.body['locLat'],
-                    longitude: req.body['locLong'],
-                    commentNum: 0,
-                    favLocNum: 0
+                    longitude: req.body['locLong']
                 });
 
                 l.save(function(err, l) {
@@ -955,64 +882,54 @@ app.get("/admin/location", function(req, res){
         }
         else{
             var output = "<h3>Route ID: " + routeId + "</h3>" +
-                "<h3>Route direction: Inbound</h3><br>";
+                "<h3>Route direction: Inbound</h3>";
             if(result[0].locInfo.length == 0){
                 output += "No locations";
             }
             else{
-                for(var i = 0; i < result[0].locInfo.length; i++){
+                for(var locInfo of result[0].locInfo){
                     var commentNum;
                     var favLocNum;
-                    await Comment.find({locId: result[0].locInfo[i].loc.locId}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
-                            commentNum = result.length;
-                    });
-                    await User.find({fav_locId: {$in: result[0].locInfo[i].loc.locId}}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
+                    await Comment.find({locId: locInfo.loc.locId})
+                    .then(async function(result){
+                        commentNum = result.length;
+                        await User.find({fav_locId: {$in: locInfo.loc.locId}})
+                        .then(function(result){
                             favLocNum = result.length;
+                            output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + locInfo.loc.locId + "</span></b><br>" +
+                            "Bus stop name: <span>" + locInfo.loc.name + "</span><br>" +
+                            "Bus stop location (latitude, longitude): (<span>" + locInfo.loc.latitude + "</span>, <span>" + locInfo.loc.longitude + "</span>)<br>" +
+                            "Bus stop sequence number: <span>" + locInfo.seq + "</span><br>" +
+                            "Number of comments: <span>" + commentNum  + "</span><br>" +
+                            "Number of favourites: <span>" + favLocNum + "</span>" +
+                            "</div>";
+                        });
                     });
-                    console.log(commentNum);
-                    output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + result[0].locInfo[i].loc.locId + "</span></b><br>" +
-                    "Bus stop name: <span>" + result[0].locInfo[i].loc.name + "</span><br>" +
-                    "Bus stop location (latitude, longitude): (<span>" + result[0].locInfo[i].loc.latitude + "</span>, <span>" + result[0].locInfo[i].loc.longitude + "</span>)<br>" +
-                    "Bus stop sequence number: <span>" + result[0].locInfo[i].seq + "</span><br>" +
-                    "Number of comments: <span>" + commentNum  + "</span><br>" +
-                    "Number of favourites: <span>" + favLocNum + "</span>" +
-                    "</div>";
                 }
             }
-            output += "<br><br><h3>Route direction: Outbound</h3><br>";
+            output += "<br><br><h3>Route direction: Outbound</h3>";
             if(result[1].locInfo.length == 0){
                 output += "No locations";
             }
             else{
-                for(var i = 0; i < result[1].locInfo.length; i++){
+                for(var locInfo of result[1].locInfo){
                     var commentNum;
                     var favLocNum;
-                    await Comment.find({locId: result[1].locInfo[i].loc.locId}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
-                            commentNum = result.length;
-                    });
-                    await User.find({fav_locId: {$in: result[1].locInfo[i].loc.locId}}, function(err, result){
-                        if(err)
-                            console.log(err);
-                        else
+                    await Comment.find({locId: locInfo.loc.locId})
+                    .then(async function(result){
+                        commentNum = result.length;
+                        await User.find({fav_locId: {$in: locInfo.loc.locId}})
+                        .then(function(result){
                             favLocNum = result.length;
+                            output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + locInfo.loc.locId + "</span></b><br>" +
+                            "Bus stop name: <span>" + locInfo.loc.name + "</span><br>" +
+                            "Bus stop location (latitude, longitude): (<span>" + locInfo.loc.latitude + "</span>, <span>" + locInfo.loc.longitude + "</span>)<br>" +
+                            "Bus stop sequence number: <span>" + locInfo.seq + "</span><br>" +
+                            "Number of comments: <span>" + commentNum  + "</span><br>" +
+                            "Number of favourites: <span>" + favLocNum + "</span>" +
+                            "</div>";
+                        });
                     });
-
-                    output += "<div class='mb-3 locInfo'><b>Bus stop ID: <span>" + result[1].locInfo[i].loc.locId + "</span></b><br>" +
-                    "Bus stop name: <span>" + result[1].locInfo[i].loc.name + "</span><br>" +
-                    "Bus stop location (latitude, longitude): (<span>" + result[1].locInfo[i].loc.latitude + "</span>, <span>" + result[1].locInfo[i].loc.longitude + "</span>)<br>" +
-                    "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span><br>" +
-                    "Number of comments: <span>" + commentNum  + "</span><br>" +
-                    "Number of favourites: <span>" + favLocNum + "</span>" +
-                    "</div>";
                 }
             }
             res.send(output);
@@ -1173,9 +1090,7 @@ app.post("/admin/csv", function (req, res)
                     locId: req.body['locId'],
                     name: req.body['locName'],
                     latitude: req.body['locLat'],
-                    longitude: req.body['locLong'],
-                    commentNum: 0,
-                    favLocNum: 0
+                    longitude: req.body['locLong']
                 });
             result.save(function (error) {
 
