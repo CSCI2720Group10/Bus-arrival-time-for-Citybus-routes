@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    if($("title").html() == "Login")
+    if($("title").html() == "Bus arrival time for Citybus Routes APP")
        history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
     else if($("title").html() == "Home")
         history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
@@ -11,6 +11,23 @@ $(document).ready(function() {
             $("#content").html(event.state.content);
             $("title").html(event.state.title);
         }
+    });
+
+    $(document).on("click", "#about", function(e) {
+        e.preventDefault();
+        content = '<h1>About This Project</h1>' +
+            '<h4>Group Members</h4>' +
+            '<pre>Kwan Tsz Fung		        1155078864\n' +
+            'Lee Kwan Hung		        1155108603\n' +
+            'Wong Ching Yeung Wallace 	1155093534\n' +
+            'Choi Chun Wa                    1155094180</pre>' +
+            '<h4>"How to"</h4>' +
+            '<h4>"Data Schemas"</h4>' +
+            '<h4>"Technologies and Libraries"</h4>' +
+            'We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.';
+        $("#content").html(content);
+        $("title").html("About This Project");
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/about.html");
     });
 
     $(document).on("click", "#signup", function(e) {
@@ -40,7 +57,7 @@ $(document).ready(function() {
             if(res == "/root.html"){
                 $("body").load(res + " #content", function(){
                     $("#msg").html("Sign up successful!");
-                    $("title").html("Login");
+                    $("title").html("Bus arrival time for Citybus Routes APP");
                     history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/");
                 });
             }
@@ -59,7 +76,7 @@ $(document).ready(function() {
         .done(function(res){
             var $temp = $('<div></div>').append(res);
             $("#content").html($temp.find("#content").html());
-            $("title").html("Login");
+            $("title").html("Bus arrival time for Citybus Routes APP");
             history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/");
         });
     });
@@ -117,7 +134,7 @@ $(document).ready(function() {
 			res = res[1].slice(1, res[1].length - 2);
             $("body").html(res);*/
             $("body").load(res + " #content", function(){
-                $("title").html("Login");
+                $("title").html("Bus arrival time for Citybus Routes APP");
                 history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
             });
         });
@@ -134,7 +151,7 @@ $(document).ready(function() {
 			res = res[1].slice(1, res[1].length - 2);
             $("body").html(res);*/
             $("body").load(res + " #content", function(){
-                $("title").html("Login");
+                $("title").html("Bus arrival time for Citybus Routes APP");
                 history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
             });
         });
