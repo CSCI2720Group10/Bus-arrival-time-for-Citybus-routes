@@ -378,10 +378,10 @@ $(document).on("click", "#addComment", function (e)
         {
             console.log($("#inputcomment").val());
             console.log($userTime.html());
-            processForm();
             var nameOfUser = '<h5 class="text-primary">User: ' + $("#userName").html()+ '</h5>' +
                 '<p class="text-info">' + $userTime.html() + '</p>';
             $("#comments").append(nameOfUser);
+            processForm();
         });
 });
 
