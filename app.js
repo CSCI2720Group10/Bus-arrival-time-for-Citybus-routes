@@ -565,6 +565,12 @@ app.post("/user/comment", function (req, res)
         });
     });
 });
+
+//Showing the comment depends on the specificed locations.
+app.get("/user/comment", function (req, res) {
+
+});
+
                                                          //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
