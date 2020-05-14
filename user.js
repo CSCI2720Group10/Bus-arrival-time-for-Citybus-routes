@@ -281,10 +281,10 @@ $(document).on("click", "#sepBtn", function (e)
                 var topicCon = '<h5 class="text-success"> Here is ' + res.result.name + ' at latlng (' +
                     res.result.latitude.toFixed(1) + ',' + res.result.longitude.toFixed(1) + ')</h5>';
 
-                var commentmsg = '<div class="form-group">'+
+                var commentmsg = '<form id ="myform">'+
                     '<label for="comment">Comment</label>'+
                    ' <textarea class="form-control" rows="3" id="inputcomment"></textarea>'+
-                    '</div ><button type="button" class="btn btn-primary" id="addComment">Add comment</button>';
+                    '</form ><button type="button" class="btn btn-primary" id="addComment">Add comment</button>';
 
                 $("#commentBox").html(commentmsg);
                 $("#topic").html(topicCon);
@@ -347,6 +347,7 @@ function processForm()
     var $new = $('<li><p></p></li>');
     $new.addClass("media");
     $new.find("p").html($("#inputcomment").val());
+    $('#myform').get(0).reset();
     $("#comments").append($new);
 }
 
