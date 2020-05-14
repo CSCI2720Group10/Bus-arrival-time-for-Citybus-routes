@@ -1019,7 +1019,7 @@ app.post("/admin/user", function(req,res){
 //retrieve users
 app.get("/admin/user", function(req, res){
     User.find()
-	.select('username password')
+	.select('username password commentNum favLocNum')
     .sort({userId: 1})
 	.exec(function(err, users) {
 		if (err)
@@ -1030,7 +1030,10 @@ app.get("/admin/user", function(req, res){
 			var output = "<br>";
 			for(var i = 0; i < users.length; i++) {
 				output += '<div class="mb-3 userInfo"><b>Username: <span>' + users[i].username + "</span></b><br>" +
-				"Password: <span>" + users[i].password + "</span></div>";
+				"Password: <span>" + users[i].password + "</span><br>" +
+                "#Comments: <span>" + users[i].commentNum + "</span><br>" +
+                "#Favourites: <span>" + users[i].favLocNum + "</span>" +
+                "</div>";
             }
 			res.send(output);
 		}
