@@ -17,7 +17,7 @@ $(document).ready(function() {
         e.preventDefault();
         content = '<h1>About This Project</h1>' +
             '<br>' +
-            '<h4><u>Group Members</u></h4>' +
+            '<h4><u>Group Members (Group 10)</u></h4>' +
             '<pre>Kwan Tsz Fung		        1155078864\n' +
             'Lee Kwan Hung		        1155108603\n' +
             'Wong Ching Yeung Wallace 	1155093534\n' +
