@@ -74,6 +74,15 @@ var CommentSchema = mongoose.Schema({
 });
 var Comment= mongoose.model('Comment', CommentSchema);
 
+                                                                //Favourite Location Schema
+var FavouriteLocSchema = mongoose.Schema({
+	locId : { type: Number, required: true, unique: true },
+	favNum: { type: Number, required: true },
+    userIds: [{userId: {type: Number, required: true}}]
+});
+var FavLoc = mongoose.model('FavLoc', FavouriteLocSchema);
+
+
 app.use("/", express.static(__dirname));
 
 app.get("/", function(req, res){
@@ -576,6 +585,43 @@ app.post("/admin/flush", function(req, res){
         await (async () => {
             try{
                 promises = arr_loc.map(async loc => {
+//===New Stuff===
+                    var commentNum = 0;
+                    var favLocNum = 0;
+
+                     Comment.find({locId: loc.locId})
+                    .exec(function(err, com) {
+                        if (err) {
+                            res.send(err);
+                        }
+                        else {
+                            commentNum = com.length;
+
+                            FavLoc.find({locId: loc.locId})
+                            .exec(function(err, fav) {
+                                if (err) {
+                                    res.send(err);
+                                }
+                                else {
+                                    if(fav.length != 0)
+                                        favLocNum = fav.favNum;
+
+                                    var l = new Location({
+                                                locId: loc.locId,
+                                                name: loc.name,
+                                                latitude: loc.latitude,
+                                                longitude: loc.longitude,
+                                                commentNum: commentNum,
+                                                favLocNum: favLocNum
+                                    });
+
+                                    return l.save().then();
+                                }
+                            });
+                        }
+                     });
+//===New Stuff===
+                    /*  Original Code
                     var l = new Location(
                     {
                         locId: loc.locId,
@@ -586,6 +632,7 @@ app.post("/admin/flush", function(req, res){
                         favLocNum: 0
                     });
                     return l.save().then();
+                    */
                 });
                 for(var p of promises) {
                     await p;
