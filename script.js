@@ -68,7 +68,8 @@ $(document).ready(function() {
             data: {username: $("#username").val(),
                    password: $("#password").val()}
         })
-        .done(function(res){
+            .done(function (res) {
+
             if(res[0] == '<'){
                 var $temp = $('<div></div>').append(res);
                 $("#content").html($temp.find("#content").html());

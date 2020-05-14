@@ -288,6 +288,17 @@ $(document).on("click", "#sepBtn", function (e)
 
                 $("#commentBox").html(commentmsg);
                 $("#topic").html(topicCon);
+
+                console.log("First");
+                $.ajax({
+                    url: "./user/comment/" + $("#sepValue").val(),
+                    type: "GET"
+                })
+                    .done(function (result)
+                    {
+                        console.log(result);
+                        $("#comments").html(result);
+                    });
             }
             else
             {
@@ -325,7 +336,6 @@ $(document).on("click", "#favBtn", function (e) {
             }
         });
 });
-
 
 //Append comment in the corresponding location
 function processForm()
@@ -366,7 +376,8 @@ $(document).on("click", "#addComment", function (e)
             console.log($("#inputcomment").val());
             console.log($userTime.html());
             processForm();
-            var nameOfUser = '<h6 class="text-primary">User: ' + $("#userName").html() + '</h6>';
+            var nameOfUser = '<h6 class="text-info">' + $userTime.html() + '</h6>'+
+                '<h6 class="text-primary">User: ' + $("#userName").html()+ '</h6>';
             $("#comments").append(nameOfUser);
         });
 });

@@ -68,7 +68,8 @@ var Route = mongoose.model('Route', RouteSchema);
                                                                 //Comment Schema
 var CommentSchema = mongoose.Schema({
 	commentId: { type: Number, required: true, unique: true },
-	userId : { type: Number, required: true },
+    userId: { type: Number, required: true },
+    username:{type:String},                          //Adding user name for comment finding
 	content: { type: String, required: true },
 	locId: { type: String, required: true },
     time: { type: String, required: true }
@@ -355,7 +356,6 @@ app.get("/user/location", function (req, res)
     }
 });
 
-
 //find top 5 locations with most comments
 app.get("/user/top5", function (req, res)
 {
@@ -526,7 +526,6 @@ app.get("/user/favourite/:username", function (req, res)
 //input the comment according to the location.
 app.post("/user/comment", function (req, res)
 {
-
     console.log("Comment is coming !");
     Comment.findOne().sort([['commentId', -1]]).exec(function (err, comdoc)
     {
@@ -542,14 +541,13 @@ app.post("/user/comment", function (req, res)
 
                 commentId: parseInt(newCommentId)+1,
                 userId: doc.userId,
+                username: doc.username,
                 content: req.body['content'],
                 locId: req.body['locId'],
                 time: req.body['time']
             });
             if (error) {
-
                 res.send(error);
-
             }
             else {
 
@@ -567,7 +565,27 @@ app.post("/user/comment", function (req, res)
 });
 
 //Showing the comment depends on the specificed locations.
-app.get("/user/comment", function (req, res) {
+app.get("/user/comment/:locId", function (req, res)
+{
+    //Sorting by the Comment Id by ascending order.
+    Comment.find({ locId: req.params['locId'] }).sort([['commentId', 1]]).exec(function (err, showdoc)
+    {
+        //comment list
+        if (err) {
+            res.send(err);
+        }
+        else
+        {
+            var commentlist = '';
+            for (commentCount of showdoc) {
+                console.log(commentCount);
+                commentlist += '<li><p>' + commentCount.content + '</p></li>'+
+                    '<h6 class="text-info">' +  commentCount.time + '</h6>' +
+                    '<h6 class="text-primary">User: '+ commentCount.username + '</h6>';
+            }
+            res.send(commentlist);
+        }
+    });
 
 });
 
