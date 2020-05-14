@@ -25,8 +25,9 @@ $(document).ready(function() {
             '<br>' +
 
             '<h4><u>Workload distribution</u></h4>' +
-            'Kwan Tsz Fung: user action#4, 6, admin action#1, 2, 3, charting statistics in admin view<br>' +
-            'Lee Kwan Hung: user action#1, 3, admin action#1, 2, 3, 5, non-user action#1, 2, charting statistics in user view<br>' +
+            'Kwan Tsz Fung: user action# 4, 6, admin action# 1, 2, 3, charting statistics in admin view<br>' +
+            'Lee Kwan Hung: user action# 1, 3, admin action# 1, 2, 3, 5, non-user action#1, 2, charting statistics in user view<br>' +
+            'Wong Ching Yeung Wallace: user action# 2, 3, 4, 5 admin action# 4, user-location , gooleMap application <br>'+
             'Together: Debug, design different schemas, demo practice' +
             '<br><br>' +
 
@@ -110,6 +111,32 @@ $(document).ready(function() {
             '</table>' +
 
             '<h4><u>Technologies and Libraries</u></h4>' +
+            '<p>Why NodeJS + ajax + MogoDB(mongoose)?</p>'+
+            '<table class="table table-hover table-sm text-dark w-50">' +
+            '<thead class="thead-light">' +
+            '<tr>' +
+                '<th>advantages </th>' +
+                '<th>disadvantages </th>'+
+            '</tr>' +
+            '<tr>' +
+                '<td>nodejs and mongoose is look like javascript language which is easy to code.</td>' +
+                '<td>data redundancy may be occur in the collection which waste the memory. </td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td>MongDB is new developed that I can check the data in community app with only few clicks.</td>' +
+                '<td>There is no foreign key in MongoDB which is hard to connect two database for finding the location.</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>MongDB is easily to set-up especially for the Newby </td>' +
+            '<td></td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>MongDB has a flexible data type collection. </td>' +
+            '<td></td>' +
+            '</tr>' +
+            '</table>' +
+
+
             '<br><br>' +
             '<b class="text-danger"><u>We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.</u></b>' +
             '<br><a id="login" href="">Return to Login Page</a>';
