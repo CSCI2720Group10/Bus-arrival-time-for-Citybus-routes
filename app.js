@@ -513,7 +513,16 @@ app.get("/user/favourite/:username", function (req, res)
     });
 });
 
-//set home location
+//input the comment according to the location.
+app.post("/user/comment", function (req, res) {
+
+    console.log("Comment is coming !");
+    Comment.findOne({ locId: req.body['locId'] }, function (error, doc) {
+
+
+
+    });
+});
                                                          //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
