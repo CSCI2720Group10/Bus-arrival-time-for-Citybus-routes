@@ -41,7 +41,7 @@ var UserSchema = mongoose.Schema({
     userId: { type: Number, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    fav_locId: [{ type: String, ref: 'Location' }],
+    fav_locId: [{ type: String }],
     fav_routeId: [{ type: Number }],
     commentNum: { type: Number, required: true },
     favLocNum: { type: Number, required: true },
@@ -1395,6 +1395,15 @@ app.get("/admin/top5", function (req, res)
     });
 });
 
+// redirect other URL to one of URLs below
+app.get("/*", function(req, res){
+    if (req.session['login'] == true)
+        res.sendFile(__dirname + '/user.html');
+    else if (req.session['loginAdmin'] == true)
+        res.sendFile(__dirname + '/admin.html');
+    else
+        res.sendFile(__dirname + '/root.html');
+});
 
 // RESTful API
 app.get("/locations", function (req, res) {

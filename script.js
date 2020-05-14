@@ -1,5 +1,10 @@
 $(document).ready(function() {
-    history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
+    if($("title").html() == "Login")
+       history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
+    else if($("title").html() == "Home")
+        history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
+    else if($("title").html() == "Admin Home")
+        history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/admin.html");
 
     $(window).on("popstate", function() {
         if (event.state.hasOwnProperty('content')){
