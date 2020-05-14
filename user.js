@@ -197,16 +197,7 @@ a.a map showing the location
 b.the location details
 c.user comments, where users can add new comments(non - threaded) */
 
-//Append comment in the corresponding location
-function processForm()
-{
-    var $new = $("<li><div><p></p></li>");
-    $new.addClass("media");
-    $new.find("div").addClass("media-body");
-    $new.find("p").html($("#inputcomment").val());
-    $("#comments").append($new);
-    $("form")[0].reset();
-}
+
 
 //Measure the distance between two point
 function haversine_distance(pt1Lat, pt1Long, pt2Lat, pt2Long)
@@ -337,11 +328,24 @@ $(document).on("click", "#favBtn", function (e) {
         });
 });
 
+
+//Append comment in the corresponding location
+function processForm() {
+
+    var $new = $("<li><div><p></p></li>");
+    $new.addClass("media");
+    $new.find("div").addClass("media-body");
+    $new.find("p").html($("#inputcomment").val());
+    $("#comments").append($new);
+}
+
 //adding comment click
 $(document).on("click", "#addComment", function (e)
 {
     e.preventDefault();
     processForm();
+    var nameOfUser = '<h6 class="text-primary">User: ' + $("#userName").html() + '</h6>';
+    $("#comments").append(nameOfUser);
 });
 
 $(document).ready(function ()
