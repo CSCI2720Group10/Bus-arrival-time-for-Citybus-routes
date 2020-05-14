@@ -30,7 +30,8 @@ var LocationSchema = mongoose.Schema({
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
-    commentNum: { type: Number, required: true }
+    commentNum: { type: Number, required: true },
+    favLocNum: { type: Number, required: true}
 });
 var Location = mongoose.model('Location', LocationSchema);
 
@@ -229,6 +230,7 @@ app.get("/user/location", function (req, res)
                     '<th>Latitude</th>' +
                     '<th>Longitude</th>' +
                     '<th>#Comment</th>' +
+                    '<th>#Favourite</th>' +
                     '</tr></thead><tbody>';
                 for (l of loc)
                 {
@@ -238,6 +240,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
                     '<td>' + l.commentNum + '</td>' +
+                    '<td>' + l.favLocNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -262,6 +265,7 @@ app.get("/user/location", function (req, res)
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
                 '<th>#Comment</th>' +
+                '<th>#Favourite</th>' +
                 '</tr></thead><tbody>';
                 for (l of loc)
                 {
@@ -271,6 +275,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
                     '<td>' + l.commentNum + '</td>' +
+                    '<td>' + l.favLocNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -297,6 +302,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
                     '<td>' + l.commentNum + '</td>' +
+                    '<td>' + l.favLocNum + '</td>' +
                     '</tr>';
                 }
                 res.send(tableBody);
@@ -321,6 +327,7 @@ app.get("/user/location", function (req, res)
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
                 '<th>#Comment</th>' +
+                '<th>#Favourite</th>' +
                 '</tr></thead><tbody>';
                 for (l of loc ){
                     table += '<tr>' +
@@ -329,6 +336,7 @@ app.get("/user/location", function (req, res)
                     '<td>' + l.latitude + '</td>' +
                     '<td>' + l.longitude + '</td>' +
                     '<td>' + l.commentNum + '</td>' +
+                    '<td>' + l.favLocNum + '</td>' +
                     '</tr>';
                 }
                 table += '</tbody></table>';;
@@ -422,6 +430,8 @@ app.post("/user/favourite", function (req, res)
         }
         location_id = doc._id;
 
+        doc.favLocNum += 1;
+
         //Then find the user information refer to the user name
         User.findOne({ username: req.body['username'] }, function (error, userdoc)
         {
@@ -441,6 +451,7 @@ app.post("/user/favourite", function (req, res)
             userdoc.favLocNum += 1;
             userdoc.fav_loc.push(location_id);
             userdoc.save();
+
             res.send("Favourite location stored successfully !");
         });
     });
@@ -466,6 +477,7 @@ app.get("/user/favourite/:username", function (req, res)
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
                 '<th>#Comment</th>' +
+                '<th>#Favourite</th>' +
                 '</tr></thead><tbody>';
 
             for (var i = 0; i < result[0].fav_loc.length; i++)
@@ -476,6 +488,7 @@ app.get("/user/favourite/:username", function (req, res)
                     '<td>' + result[0].fav_loc[i].latitude + '</td>' +
                     '<td>' + result[0].fav_loc[i].longitude + '</td>' +
                     '<td>' + result[0].fav_loc[i].commentNum + '</td>' +
+                    '<td>' + result[0].fav_loc[i].favLocNum + '</td>' +
                     '</tr>';
             }
             table += '</tbody></table>';
@@ -544,7 +557,8 @@ app.post("/admin/flush", function(req, res){
                         name: loc.name,
                         latitude: loc.latitude,
                         longitude: loc.longitude,
-                        commentNum: 0
+                        commentNum: 0,
+                        favLocNum: 0
                     });
                     return l.save().then();
                 });
@@ -688,7 +702,8 @@ app.post("/admin/location", function(req,res){
                     name: req.body['locName'],
                     latitude: req.body['locLat'],
                     longitude: req.body['locLong'],
-                    commentNum: 0
+                    commentNum: 0,
+                    favLocNum: 0
                 });
 
                 l.save(function(err) {
@@ -726,7 +741,9 @@ app.get("/admin/location", function(req, res){
                     "Bus stop name: <span>" + result[0].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[0].locInfo[i].loc.latitude + "</span>, <span>" + result[0].locInfo[i].loc.longitude + "</span>)<br>" +
                     "Bus stop sequence number: <span>" + result[0].locInfo[i].seq + "</span><br>" +
-                    "Number of comments: " + result[0].locInfo[i].loc.commentNum + "</div>";
+                    "Number of comments: <span>" + result[0].locInfo[i].loc.commentNum + "</span><br>" +
+                    "Number of favourites: <span>" + result[0].locInfo[i].loc.favLocNum + "</span>" +
+                    "</div>";
                 }
             }
             output += "<br><br><h3>Route direction: Outbound</h3><br>";
@@ -739,7 +756,9 @@ app.get("/admin/location", function(req, res){
                     "Bus stop name: <span>" + result[1].locInfo[i].loc.name + "</span><br>" +
                     "Bus stop location (latitude, longitude): (<span>" + result[1].locInfo[i].loc.latitude + "</span>, <span>" + result[1].locInfo[i].loc.longitude + "</span>)<br>" +
                     "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span><br>" +
-                    "Number of comments: " + result[1].locInfo[i].loc.commentNum + "</div>";
+                    "Number of comments: <span>" + result[1].locInfo[i].loc.commentNum + "</span><br>" +
+                    "Number of favourites: <span>" + result[0].locInfo[i].loc.favLocNum + "</span>" +
+                    "</div>";
                 }
             }
             res.send(output);
@@ -900,7 +919,8 @@ app.post("/admin/csv", function (req, res)
                     name: req.body['locName'],
                     latitude: req.body['locLat'],
                     longitude: req.body['locLong'],
-                    commentNum: 0
+                    commentNum: 0,
+                    favLocNum: 0
                 });
             result.save(function (error) {
 
