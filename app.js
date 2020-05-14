@@ -711,6 +711,12 @@ app.post("/admin/location", function(req,res){
         || req.body['locLat'] == "" || req.body['locLong'] == ""){
         res.send("Please fill in all the fields!");
     }
+    else if (req.body['locId'].length != 6){
+        res.send("Location ID should have 6 digits!");
+    }
+    else if(req.body['routeId'] == ""){
+        res.send("Please select a route!");
+    }
     else{
         Location.findOne({locId: req.body['locId']})
         .exec(function(err, loc) {
@@ -731,12 +737,34 @@ app.post("/admin/location", function(req,res){
                     favLocNum: 0
                 });
 
-                l.save(function(err) {
+                l.save(function(err, l) {
                     if (err){
                         res.send(err);
                     }
                     else{
-                        res.send("Create location successfully!");
+                        Route.findOne({routeId: req.body['routeId'], dir: req.body['dir']})
+                        .populate('locInfo.loc')
+                        .exec(function(err, route){
+                            if(err){
+                                console.log(err);
+                            }
+                            else{
+                                Route.updateOne({routeId: req.body['routeId'], dir: req.body['dir']},
+                                                {$push: {locInfo: {loc: l._id,
+                                                                   seq: route.locInfo[route.locInfo.length - 1].seq + 1}},
+                                                 $inc: {stopCount: 1},
+                                                 endLocId: req.body['locId']})
+                                .exec(function(err, result){
+                                    if (err) {
+                                        res.send(err);
+                                    }
+                                    else {
+                                        console.log(result);
+                                        res.send("Create location successfully!");
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
             }
@@ -782,7 +810,7 @@ app.get("/admin/location", function(req, res){
                     "Bus stop location (latitude, longitude): (<span>" + result[1].locInfo[i].loc.latitude + "</span>, <span>" + result[1].locInfo[i].loc.longitude + "</span>)<br>" +
                     "Bus stop sequence number: <span>" + result[1].locInfo[i].seq + "</span><br>" +
                     "Number of comments: <span>" + result[1].locInfo[i].loc.commentNum + "</span><br>" +
-                    "Number of favourites: <span>" + result[0].locInfo[i].loc.favLocNum + "</span>" +
+                    "Number of favourites: <span>" + result[1].locInfo[i].loc.favLocNum + "</span>" +
                     "</div>";
                 }
             }
