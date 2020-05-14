@@ -40,7 +40,6 @@ var UserSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     fav_locId: [{ type: String }],
-    fav_routeId: [{ type: String }],
     commentNum: { type: Number, required: true },
     favLocNum: { type: Number, required: true },
     homeLoc:
@@ -54,8 +53,6 @@ var User = mongoose.model('User', UserSchema);
                                                                   //Route Schema
 var RouteSchema = mongoose.Schema({
 	routeId: { type: String, required: true },
-	startLocId: { type: Number, required: true },
-	endLocId: { type: Number, required: true },
 	stopCount: { type: Number, required: true },
     dir: { type: String, required: true },
     locInfo: [{ loc: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
@@ -73,15 +70,6 @@ var CommentSchema = mongoose.Schema({
     time: { type: String, required: true }
 });
 var Comment= mongoose.model('Comment', CommentSchema);
-
-                                                                //Favourite Location Schema
-var FavouriteLocSchema = mongoose.Schema({
-	locId : { type: Number, required: true, unique: true },
-	favNum: { type: Number, required: true },
-    userIds: [{userId: {type: Number, required: true}}]
-});
-var FavLoc = mongoose.model('FavLoc', FavouriteLocSchema);
-
 
 app.use("/", express.static(__dirname));
 
@@ -767,8 +755,6 @@ app.post("/admin/flush", async function(req, res){
         try{
             var r = new Route({
                 routeId: route.routeId,
-                startLocId: route.startLocId,
-                endLocId: route.endLocId,
                 stopCount: route.stopCount,
                 dir: "I",
                 locInfo: locInInfo[i]});            //locInfo[i]
@@ -785,8 +771,6 @@ app.post("/admin/flush", async function(req, res){
         try{
             var r = new Route({
                 routeId: route.routeId,
-                startLocId: route.startLocId,
-                endLocId: route.endLocId,
                 stopCount: route.stopCount,
                 dir: "O",
                 locInfo: locOutInfo[i]});            //locInfo[i]
@@ -850,8 +834,7 @@ app.post("/admin/location", function(req,res){
                                 Route.updateOne({routeId: req.body['routeId'], dir: req.body['dir']},
                                                 {$push: {locInfo: {loc: l._id,
                                                                    seq: route.locInfo[route.locInfo.length - 1].seq + 1}},
-                                                 $inc: {stopCount: 1},
-                                                 endLocId: req.body['locId']})
+                                                 $inc: {stopCount: 1}})
                                 .exec(function(err, result){
                                     if (err) {
                                         res.send(err);
