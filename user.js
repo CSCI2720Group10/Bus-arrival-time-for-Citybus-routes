@@ -341,7 +341,6 @@ function processForm()
 $(document).on("click", "#addComment", function (e)
 {
     e.preventDefault();
-
     //cal the time we click at that moment.
     var nowDate = new Date();
     var mm = nowDate.getMonth() + 1; mm = (mm < 10) ? '0' + mm : mm;
@@ -350,6 +349,7 @@ $(document).on("click", "#addComment", function (e)
     var mi = nowDate.getMinutes(); mi = (mi < 10) ? '0' + mi : mi;
     var time = nowDate.getHours() + ":" + mi;
     var $userTime = $("<p>" + "Date:" + new_today + " Time:" + time + "</p>");
+
 
     $.ajax({
         url: "./user/comment",
@@ -366,7 +366,6 @@ $(document).on("click", "#addComment", function (e)
 
             console.log($("#inputcomment").val());
             console.log($userTime.html());
-
             processForm();
             var nameOfUser = '<h6 class="text-primary">User: ' + $("#userName").html() + '</h6>';
             $("#comments").append(nameOfUser);

@@ -70,7 +70,7 @@ var CommentSchema = mongoose.Schema({
 	commentId: { type: Number, required: true, unique: true },
 	userId : { type: Number, required: true },
 	content: { type: String, required: true },
-	locId: { type: Number, required: true },
+	locId: { type: String, required: true },
     time: { type: String, required: true }
 });
 var Comment= mongoose.model('Comment', CommentSchema);
@@ -515,36 +515,45 @@ app.get("/user/favourite/:username", function (req, res)
 });
 
 //input the comment according to the location.
-app.post("/user/comment", function (req, res) {
+app.post("/user/comment", function (req, res)
+{
 
     console.log("Comment is coming !");
-    User.findOne({ username: req.body['username'] }, function (error, doc)
+    Comment.findOne().sort([['commentId', -1]]).exec(function (err, comdoc)
     {
-        var newComment = new Comment({
-
-            commentId: parseInt(newCommentId),
-            userId: doc.userId,
-            content: req.body['content'],
-            locId: req.body['locId'],
-            time: req.body['time']
-        });
-        if (error) {
-
-            res.send(error);
-
+        console.log(comdoc);
+        if (comdoc == null) {
+            newCommentId = 0;
         }
-        else
+        else {
+
+            newCommentId = comdoc.commentId;
+        }
+        User.findOne({ username: req.body['username'] }, function (error, doc)
         {
-            
-            newComment.save(function (error) {
-                if (error) {
-                    res.send(error);
-                }
-                res.send("Save the Comment to data!");
+            var newComment = new Comment({
+
+                commentId: parseInt(newCommentId)+1,
+                userId: doc.userId,
+                content: req.body['content'],
+                locId: req.body['locId'],
+                time: req.body['time']
             });
-            //adding comment id by 1
-            newCommentId += 1;
-        }
+            if (error) {
+                res.send(error);
+            }
+            else {
+                newComment.save(function (error) {
+                    if (error) {
+                        res.send(error);
+                    }
+                    doc.commentNum += 1;
+                    doc.save();
+                    res.send("Save the Comment to data!");
+                });
+
+            }
+        });
     });
 });
                                                          //Admin page
