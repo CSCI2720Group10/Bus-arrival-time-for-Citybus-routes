@@ -460,7 +460,7 @@ app.get("/user/favourite/:username", function (req, res)
         {
             var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
                 '<thead class="thead-light"><tr>' +
-                '<th><a id="locIdCol" class="text-dark" href="">Location ID</a></th>' +
+                '<th>Location ID</th>' +
                 '<th>Name</th>' +
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
