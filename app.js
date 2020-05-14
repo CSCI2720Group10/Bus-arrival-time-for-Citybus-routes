@@ -52,7 +52,6 @@ var UserSchema = mongoose.Schema({
 });
 var User = mongoose.model('User', UserSchema);
 
-
                                                                   //Route Schema
 var RouteSchema = mongoose.Schema({
 	routeId: { type: String, required: true },
@@ -160,7 +159,7 @@ app.post("/signup", function(req, res){
         });
     }
 });
-                                                               //Login page
+                                                               //Loin pageg
 app.post("/login", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please enter username and password!");
@@ -472,7 +471,7 @@ app.get("/user/favourite/:username", function (req, res)
         {
             var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
                 '<thead class="thead-light"><tr>' +
-                '<th><a id="locIdCol" class="text-dark" href="">Location ID</a></th>' +
+                '<th>Location ID</th>' +
                 '<th>Name</th>' +
                 '<th>Latitude</th>' +
                 '<th>Longitude</th>' +
