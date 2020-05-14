@@ -46,51 +46,34 @@
             <div class="row">
                 <div class="col">
                     <!-- Left Column in the Row-->
-                    <div id="singleMap" style="width:100%;height:200%;"></div>
+                    <div id="singleMap" style="width:100%;height:100%;"></div>
                     <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&amp;callback=seperateMap"></script>
 
                     <h6>Seperate View of Location</h6>
 
                     <div class="custom-control-inline">
-                        <input class="form-control" style="width: 300px" type="text"  placeholder="Location Id" aria-label="Location Id" name="sepValue" id="sepValue">
+                        <input  style="width: 300px" type="text"  placeholder="Location Id" aria-label="Location Id" name="sepValue" id="sepValue">
                         <button type="submit" class="btn btn-success" id="sepBtn">Search</button>
                     </div>
 
                     <div id="userlocation"></div>
-                    
                 </div>
-
                 <div class="col">
-
                     <!-- Right Column in the Row-->
                     <h1 id="topic"></h1>
                     <div id="measureDistance"></div>
                     <div class="row">
                         <div class="col">
                             <div id="favouriteContent"></div>
-                            <div class="form-group">
-                                <label for="comment">Comment</label>
-                                <textarea class="form-control" rows="3" id="inputcomment"></textarea>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" name="inputcolor" value="red">Red
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" name="inputcolor" value="blue">Blue
-                                </label>
-                            </div>
-                            <button type="button" class="btn btn-primary" id="addComment">Add comment</button>
-
                         </div>
                         <div class="col">
                             <div id="favmsg"></div>
                         </div>
                     </div>
-
-
+                    <ul  id="comments" class="list-unstyled">
+                        <div id="commentMsg"></div>
+                    </ul>
+                    <div id="commentBox"></div>
                 </div>
                 </div>
 

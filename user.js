@@ -197,6 +197,17 @@ a.a map showing the location
 b.the location details
 c.user comments, where users can add new comments(non - threaded) */
 
+//Append comment in the corresponding location
+function processForm()
+{
+    var $new = $("<li><div><p></p></li>");
+    $new.addClass("media");
+    $new.find("div").addClass("media-body");
+    $new.find("p").html($("#inputcomment").val());
+    $("#comments").append($new);
+    $("form")[0].reset();
+}
+
 //Measure the distance between two point
 function haversine_distance(pt1Lat, pt1Long, pt2Lat, pt2Long)
 {
@@ -219,6 +230,7 @@ async function seperateMap()
         });
 }
 
+//seperate view of location
 $(document).on("click", "#sepBtn", function (e)
 {
     e.preventDefault();
@@ -279,7 +291,13 @@ $(document).on("click", "#sepBtn", function (e)
                 $("#favouriteContent").html(favContent);
                 var topicCon = '<h5 class="text-success"> Here is ' + res.name + ' at latlng (' +
                     res.latitude.toFixed(1) + ',' + res.longitude.toFixed(1) + ')</h5>';
-                        
+
+                var commentmsg = '<div class="form-group">'+
+                    '<label for="comment">Comment</label>'+
+                   ' <textarea class="form-control" rows="3" id="inputcomment"></textarea>'+
+                    '</div ><button type="button" class="btn btn-primary" id="addComment">Add comment</button>';
+
+                $("#commentBox").html(commentmsg);
                 $("#topic").html(topicCon);
             }
             else
@@ -292,6 +310,7 @@ $(document).on("click", "#sepBtn", function (e)
 
 });
 
+//adding the favourite click
 $(document).on("click", "#favBtn", function (e) {
     e.preventDefault();
     console.log($("#sepValue").val());
@@ -316,6 +335,13 @@ $(document).on("click", "#favBtn", function (e) {
                 
             }
         });
+});
+
+//adding comment click
+$(document).on("click", "#addComment", function (e)
+{
+    e.preventDefault();
+    processForm();
 });
 
 $(document).ready(function ()
@@ -530,7 +556,6 @@ $(document).ready(function ()
         $("#userContent").html(content);
         history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
     });
-
 
     //see favourite location
     $(document).on("click", "#seeFavLoc", function (e)

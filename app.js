@@ -51,7 +51,6 @@ var UserSchema = mongoose.Schema({
 });
 var User = mongoose.model('User', UserSchema);
 
-
                                                                   //Route Schema
 var RouteSchema = mongoose.Schema({
 	routeId: { type: String, required: true },
@@ -159,7 +158,7 @@ app.post("/signup", function(req, res){
         });
     }
 });
-                                                               //Login page
+                                                               //Loin pageg
 app.post("/login", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please enter username and password!");
