@@ -494,7 +494,21 @@ app.get("/user/mapping/:locId", function (req, res)
         else
         {
             console.log("Finding this single location!");
-            res.send(result);
+            Comment.find({locId: req.params['locId']}, function(err, comments) {
+                if(err)
+                    res.send(err);
+                else {
+                    var commentlist = '';
+                    for (commentCount of comments) {
+                        console.log(commentCount);
+                        commentlist += '<h5 class="text-primary">User: '+ commentCount.username + '</h5>' +
+                            '<p class="text-info"><b>' +  commentCount.time + '</b></p>' +
+                            '<li><p>' + commentCount.content + '</p></li>';
+                    }
+                    res.send({result: result,
+                             commentList: commentlist});
+                }
+            })
         }
     });
 });
@@ -630,7 +644,7 @@ app.post("/user/comment", function (req, res)
         });
     });
 });
-
+/*
 //Showing the comment depends on the specificed locations.
 app.get("/user/comment/:locId", function (req, res)
 {
@@ -655,7 +669,7 @@ app.get("/user/comment/:locId", function (req, res)
     });
 
 });
-
+*/
                                                          //Admin page
 app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;

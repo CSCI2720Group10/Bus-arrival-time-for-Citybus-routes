@@ -229,11 +229,11 @@ $(document).on("click", "#sepBtn", function (e)
     })
         .done(function (res)
         {
-            if (res != "No this locations!" && res.latitude != undefined)
+            if (res != "No this locations!" && res.result.latitude != undefined)
             {
                 var sepCenter =
                 {
-                    lat: res.latitude, lng: res.longitude
+                    lat: res.result.latitude, lng: res.result.longitude
                 };
 
                 //display User location here for measuring the distance.
@@ -278,8 +278,8 @@ $(document).on("click", "#sepBtn", function (e)
                 var favContent = '<button type="button" class="btn btn-outline-dark" id="favBtn">Add to Favourite</button>';
 
                 $("#favouriteContent").html(favContent);
-                var topicCon = '<h5 class="text-success"> Here is ' + res.name + ' at latlng (' +
-                    res.latitude.toFixed(1) + ',' + res.longitude.toFixed(1) + ')</h5>';
+                var topicCon = '<h5 class="text-success"> Here is ' + res.result.name + ' at latlng (' +
+                    res.result.latitude.toFixed(1) + ',' + res.result.longitude.toFixed(1) + ')</h5>';
 
                 var commentmsg = '<div class="form-group">'+
                     '<label for="comment">Comment</label>'+
@@ -288,7 +288,9 @@ $(document).on("click", "#sepBtn", function (e)
 
                 $("#commentBox").html(commentmsg);
                 $("#topic").html(topicCon);
+                $("#comments").html(res.commentList);
 
+                /*
                 console.log("First");
                 $.ajax({
                     url: "./user/comment/" + $("#sepValue").val(),
@@ -297,8 +299,9 @@ $(document).on("click", "#sepBtn", function (e)
                     .done(function (result)
                     {
                         console.log(result);
-                        $("#comments").html(result);
+                        $("#comments").html(res.result);
                     });
+                    */
             }
             else
             {
