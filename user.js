@@ -332,7 +332,7 @@ function processForm()
 {
 
     var $new = $('<li><p></p></li>');
-    $new.addClass("media"); 
+    $new.addClass("media");
     $new.find("p").html($("#inputcomment").val());
     $("#comments").append($new);
 }

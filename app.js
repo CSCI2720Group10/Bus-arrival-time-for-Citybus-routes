@@ -70,10 +70,19 @@ var CommentSchema = mongoose.Schema({
 	commentId: { type: Number, required: true, unique: true },
 	userId : { type: Number, required: true },
 	content: { type: String, required: true },
-	locId: { type: String, required: true },
+	locId: { type: Number, required: true },
     time: { type: String, required: true }
 });
 var Comment= mongoose.model('Comment', CommentSchema);
+
+                                                                //Favourite Location Schema
+var FavouriteLocSchema = mongoose.Schema({
+	locId : { type: Number, required: true, unique: true },
+	favNum: { type: Number, required: true },
+    userIds: [{userId: {type: Number, required: true}}]
+});
+var FavLoc = mongoose.model('FavLoc', FavouriteLocSchema);
+
 
 app.use("/", express.static(__dirname));
 
@@ -515,45 +524,36 @@ app.get("/user/favourite/:username", function (req, res)
 });
 
 //input the comment according to the location.
-app.post("/user/comment", function (req, res)
-{
+app.post("/user/comment", function (req, res) {
 
     console.log("Comment is coming !");
-    Comment.findOne().sort([['commentId', -1]]).exec(function (err, comdoc)
+    User.findOne({ username: req.body['username'] }, function (error, doc)
     {
-        console.log(comdoc);
-        if (comdoc == null) {
-            newCommentId = 0;
-        }
-        else {
+        var newComment = new Comment({
 
-            newCommentId = comdoc.commentId;
-        }
-        User.findOne({ username: req.body['username'] }, function (error, doc)
-        {
-            var newComment = new Comment({
-
-                commentId: parseInt(newCommentId)+1,
-                userId: doc.userId,
-                content: req.body['content'],
-                locId: req.body['locId'],
-                time: req.body['time']
-            });
-            if (error) {
-                res.send(error);
-            }
-            else {
-                newComment.save(function (error) {
-                    if (error) {
-                        res.send(error);
-                    }
-                    doc.commentNum += 1;
-                    doc.save();
-                    res.send("Save the Comment to data!");
-                });
-
-            }
+            commentId: parseInt(newCommentId),
+            userId: doc.userId,
+            content: req.body['content'],
+            locId: req.body['locId'],
+            time: req.body['time']
         });
+        if (error) {
+
+            res.send(error);
+
+        }
+        else
+        {
+
+            newComment.save(function (error) {
+                if (error) {
+                    res.send(error);
+                }
+                res.send("Save the Comment to data!");
+            });
+            //adding comment id by 1
+            newCommentId += 1;
+        }
     });
 });
                                                          //Admin page
@@ -609,6 +609,43 @@ app.post("/admin/flush", function(req, res){
         await (async () => {
             try{
                 promises = arr_loc.map(async loc => {
+//===New Stuff===
+                    var commentNum = 0;
+                    var favLocNum = 0;
+
+                     Comment.find({locId: loc.locId})
+                    .exec(function(err, com) {
+                        if (err) {
+                            res.send(err);
+                        }
+                        else {
+                            commentNum = com.length;
+
+                            FavLoc.find({locId: loc.locId})
+                            .exec(function(err, fav) {
+                                if (err) {
+                                    res.send(err);
+                                }
+                                else {
+                                    if(fav.length != 0)
+                                        favLocNum = fav.favNum;
+
+                                    var l = new Location({
+                                                locId: loc.locId,
+                                                name: loc.name,
+                                                latitude: loc.latitude,
+                                                longitude: loc.longitude,
+                                                commentNum: commentNum,
+                                                favLocNum: favLocNum
+                                    });
+
+                                    return l.save().then();
+                                }
+                            });
+                        }
+                     });
+//===New Stuff===
+                    /*  Original Code
                     var l = new Location(
                     {
                         locId: loc.locId,
@@ -619,6 +656,7 @@ app.post("/admin/flush", function(req, res){
                         favLocNum: 0
                     });
                     return l.save().then();
+                    */
                 });
                 for(var p of promises) {
                     await p;
