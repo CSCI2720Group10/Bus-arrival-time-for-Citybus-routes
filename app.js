@@ -502,7 +502,7 @@ app.get("/user/mapping/:locId", function (req, res)
                     for (commentCount of comments) {
                         console.log(commentCount);
                         commentlist += '<h5 class="text-primary">User: '+ commentCount.username + '</h5>' +
-                            '<p class="text-info"><b>' +  commentCount.time + '</b></p>' +
+                            '<p class="text-info">' +  commentCount.time + '</p>' +
                             '<li><p>' + commentCount.content + '</p></li>';
                     }
                     res.send({result: result,

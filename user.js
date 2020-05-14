@@ -379,8 +379,8 @@ $(document).on("click", "#addComment", function (e)
             console.log($("#inputcomment").val());
             console.log($userTime.html());
             processForm();
-            var nameOfUser = '<h6 class="text-info">' + $userTime.html() + '</h6>'+
-                '<h6 class="text-primary">User: ' + $("#userName").html()+ '</h6>';
+            var nameOfUser = '<h5 class="text-primary">User: ' + $("#userName").html()+ '</h5>' +
+                '<p class="text-info">' + $userTime.html() + '</p>';
             $("#comments").append(nameOfUser);
         });
 });
