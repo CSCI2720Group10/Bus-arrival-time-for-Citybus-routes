@@ -459,7 +459,7 @@ $(document).ready(function ()
             type: "GET"
         })
             .done(function (res) {
-                if (res == "No locations!") {
+                if (res == "No locations/comments") {
                     $("#userContent").html(res);
                 }
                 else {

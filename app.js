@@ -349,26 +349,43 @@ app.get("/user/location", function (req, res)
 //find top 5 locations with most comments
 app.get("/user/top5", function (req, res)
 {
-    Location.find()
-    .limit(5)
-    .sort({commentNum: -1})
-    .exec(function(err, loc) {
+    Comment.aggregate([
+        {$group: {_id:'$locId',
+                  commentNum: { $sum:1 }},
+        },
+        {$sort: { commentNum: -1 }},
+        {$limit: 5}
+    ])
+    .exec(function(err, result) {
         if(err){
             console.log(err);
         }
-        else if(loc.length == 0){
-            res.send("No locations!")
+        else if(result.length == 0){
+            res.send("No locations/comments");
         }
-        else
-        {
+        else{
+            var arr_locId = [];
             var locName = [];
             var locCommentNum = [];
-            for(var l of loc){
-                locName.push(l.name);
-                locCommentNum.push(l.commentNum);
+
+            for (var r of result){
+                arr_locId.push(r._id);
             }
-            res.send({locName: locName,
-                locCommentNum: locCommentNum});
+
+            Location.find({locId: {$in: arr_locId}})
+            .exec(function(err, loc){
+                if(err){
+                    console.log(err);
+                }
+                else{
+                    for (var i = 0; i < result.length; i++){
+                        locName.push(loc[i].name);
+                        locCommentNum.push(result[i].commentNum);
+                    }
+                    res.send({locName: locName,
+                              locCommentNum: locCommentNum});
+                }
+            });
         }
     });
 });
@@ -767,7 +784,7 @@ app.get("/admin/location", function(req, res){
 
 //update location
 app.put("/admin/location", function(req,res){
-    if(req.body['newLocId'] != undefined){
+    /*if(req.body['newLocId'] != undefined){
         Location.findOne({locId: req.body['newLocId']})
         .exec(function(err, nloc) {
             if (err){
@@ -789,7 +806,8 @@ app.put("/admin/location", function(req,res){
             }
         });
     }
-    else if (req.body['newLocName'] != undefined){
+    else*/
+    if (req.body['newLocName'] != undefined){
         Location.findOne({name: req.body['newLocName']})
         .exec(function(err, nloc) {
             if (err){
