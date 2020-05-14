@@ -119,19 +119,19 @@ $(document).ready(function() {
                 '<th>disadvantages </th>'+
             '</tr>' +
             '<tr>' +
-                '<td>nodejs and mongoose is look like javascript language which is easy to code.</td>' +
-                '<td>data redundancy may be occur in the collection which waste the memory. </td>' +
+                '<td>nodejs and mongoose look like javascript language which is easy to code</td>' +
+                '<td>data redundancy may occur in the collection which wastes the memory</td>' +
             '</tr>' +
             '<tr>' +
-                '<td>MongDB is new developed that I can check the data in community app with only few clicks.</td>' +
-                '<td>There is no foreign key in MongoDB which is hard to connect two database for finding the location.</td>' +
+                '<td>MongoDB is newly developed that I can check the data in the community app with only a few clicks</td>' +
+                '<td>There is no foreign key in MongoDB which is hard to connect two databases for finding the location</td>' +
             '</tr>' +
             '<tr>' +
-            '<td>MongDB is easily to set-up especially for the Newby </td>' +
+            '<td>MongoDB is easy to set-up especially for the Newby</td>' +
             '<td></td>' +
             '</tr>' +
             '<tr>' +
-            '<td>MongDB has a flexible data type collection. </td>' +
+            '<td>MongDB has a flexible data type collection</td>' +
             '<td></td>' +
             '</tr>' +
             '</table>' +
