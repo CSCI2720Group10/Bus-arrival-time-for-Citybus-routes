@@ -589,17 +589,6 @@ $(document).ready(function ()
             });
     });
 
-    // May be replaced with the home page.
-    $(document).on("click", "#showLoc", function (e) {
-        e.preventDefault();
-        changeNavbar($("#showLoc"));
-
-        var content = '<h1>Nothing Yet</h1>';
-        $("title").html("Map Locations");
-        $("#userContent").html(content);
-        history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/map_location.html");
-    });
-
     //see favourite location
     $(document).on("click", "#seeFavLoc", function (e)
     {
