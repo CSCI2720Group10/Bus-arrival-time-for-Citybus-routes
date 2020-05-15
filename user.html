@@ -41,6 +41,16 @@
             <div id="googleMap" style="width:80%;height:80%;"></div>
             <!--GOOGLE MAP API KEY: AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE free for 12 Month-->
             <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYV7JyoKA7lX47pEtK-w0jUSHuw-AtOqE&callback=initMap"></script>
+            <h2 style="text-align: left; background-color: #DDDDDD">Nearby Location List: </h2>
+
+            <div class="custom-control-inline">
+                <input style="width: 300px" type="text" placeholder="Location Id" aria-label="x distance" name="disValue" id="disValue">
+                <button type="submit" class="btn btn-success" id="disBtn">Search</button>
+                <button type="submit" class="btn btn-success" id="homeBtn">Set Home</button>
+            </div>
+            <div id="nearByList"></div>
+            <div id="setHome"></div>
+
             <h2 style="text-align: left; background-color: #DDDDDD">Seperate Location Map: </h2>
             <div class="row">
                 <div class="col">
@@ -51,7 +61,7 @@
                     <h6>Seperate View of Location</h6>
 
                     <div class="custom-control-inline">
-                        <input  style="width: 300px" type="text"  placeholder="Location Id" aria-label="Location Id" name="sepValue" id="sepValue">
+                        <input style="width: 300px" type="text" placeholder="Location Id" aria-label="Location Id" name="sepValue" id="sepValue">
                         <button type="submit" class="btn btn-success" id="sepBtn">Search</button>
                     </div>
 
@@ -72,8 +82,7 @@
                     <ul id="comments" class="list-unstyled"></ul>
                     <div id="commentBox"></div>
                 </div>
-                </div>
-
+            </div>
         </div>
     </div>
 </body>

@@ -386,6 +386,58 @@ $(document).on("click", "#addComment", function (e)
         });
 });
 
+$(document).on("click", "#homeBtn", function (e)
+{
+    e.preventDefault();
+    //Mearsure each distance with the user location
+    navigator.geolocation.getCurrentPosition(function (position)
+    {
+        console.log($("#userName").html());
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude);
+        $.ajax({
+            url: "./user/home",
+            type: "PUT",
+            data: {
+                username: $("#userName").html(),
+                hlatitude: position.coords.latitude,
+                hlongitude: position.coords.longitude
+            }
+        })
+            .done(function (res) {
+                    console.log(res);
+            });
+    });
+});
+
+$(document).on("click", "#disBtn", function (e)
+{
+    e.preventDefault();
+    //Model for setting the property of a google map at the beginning.
+    $.ajax({
+        url: "./user/mapping",
+        type: "GET"
+    })
+        .done(function (res)
+        {
+            for (var i = 0; i < res.length; i++)
+            {
+                //Mearsure each distance with the user location
+                navigator.geolocation.getCurrentPosition(function (position)
+                {
+                    var distance = haversine_distance(position.coords.latitude, position.coords.longitude, res[i].latitude, res[i].longitude);
+                    console.log(distance);
+
+                    //input the user location into html
+                    $("#userlocation").html(usercontent);
+
+                    //Measure the distance between user location and found location into html
+                    $("#measureDistance").html("nearby " + distance.toFixed(2) + " km to home location");
+                });
+            }
+        });
+});
+
 $(document).ready(function ()
 {
     function changeNavbar($clickedLink) {

@@ -30,7 +30,8 @@ var LocationSchema = mongoose.Schema({
     locId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true }
+    longitude: { type: Number, required: true },
+    nearBy: [{type:Number}]
 });
 var Location = mongoose.model('Location', LocationSchema);
 
@@ -42,11 +43,8 @@ var UserSchema = mongoose.Schema({
     fav_locId: [{ type: String }],
     commentNum: { type: Number, required: true },
     favLocNum: { type: Number, required: true },
-    homeLoc:
-    {
-        latitude: { type: Number },
-        longitude: { type: Number }
-    }
+    latitude: { type: Number },
+    longitude: { type: Number }
 });
 var User = mongoose.model('User', UserSchema);
 
@@ -379,6 +377,21 @@ app.get("/user/location", function (req, res)
             }
         });
     }
+});
+
+//User home location
+app.put("/user/home", function (req, res)
+{
+    User.update({ username: req.body['username'] }, { latitude: req.body['hlatitude'], longitude: req.body['hlongitude'] })
+        .exec(function (err, result) {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send("User Home location Updated");
+            }
+
+        });
 });
 
 //find top 5 locations with most comments
