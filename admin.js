@@ -218,7 +218,7 @@ $(document).ready(function() {
 
         $("#adminContent").load("/admin.html #adminContent", function(){
             $("title").html("Admin Home");
-            history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/admin.html");
+            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/admin.html");
         });
     });
 
@@ -262,7 +262,7 @@ $(document).ready(function() {
 			'</form>';
         $("title").html("Create Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/create_location.html");
+        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/create_location.html");
     });
 
     $(document).on("click", "#createLocBtn", function(e){
@@ -309,7 +309,7 @@ $(document).ready(function() {
             '<div id="result"></div>';
         $("title").html("Retrieve Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/retrieve_location.html");
+        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/retrieve_location.html");
     });
 
     $(document).on("change", "#retrieveLocSelectMenu", function(e){
@@ -345,7 +345,7 @@ $(document).ready(function() {
             '<div id="result"></div>';
         $("title").html("Update Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/update_location.html");
+        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/update_location.html");
     });
 
     $(document).on("change", "#updateLocSelectMenu", function(e){
@@ -361,29 +361,6 @@ $(document).ready(function() {
                                  '<button type="button" class="btn btn-warning editLocLong">Edit Location Longitude</button>');
         });
     });
-
-    /*$(document).on("click", ".editLocId", function(){
-        var newLocId = prompt("Please enter the new location ID");
-        if(newLocId != null){
-            var $this = $(this);
-            var locId = $this.parent().find("span").eq(0).html();
-            $.ajax({
-                url: "./admin/location",
-                type: "PUT",
-                data: {locId: locId,
-                       newLocId: newLocId}
-            })
-            .done(function(res){
-                if(res != "Location ID Updated"){
-                    alert(res);
-                }
-                else{
-                    $this.parent().find("span").eq(0).html(newLocId);
-                    alert(res);
-                }
-            });
-        }
-    });*/
 
     $(document).on("click", ".editLocName", function(){
         var newLocName = prompt("Please enter the new location name");
@@ -476,7 +453,7 @@ $(document).ready(function() {
             '<div id="result"></div>';
         $("title").html("Delete Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/delete_location.html");
+        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/delete_location.html");
     });
 
     $(document).on("change", "#deleteLocSelectMenu", function(e){
@@ -524,7 +501,7 @@ $(document).ready(function() {
 			'</form>';
         $("title").html("Create User");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/create_user.html");
+        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/create_user.html");
     });
 
     $(document).on("click", "#createUserBtn", function(e){
@@ -558,7 +535,7 @@ $(document).ready(function() {
         .done(function(res){
             $("title").html("Retrieve User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/retrieve_user.html");
+            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/retrieve_user.html");
         });
     });
 
@@ -575,7 +552,7 @@ $(document).ready(function() {
             $("title").html("Update User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning editUsername mr-3">Edit username</button><button type="button" class="btn btn-warning editPassword">Edit password</button>');
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/update_user.html");
+            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/update_user.html");
         });
     });
 
@@ -638,7 +615,7 @@ $(document).ready(function() {
             $("title").html("Delete User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning deleteUserBtn">Delete user</button>');
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/delete_user.html");
+            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/delete_user.html");
         });
     });
 
@@ -686,7 +663,7 @@ $(document).ready(function() {
            '</div>';
         $("title").html("Location Data Create");
         $("#adminContent").html(locDataForm);
-        history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/csv_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/csv_location.html");
     });
     var imported = document.createElement('script');
     document.head.appendChild(imported);
@@ -886,7 +863,7 @@ $(document).ready(function() {
         });
 
         $("title").html("Top 5 Locations");
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/user_top5_locations.html");
+        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/user_top5_locations.html");
     });
 
 });
