@@ -334,7 +334,7 @@ $(document).on("click", "#favBtn", function (e) {
             }
             else
             {
-                $("#favmsg").html('<h6 class="text-success">' + res + '</h6>')
+                $("#favmsg").html('<h6 class="text-success">' + res + '</h6>');
                 
             }
         });
@@ -405,7 +405,7 @@ $(document).on("click", "#homeBtn", function (e)
             }
         })
             .done(function (res) {
-                    console.log(res);
+                $("#setHome").html('<h6 class="text-success">' + res + '</h6>');
             });
     });
 });

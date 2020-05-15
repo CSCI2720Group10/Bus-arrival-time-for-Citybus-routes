@@ -387,7 +387,8 @@ app.put("/user/home", function (req, res)
             if (err) {
                 res.send(err);
             }
-            else {
+            else
+            {
                 res.send("User Home location Updated");
             }
 
