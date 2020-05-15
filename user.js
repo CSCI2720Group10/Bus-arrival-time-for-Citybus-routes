@@ -1,3 +1,37 @@
+/*
+Kwan Tsz Fung		        1155078864
+Lee Kwan Hung		        1155108603
+Wong Ching Yeung Wallace 	1155093534
+Choi Chun Wa                1155094180
+*/
+
+function getRouteId(locId){
+    let routes = [];
+    $.ajax({
+        url: "./user/locRoute/" + locId,
+        type: "GET"
+    })
+    .done(function(res){
+        routes = res;
+    })
+    return routes;
+}
+
+function getETA(locId, routeId){                    //get the ETA info for the loc in each route
+    let eta = [];
+    for (var r of routeId){
+        $.ajax({
+            url: "https://rt.data.gov.hk/v1/transport/citybus-nwfb/eta/CTB/" + locId + "/" + r,
+            type: "GET"
+        })
+        .done(function(res){
+            eta.push(res.data);
+        })
+    }
+    return eta;
+}
+
+
 var map, infoWindow, marker;
 
 //Function for initialize the new map
@@ -111,6 +145,8 @@ async function initMap()
                 content: inforString
             });
 
+
+
             //Geolocation here and reset the location of map.
             if (navigator.geolocation)
             {
@@ -164,13 +200,26 @@ async function initMap()
                 });
 
                 google.maps.event.addListener(locationMarker, 'click', (function (locationMarker, i) {
+
                     return function () {
+
                         var contentLocation = '<div id="contentLocation">' +
                             '<h6>Location ID: ' + res[i].locId + '</h6>' +
                             '<h6>Location Name: ' + res[i].name + '</h6>' +
                             '<h6>Location Latitude: ' + res[i].latitude + '</h6>' +
-                            '<h6>Location Longitude: ' + res[i].longitude + '</h6>' +
-                            '</div>';
+                            '<h6>Location Longitude: ' + res[i].longitude + '</h6><br>';
+                //New Code
+                        var arr_routeId = getRouteId(res[i].locId);
+                        var arr_etaIn = getETA(res[i], arr_routeId);
+                        for (var j = 0; j < arr_routeId.length; j++) {
+                            contentLocation += '<h6>Route: ' + arr_routeId[j] + '</h6>';
+                            for(var k = 0; k < arr_etaIn[j].length; k++) {
+                                contentLocation += '<h6>' + arr_etaIn[j][k].eta + '</h6>'
+                            }
+                            contentLocation += '<br>'
+                        }
+                //New Code
+                        contentLocation += '</div>';
                         map.setCenter(locationMarker.position);
                         map.setZoom(17);
                         infoWindow.setContent(contentLocation);
@@ -218,6 +267,8 @@ async function seperateMap()
             zoom: 15
         });
 }
+
+
 
 //seperate view of location
 $(document).on("click", "#sepBtn", function (e)
@@ -385,6 +436,7 @@ $(document).on("click", "#addComment", function (e)
             processForm();
         });
 });
+
 
 
 // Set the user home location.

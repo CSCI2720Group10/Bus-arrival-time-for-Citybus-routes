@@ -1,3 +1,10 @@
+/*
+Kwan Tsz Fung		        1155078864
+Lee Kwan Hung		        1155108603
+Wong Ching Yeung Wallace 	1155093534
+Choi Chun Wa                1155094180
+*/
+
 const routes = [20, 22, 70, 117, 260, 307, 592, 608, 681, 969];
 
 async function getRouteLoc_in(){                                   //get all locations in each route
