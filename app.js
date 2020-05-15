@@ -1231,7 +1231,9 @@ app.get("/admin/user", function(req, res){
 				output += '<div class="mb-3 userInfo"><b>Username: <span>' + users[i].username + "</span></b><br>" +
 				"Password: <span>" + users[i].password + "</span><br>" +
                 "#Comments: <span>" + users[i].commentNum + "</span><br>" +
-                "#Favourites: <span>" + users[i].favLocNum + "</span>" +
+                    "#Favourites: <span>" + users[i].favLocNum + "</span><br>" +
+                    "latitude: <span>" + users[i].latitude + "</span><br>" +
+                    "longitude: <span>" + users[i].longitude + "</span>" +
                 "</div>";
             }
 			res.send(output);
