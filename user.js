@@ -399,8 +399,8 @@ $(document).on("click", "#homeBtn", function (e)
             type: "PUT",
             data: {
                 username: $("#userName").html(),
-                hlatitude: position.coords.latitude,
-                hlongitude: position.coords.longitude
+                hlatitude: position.coords.latitude.toFixed(2),
+                hlongitude: position.coords.longitude.toFixed(2)
             }
         })
             .done(function (res) {

@@ -1218,7 +1218,7 @@ app.post("/admin/user", function(req,res){
 //retrieve users
 app.get("/admin/user", function(req, res){
     User.find()
-	.select('username password commentNum favLocNum')
+        .select('username password commentNum favLocNum latitude longitude')
     .sort({userId: 1})
 	.exec(function(err, users) {
 		if (err)
