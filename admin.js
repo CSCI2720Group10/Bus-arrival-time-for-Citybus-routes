@@ -664,9 +664,11 @@ $(document).ready(function() {
         var locDataForm = '<div class="container" >'+
            '<h1>Create the Location Data</h1>' +
             '<h4>Please follow the structure below:</h4>'+
-            '<h4>DateFeature: |Location ID | Location Name | Location Latitude | Location Longitude | </h4>'+
+            '<h5>DateFeature: | Location ID | Route Direction | Route ID | Location Name | Location Latitude | Location Longitude | </h5>'+
             '<img src="CSV_format.PNG" alt="Format of CSV file" width="50%" height ="50%" >'+
-            '<h6>Reminder:<br><i>1. The Location name should  <strong>not</strong> include any "," <br>2. Location ID should be a 6-unit string of value.</i></h6>'+
+            '<h6>Reminder:<br><i>1. The Location name should  <strong>NOT</strong> include any "," <br>' +
+            '2. Location ID should be a 6-unit string of value.<br>' +
+            '3. Direction should be "I" for Inbound or "O" for Outbound</i></h6>' +
             '<form class="form-inline">' +
                 '<div class="form-group">' +
                     '<label for="files">Please Upload a CSV file here: <br></label>' +
