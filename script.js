@@ -2,11 +2,11 @@ $(document).ready(function() {
     var login = false;
 
     if($("title").html() == "Bus arrival time for Citybus Routes APP")
-        history.replaceState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
+        history.replaceState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/2064");
     else if($("title").html() == "Home")
-        history.replaceState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/user.html");
+        history.replaceState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/user.html");
     else if($("title").html() == "Admin Home")
-        history.replaceState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/admin.html");
+        history.replaceState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/admin.html");
 
     $(window).on("popstate", function() {
         console.log(event.state.login);
@@ -53,7 +53,8 @@ $(document).ready(function() {
 
             '<br><b>Sign in as User:</b><br>' +
             '-Home Page<br>' +
-            '(Showing overall locations and separate view locations in map)<br>' +
+            '(Showing overall locations and separate view locations with comments in map)<br>' +
+            '(Showing the nearby location for target location)<br>'+
             '-Location<br>' +
             '(List locations in table, Search locations)<br>' +
             '-See Favourite Locations<br>' +
@@ -155,19 +156,19 @@ $(document).ready(function() {
             '<br><a id="login" href="">Return to Login Page</a>';
         $("#content").html(content);
         $("title").html("About This Project");
-        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/about.html");
+        history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/2064/about.html");
     });
 
     $(document).on("click", "#signup", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "./signup",
+            url: "./2064/signup",
             type: "GET"
         })
         .done(function(res){
             $("body").load(res + " #content", function(){
                 $("title").html("Sign Up");
-                history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/signup.html");
+                history.pushState({ content: $("#content").html(), login: false, title: $("title").html() }, null, "/2064/signup.html");
             });
         });
     });
@@ -175,18 +176,18 @@ $(document).ready(function() {
     $(document).on("click", "#signupSubmit", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "./signup",
+            url: "./2064/signup",
             type: "POST",
             data: {username: $("#username").val(),
                    password: $("#password").val(),
                    repeatPassword: $("#repeatPassword").val()}
         })
         .done(function(res){
-            if(res == "/root.html"){
+            if (res == "/2064/root.html"){
                 $("body").load(res + " #content", function(){
                     $("#msg").html("Sign up successful!");
                     $("title").html("Bus arrival time for Citybus Routes APP");
-                    history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
+                    history.pushState({ content: $("#content").html(), login: false, title: $("title").html() }, null, "/2064");
                 });
             }
             else{
@@ -198,14 +199,14 @@ $(document).ready(function() {
     $(document).on("click", "#login", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "./",
+            url: "./2064/",
             type: "GET"
         })
         .done(function(res){
             var $temp = $('<div></div>').append(res);
             $("#content").html($temp.find("#content").html());
             $("title").html("Bus arrival time for Citybus Routes APP");
-            history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
+            history.pushState({ content: $("#content").html(), login: false, title: $("title").html() }, null, "/2064");
         });
     });
 
@@ -213,7 +214,7 @@ $(document).ready(function() {
         e.preventDefault();
         var user = $("#username").val();
         $.ajax({
-            url: "./login",
+            url: "./2064/login",
             type: "POST",
             data: {username: $("#username").val(),
                    password: $("#password").val()}
@@ -224,7 +225,7 @@ $(document).ready(function() {
                 $("#content").html($temp.find("#content").html());
                 $("title").html("Home");
                 $("#userName").html(user);
-                history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/user.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/user.html");
                 login = true;
             }
             else{
@@ -240,13 +241,13 @@ $(document).ready(function() {
 	$(document).on("click", "#loginAdmin", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "./loginAdmin",
+            url: "./2064/loginAdmin",
             type: "POST"
         })
         .done(function(res){
             $("body").load(res + " #content", function(){
                 $("title").html("Admin Home");
-                history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/admin.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/admin.html");
                 login = true;
             });
         });
@@ -255,13 +256,13 @@ $(document).ready(function() {
     $(document).on("click", "#logout", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "./logout",
+            url: "./2064/logout",
             type: "POST"
         })
         .done(function(res){
             $("body").load(res + " #content", function(){
                 $("title").html("Bus arrival time for Citybus Routes APP");
-                history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
+                history.pushState({ content: $("#content").html(), login: false, title: $("title").html() }, null, "/2064");
                 login = false;
             });
         });
@@ -270,13 +271,13 @@ $(document).ready(function() {
     $(document).on("click", "#logoutAdmin", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "./logoutAdmin",
+            url: "./2064/logoutAdmin",
             type: "POST"
         })
         .done(function(res){
             $("body").load(res + " #content", function(){
                 $("title").html("Bus arrival time for Citybus Routes APP");
-                history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
+                history.pushState({ content: $("#content").html(), login: false, title: $("title").html() }, null, "/2064");
                 login = false;
             });
         });
