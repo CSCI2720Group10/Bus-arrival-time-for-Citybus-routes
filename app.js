@@ -1056,33 +1056,68 @@ app.post("/admin/csv", function (req, res)
 
     Location.findOne({ locId: req.body['locId'] }).exec(function (err, loc)
     {
-        if (err) {
+        if (err)
+        {
             res.send(err);
         }
 
         //Bug Case 2: Duplicated Location
         //Solved: != NULL of location.
-        else if (loc != null)
-        {
+        else if (loc != null) {
             res.send("The location already exists!");
         }
         else
         {
-            var result = new Location(
+            var result = new Location
+                (
                 {
                     locId: req.body['locId'],
                     name: req.body['locName'],
                     latitude: req.body['locLat'],
                     longitude: req.body['locLong']
                 });
-            result.save(function (error) {
+
+            result.save(function (error, l)
+            {
 
                 if (error) {
                     res.send(error);
                     return;
                 }
-                console.log("CSV Location Post by Admin successfully !");
-                res.send("Create CSV location successfully!");
+                else {
+                    //Adding the Csv file into the database
+                    Route.findOne({ routeId: req.body['routeId'], dir: req.body['dir'] })
+                        .populate('locInfo.loc')
+                        .exec(function (err, route)
+                        {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                Route.updateOne({ routeId: req.body['routeId'], dir: req.body['dir'] },
+                                    {
+                                        $push: {
+                                            locInfo: {
+                                                loc: l._id,
+                                                seq: route.locInfo[route.locInfo.length - 1].seq + 1
+                                            }
+                                        },
+                                        $inc: { stopCount: 1 }
+                                    })
+                                    .exec(function (err, result)
+                                    {
+                                        if (err) {
+                                            res.send(err);
+
+                                        }
+                                        else {
+                                            console.log("CSV Location Post by Admin successfully !");
+                                            res.send("Create CSV location successfully!");
+                                        }
+                                    });
+                            }
+                        });
+                }
             });
         }
     });

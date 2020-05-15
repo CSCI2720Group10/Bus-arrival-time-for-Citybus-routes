@@ -706,7 +706,7 @@ $(document).ready(function() {
                 continue;
             }
 
-            for (j = 0; j <4; j++)
+            for (j = 0; j <6; j++)
             {
                 table += "<td>";
                 table += cells[j];
@@ -719,12 +719,15 @@ $(document).ready(function() {
                     type: "POST",
                     data: {
                         locId: cells[0],
-                        locName: cells[1],
-                        locLat: cells[2],
-                        locLong: cells[3]
+                        dir: cells[1],
+                        routeId:cells[2],
+                        locName: cells[3],
+                        locLat: cells[4],
+                        locLong: cells[5]
                     }
                 })
-                    .done(function (res) {
+                    .done(function (res)
+                    {
                         if (res == "Create CSV location successfully!") {
                             $("#msg").addClass("text-success");
                            // $("form").trigger("reset");
