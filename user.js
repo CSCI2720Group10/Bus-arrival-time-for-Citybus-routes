@@ -198,7 +198,7 @@ b.the location details
 c.user comments, where users can add new comments(non - threaded) */
 
 //Measure the distance between two point
-function haversine_distance(pt1Lat, pt1Long, pt2Lat, pt2Long)
+ function haversine_distance(pt1Lat, pt1Long, pt2Lat, pt2Long)
 {
     var R = 6371.0710; //using kilometers
     var rlat1 = pt1Lat * (Math.PI / 180); // Convert degrees to radians
@@ -386,15 +386,14 @@ $(document).on("click", "#addComment", function (e)
         });
 });
 
+
+// Set the user home location.
 $(document).on("click", "#homeBtn", function (e)
 {
     e.preventDefault();
     //Mearsure each distance with the user location
     navigator.geolocation.getCurrentPosition(function (position)
     {
-        console.log($("#userName").html());
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude);
         $.ajax({
             url: "./user/home",
             type: "PUT",
@@ -410,32 +409,51 @@ $(document).on("click", "#homeBtn", function (e)
     });
 });
 
+
+//List all the location the nearby X km from target locaiton
 $(document).on("click", "#disBtn", function (e)
 {
     e.preventDefault();
-    //Model for setting the property of a google map at the beginning.
-    $.ajax({
-        url: "./user/mapping",
-        type: "GET"
-    })
-        .done(function (res)
-        {
-            for (var i = 0; i < res.length; i++)
+    if ($("#tarlat").val() == "" || $("#tarlng").val() == "" || $("#disValue").val() == "")
+    {
+        $("#nearByList").html('<h6 class="text-warning">Please input the above box.</h6>');
+    }
+    else
+    {
+        $.ajax({
+            url: "./user/mapping",
+            type: "GET"
+        })
+            .done(function (res)
             {
-                //Mearsure each distance with the user location
-                navigator.geolocation.getCurrentPosition(function (position)
+                var table = '<table class="table table-borderless table-hover table-sm text-center text-dark mx-auto">' +
+                    '<thead class="thead-light"><tr>' +
+                    '<th>Location ID</th>' +
+                    '<th>Name</th>' +
+                    '<th>Latitude</th>' +
+                    '<th>Longitude</th>' +
+                    '<th>Distance Near By(km)</th>'+
+                    '</tr></thead><tbody>';
+
+                for (var i = 0; i < res.length; i++)
                 {
-                    var distance = haversine_distance(position.coords.latitude, position.coords.longitude, res[i].latitude, res[i].longitude);
-                    console.log(distance);
+                    var distance = haversine_distance($("#tarlat").val(), $("#tarlng").val(), res[i].latitude, res[i].longitude);
 
-                    //input the user location into html
-                    $("#userlocation").html(usercontent);
-
-                    //Measure the distance between user location and found location into html
-                    $("#measureDistance").html("nearby " + distance.toFixed(2) + " km to home location");
-                });
-            }
-        });
+                    if (distance < Number($("#disValue").val()))
+                    {
+                        table += '<tr>' +
+                            '<td>' + res[i].locId + '</td>' +
+                            '<td>' + res[i].name + '</td>' +
+                            '<td>' + res[i].latitude + '</td>' +
+                            '<td>' + res[i].longitude + '</td>' +
+                            '<td>' + distance.toFixed(2) + '</td>' +
+                            '</tr>';
+                    }
+                }
+                table += '</tbody></table>';
+                $("#nearByList").html(table);
+            });
+    }
 });
 
 $(document).ready(function ()

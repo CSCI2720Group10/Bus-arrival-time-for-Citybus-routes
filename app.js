@@ -379,7 +379,7 @@ app.get("/user/location", function (req, res)
     }
 });
 
-//User home location
+//Update User home location
 app.put("/user/home", function (req, res)
 {
     User.update({ username: req.body['username'] }, { latitude: req.body['hlatitude'], longitude: req.body['hlongitude'] })
@@ -394,6 +394,21 @@ app.put("/user/home", function (req, res)
 
         });
 });
+
+
+//Get the User Home Location
+app.get("/user/home/:username", function (req, res) {
+
+    User.findOne({ username: req.params['username'] }, function (error, result) {
+        if (error) {
+            res.send(error);
+        }
+        else {
+            res.send(result);
+        }
+    });
+});
+
 
 //find top 5 locations with most comments
 app.get("/user/top5", function (req, res)
@@ -454,7 +469,6 @@ app.get("/user/mapping", function (req, res)
             for (var i = 0; i < result.length; i++) {
                 locationData.push(result[i]);
             }
-            //console.log(locationData);
             res.send(locationData);
         }
     });
