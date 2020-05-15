@@ -30,8 +30,7 @@ var LocationSchema = mongoose.Schema({
     locId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-    nearBy: [{type:Number}]
+    longitude: { type: Number, required: true }
 });
 var Location = mongoose.model('Location', LocationSchema);
 
