@@ -75,27 +75,27 @@ var CommentSchema = mongoose.Schema({
 });
 var Comment= mongoose.model('Comment', CommentSchema);
 
-app.use("/2064", express.static(__dirname));
+app.use("/", express.static(__dirname));
 
-app.get("/2064", function(req, res){
+app.get("/", function(req, res){
     if (req.session['login'] == true)
-        res.sendFile(__dirname + '/2064/user.html');
+        res.sendFile(__dirname + '/user.html');
     else if (req.session['loginAdmin'] == true)
-        res.sendFile(__dirname + '/2064/admin.html');
+        res.sendFile(__dirname + '/admin.html');
     else
-        res.sendFile(__dirname + '/2064/root.html');
+        res.sendFile(__dirname + '/root.html');
 });
                                                                 //Sign up page
-app.get("/2064/signup", function(req, res){
+app.get("/signup", function(req, res){
     if (req.session['login'] == true)
-        res.send('/2064/user.html');
+        res.send('/user.html');
     else if (req.session['loginAdmin'] == true)
-        res.send('/2064/admin.html');
+        res.send('/admin.html');
     else
-        res.send('/2064/signup.html');
+        res.send('/signup.html');
 });
 
-app.post("/2064/signup", function(req, res){
+app.post("/signup", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == "" || req.body['repeatPassword'] == ""){
         res.send("Please fill in all the fields!");
     }
@@ -150,7 +150,7 @@ app.post("/2064/signup", function(req, res){
                                 res.send(err);
                             }
                             else{
-                                res.send("/2064/root.html");
+                                res.send("/root.html");
                             }
                         });
                     }
@@ -160,7 +160,7 @@ app.post("/2064/signup", function(req, res){
     }
 });
                                                                //Login page
-app.post("/2064/login", function(req, res){
+app.post("/login", function(req, res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please enter username and password!");
     }
@@ -180,7 +180,7 @@ app.post("/2064/login", function(req, res){
                     else if(result){
                         req.session['login'] = true;
                         req.session['username'] = req.body['username'];
-                        res.redirect('./2064/user');
+                        res.redirect('/user');
                     }
                     else {
                         res.send("Wrong username/password!");
@@ -192,23 +192,23 @@ app.post("/2064/login", function(req, res){
     }
 });
                                                                 //User page
-app.get('/2064/user', function(req, res) {
+app.get('/user', function(req, res) {
 	if (req.session['login']) {
-        res.sendFile(__dirname + "/2064/user.html");
+        res.sendFile(__dirname + "/user.html");
 	} else {
 		res.send('Please login to view this page!');
 	}
 });
 
-app.post("/2064/logout", function(req, res){
+app.post("/logout", function(req, res){
     req.session['login'] = false;
     req.session['username'] = "";
-    res.send("/2064/root.html");
+    res.send("/root.html");
 });
 
 
 // list locations in a table
-app.get("/2064/user/location", function (req, res)
+app.get("/user/location", function (req, res)
 {
     if (req.query['locId'] != undefined)
     {
@@ -387,7 +387,7 @@ app.get("/2064/user/location", function (req, res)
 
                                                                                     //Help
 //Get RouteId for ETA
-app.get("./user/locRoute/:locId", function (req,res){
+app.get("/user/locRoute/:locId", function (req,res){
     Location.findOne({locId: req.params['locId']}, function (err, loc){
         if (err) {
                 res.send(err);
@@ -413,7 +413,7 @@ app.get("./user/locRoute/:locId", function (req,res){
 });
 
 //Update User home location
-app.put("/2064/user/home", function (req, res)
+app.put("/user/home", function (req, res)
 {
     User.update({ username: req.body['username'] }, { latitude: req.body['hlatitude'], longitude: req.body['hlongitude'] })
         .exec(function (err, result) {
@@ -430,7 +430,7 @@ app.put("/2064/user/home", function (req, res)
 
 
 //Get the User Home Location
-app.get("/2064/user/home/:username", function (req, res) {
+app.get("/user/home/:username", function (req, res) {
 
     User.findOne({ username: req.params['username'] }, function (error, result) {
         if (error) {
@@ -444,7 +444,7 @@ app.get("/2064/user/home/:username", function (req, res) {
 
 
 //find top 5 locations with most comments
-app.get("/2064/user/top5", function (req, res)
+app.get("/user/top5", function (req, res)
 {
     Comment.aggregate([
         {$group: {_id: '$locId',
@@ -488,7 +488,7 @@ app.get("/2064/user/top5", function (req, res)
 });
 
 //mapping all the location into the google map
-app.get("/2064/user/mapping", function (req, res)
+app.get("/user/mapping", function (req, res)
 {
     var locationData = [];
     console.log("passing all map");
@@ -508,7 +508,7 @@ app.get("/2064/user/mapping", function (req, res)
 });
 
 //finding a single location in the google map
-app.get("/2064/user/mapping/:locId", function (req, res)
+app.get("/user/mapping/:locId", function (req, res)
 {
     console.log("passing targete location");
     Location.findOne({ locId: req.params['locId'] }, function (error, result)
@@ -544,7 +544,7 @@ app.get("/2064/user/mapping/:locId", function (req, res)
 });
 
 //Adding the favourite location to fav list.
-app.post("/2064/user/favourite", function (req, res)
+app.post("/user/favourite", function (req, res)
 {
     console.log("get in the fav list");
     var location_id = req.body['locId'];
@@ -576,7 +576,7 @@ app.post("/2064/user/favourite", function (req, res)
 });
 
 //Show all the favourite location of the user.
-app.get("/2064/user/favourite/:username", function (req, res)
+app.get("/user/favourite/:username", function (req, res)
 {
     User.findOne({ username: req.params['username'] })
         .exec(function (err, user)
@@ -628,7 +628,7 @@ app.get("/2064/user/favourite/:username", function (req, res)
 });
 
 //input the comment according to the location.
-app.post("/2064/user/comment", function (req, res)
+app.post("/user/comment", function (req, res)
 {
     console.log("Comment is coming !");
     Comment.findOne().sort([['commentId', -1]]).exec(function (err, comdoc)
@@ -668,39 +668,13 @@ app.post("/2064/user/comment", function (req, res)
         });
     });
 });
-/*
-//Showing the comment depends on the specificed locations.
-app.get("/user/comment/:locId", function (req, res)
-{
-    //Sorting by the Comment Id by ascending order.
-    Comment.find({ locId: req.params['locId'] }).sort([['commentId', 1]]).exec(function (err, showdoc)
-    {
-        //comment list
-        if (err) {
-            res.send(err);
-        }
-        else
-        {
-            var commentlist = '';
-            for (commentCount of showdoc) {
-                console.log(commentCount);
-                commentlist += '<li><p>' + commentCount.content + '</p></li>'+
-                    '<h6 class="text-info">' +  commentCount.time + '</h6>' +
-                    '<h6 class="text-primary">User: '+ commentCount.username + '</h6>';
-            }
-            res.send(commentlist);
-        }
-    });
-
-});
-*/
                                                          //Admin page
-app.post("/2064/loginAdmin", function(req, res){
+app.post("/loginAdmin", function(req, res){
     req.session['loginAdmin'] = true;
-    res.redirect('./2064/admin');
+    res.redirect('./admin');
 });
 
-app.get("/2064/admin", function(req,res){
+app.get("/admin", function(req,res){
     if (req.session['loginAdmin']) {
         res.send("/admin.html");
 	} else {
@@ -708,14 +682,14 @@ app.get("/2064/admin", function(req,res){
 	}
 });
 
-app.post("/2064/logoutAdmin", function(req, res){
+app.post("/logoutAdmin", function(req, res){
     req.session['loginAdmin'] = false;
 	res.send("/root.html");
 });
 
 
                                                 //admin flush data
-app.post("/2064/admin/flush", async function(req, res){
+app.post("/admin/flush", async function(req, res){
     // remove routes and locations collections before storing data
     await Location.remove({}, function(err, result){
         if(err)
@@ -850,7 +824,7 @@ app.post("/2064/admin/flush", async function(req, res){
 
                                                 // Admin CRUD actions for location data
 //create location
-app.post("/2064/admin/location", function(req,res){
+app.post("/admin/location", function(req,res){
     if (req.body['locId'] == "" || req.body['locName'] == ""
         || req.body['locLat'] == "" || req.body['locLong'] == ""){
         res.send("Please fill in all the fields!");
@@ -914,7 +888,7 @@ app.post("/2064/admin/location", function(req,res){
 });
 
 //retrieve location
-app.get("/2064/admin/location", function(req, res){
+app.get("/admin/location", function(req, res){
     var routeId = req.query['routeId'];
     Route.find({routeId: routeId})
     .sort({dir: 1})
@@ -982,7 +956,7 @@ app.get("/2064/admin/location", function(req, res){
 });
 
 //update location
-app.put("/2064/admin/location", function(req,res){
+app.put("/admin/location", function(req,res){
     /*if(req.body['newLocId'] != undefined){
         Location.findOne({locId: req.body['newLocId']})
         .exec(function(err, nloc) {
@@ -1078,7 +1052,7 @@ app.put("/2064/admin/location", function(req,res){
     })
 });*/
 
-app.delete("/2064/admin/location", function(req,res){
+app.delete("/admin/location", function(req,res){
     Location.findOne({locId: req.body['locId']})
     .exec(function(err, loc){
         if(err){
@@ -1110,7 +1084,7 @@ app.delete("/2064/admin/location", function(req,res){
 
 //write the CSV data into the location databse by the admin
 
-app.post("/2064/admin/csv", function (req, res)
+app.post("/admin/csv", function (req, res)
 {
     //Bug Case 1: Empty location.
     //Solved:  the empty lcoation would be skipped in the admin.js already.
@@ -1186,7 +1160,7 @@ app.post("/2064/admin/csv", function (req, res)
 
                                                 // Admin CRUD actions for user data
 //create users
-app.post("/2064/admin/user", function(req,res){
+app.post("/admin/user", function(req,res){
     if (req.body['username'] == "" || req.body['password'] == ""){
         res.send("Please fill in all the fields!");
     }
@@ -1249,7 +1223,7 @@ app.post("/2064/admin/user", function(req,res){
 });
 
 //retrieve users
-app.get("/2064/admin/user", function(req, res){
+app.get("/admin/user", function(req, res){
     User.find()
         .select('username password commentNum favLocNum latitude longitude')
     .sort({userId: 1})
@@ -1275,7 +1249,7 @@ app.get("/2064/admin/user", function(req, res){
 });
 
 //update users
-app.put("/2064/admin/user", function(req,res){
+app.put("/admin/user", function(req,res){
     if(req.body['newUsername'] != undefined){
         if (req.body['newUsername'].length < 4 || req.body['newUsername'].length > 20){
             res.send("The username should have 4-20 characters!");
@@ -1323,7 +1297,7 @@ app.put("/2064/admin/user", function(req,res){
 });
 
 //delete users
-app.delete("/2064/admin/user", function(req,res){
+app.delete("/admin/user", function(req,res){
     var del_user = req.body['username'];
     User.remove({username: req.body['username']})
     .exec(function(err, user) {
@@ -1339,7 +1313,7 @@ app.delete("/2064/admin/user", function(req,res){
 
 
 //Top 5 User Chart
-app.get("/2064/admin/top5", function (req, res)
+app.get("/admin/top5", function (req, res)
 {
     userName_comment = [];
     userCommentNum = [];
@@ -1392,7 +1366,7 @@ app.get("/2064/admin/top5", function (req, res)
 });
 
 // redirect other URL to one of URLs below
-app.get("/2064/*", function(req, res){
+app.get("/*", function(req, res){
     if (req.session['login'] == true)
         res.sendFile(__dirname + '/user.html');
     else if (req.session['loginAdmin'] == true)
