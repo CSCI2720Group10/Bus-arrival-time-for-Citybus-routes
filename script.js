@@ -1,13 +1,25 @@
 $(document).ready(function() {
+    var login = false;
+
     if($("title").html() == "Bus arrival time for Citybus Routes APP")
-       history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
+        history.replaceState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
     else if($("title").html() == "Home")
-        history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
+        history.replaceState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/user.html");
     else if($("title").html() == "Admin Home")
-        history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/admin.html");
+        history.replaceState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/admin.html");
 
     $(window).on("popstate", function() {
-        if (event.state.hasOwnProperty('content')){
+        console.log(event.state.login);
+        if(event.state.hasOwnProperty('login')){
+            if ((!event.state.login && login) || (event.state.login && !login)){
+                history.forward();
+            }
+            else{
+                $("#content").html(event.state.content);
+                $("title").html(event.state.title);
+            }
+        }
+        else{
             $("#content").html(event.state.content);
             $("title").html(event.state.title);
         }
@@ -155,7 +167,7 @@ $(document).ready(function() {
         .done(function(res){
             $("body").load(res + " #content", function(){
                 $("title").html("Sign Up");
-                history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/signup.html");
+                history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/signup.html");
             });
         });
     });
@@ -174,7 +186,7 @@ $(document).ready(function() {
                 $("body").load(res + " #content", function(){
                     $("#msg").html("Sign up successful!");
                     $("title").html("Bus arrival time for Citybus Routes APP");
-                    history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/");
+                    history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
                 });
             }
             else{
@@ -193,7 +205,7 @@ $(document).ready(function() {
             var $temp = $('<div></div>').append(res);
             $("#content").html($temp.find("#content").html());
             $("title").html("Bus arrival time for Citybus Routes APP");
-            history.pushState({content: $("#content").html(), title: $("title").html()}, null, "/");
+            history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
         });
     });
 
@@ -206,14 +218,14 @@ $(document).ready(function() {
             data: {username: $("#username").val(),
                    password: $("#password").val()}
         })
-            .done(function (res) {
-
+        .done(function (res) {
             if(res[0] == '<'){
                 var $temp = $('<div></div>').append(res);
                 $("#content").html($temp.find("#content").html());
                 $("title").html("Home");
                 $("#userName").html(user);
-                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/user.html");
+                history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/user.html");
+                login = true;
             }
             else{
                 $("#msg").html(res);
@@ -234,7 +246,8 @@ $(document).ready(function() {
         .done(function(res){
             $("body").load(res + " #content", function(){
                 $("title").html("Admin Home");
-                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/admin.html");
+                history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/admin.html");
+                login = true;
             });
         });
     });
@@ -246,12 +259,10 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
-			/*res = res.split("body");
-			res = res[1].slice(1, res[1].length - 2);
-            $("body").html(res);*/
             $("body").load(res + " #content", function(){
                 $("title").html("Bus arrival time for Citybus Routes APP");
-                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
+                history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
+                login = false;
             });
         });
     });
@@ -263,12 +274,10 @@ $(document).ready(function() {
             type: "POST"
         })
         .done(function(res){
-			/*res = res.split("body");
-			res = res[1].slice(1, res[1].length - 2);
-            $("body").html(res);*/
             $("body").load(res + " #content", function(){
                 $("title").html("Bus arrival time for Citybus Routes APP");
-                history.replaceState({content: $("#content").html(), title: $("title").html()}, null, "/");
+                history.pushState({content: $("#content").html(), login: false, title: $("title").html()}, null, "/");
+                login = false;
             });
         });
     });

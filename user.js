@@ -410,7 +410,7 @@ $(document).ready(function ()
                 var $temp = $('<div></div>').append(res);
                 $("#userContent").html($temp.find("#userContent").html());
                 $("title").html("Home");
-                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/user.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/user.html");
             });
     });
 
@@ -425,7 +425,7 @@ $(document).ready(function ()
             .done(function (res) {
                 $("title").html("List Locations");
                 $("#userContent").html(res);
-                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/list_location.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/list_location.html");
             });
     });
 
@@ -470,7 +470,7 @@ $(document).ready(function ()
 
         $("title").html("Search Locations");
         $("#userContent").html(content);
-        history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/search_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/search_location.html");
     });
 
     $(document).on("change", "input[name=criterion]", function (e) {
@@ -585,7 +585,7 @@ $(document).ready(function ()
                     });
                 }
                 $("title").html("Top 5 Locations");
-                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/user_top5_locations.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/user_top5_locations.html");
             });
     });
 
@@ -604,7 +604,7 @@ $(document).ready(function ()
                 console.log($("#userName").html());
                 $("title").html("Fav Locations");
                 $("#userContent").html(res);
-                history.pushState({ content: $("#content").html(), title: $("title").html() }, null, "/fav_location.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/fav_location.html");
             });
     });
 });
