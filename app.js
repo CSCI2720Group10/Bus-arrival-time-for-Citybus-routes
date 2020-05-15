@@ -379,6 +379,33 @@ app.get("/user/location", function (req, res)
     }
 });
 
+                                                                                    //Help
+//Get RouteId for ETA
+app.get("./user/locRoute/:locId", function (req,res){
+    Location.findOne({locId: req.params['locId']}, function (err, loc){
+        if (err) {
+                res.send(err);
+        }
+        else {
+            Route.find({"locInfo.loc": loc._id}, function (err, routes){
+                if (err) {
+                    res.send(err);
+                }
+                else {
+                    console.log(routes);
+                    let routeId_arr = [];
+                    for(var r of routes){
+                        routeId_arr.push(r.routeId);
+                    }
+                    console.log(routeId_arr);
+
+                    res.send(routeId_arr);
+                }
+            })
+        }
+    })
+});
+
 //Update User home location
 app.put("/user/home", function (req, res)
 {
