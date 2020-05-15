@@ -39,7 +39,7 @@ async function initMap()
 {
     //Model for setting the property of a google map at the beginning.
     $.ajax({
-        url: "./user/mapping",
+        url: "./2064/user/mapping",
         type: "GET"
     })
         .done(function (res) {
@@ -275,7 +275,7 @@ $(document).on("click", "#sepBtn", function (e)
 {
     e.preventDefault();
     $.ajax({
-        url: "./user/mapping/" + $("#sepValue").val(),
+        url: "./2064/user/mapping/" + $("#sepValue").val(),
         type: "GET"
     })
         .done(function (res)
@@ -370,7 +370,7 @@ $(document).on("click", "#favBtn", function (e) {
     console.log($("#sepValue").val());
     console.log($("#userName").html());
     $.ajax({
-        url: "./user/favourite",
+        url: "./2064/user/favourite",
         type: "POST",
         data: {
             locId: $("#sepValue").val(),
@@ -417,7 +417,7 @@ $(document).on("click", "#addComment", function (e)
     var $userTime = $("<p>" + "Date:" + new_today + " Time:" + time + "</p>");
 
     $.ajax({
-        url: "./user/comment",
+        url: "./2064/user/comment",
         type: "POST",
         data: {
             username: $("#userName").html(),
@@ -447,7 +447,7 @@ $(document).on("click", "#homeBtn", function (e)
     navigator.geolocation.getCurrentPosition(function (position)
     {
         $.ajax({
-            url: "./user/home",
+            url: "./2064/user/home",
             type: "PUT",
             data: {
                 username: $("#userName").html(),
@@ -473,7 +473,7 @@ $(document).on("click", "#disBtn", function (e)
     else
     {
         $.ajax({
-            url: "./user/mapping",
+            url: "./2064/user/mapping",
             type: "GET"
         })
             .done(function (res)
@@ -525,14 +525,14 @@ $(document).ready(function ()
         changeNavbar($("#home"));
 
         $.ajax({
-            url: "./user",
+            url: "./2064/user",
             type: "GET"
         })
             .done(function (res) {
                 var $temp = $('<div></div>').append(res);
                 $("#userContent").html($temp.find("#userContent").html());
                 $("title").html("Home");
-                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/user.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/user.html");
             });
     });
 
@@ -541,13 +541,13 @@ $(document).ready(function ()
         changeNavbar($("#listLoc"));
 
         $.ajax({
-            url: "./user/location",
+            url: "./2064/user/location",
             type: "GET"
         })
             .done(function (res) {
                 $("title").html("List Locations");
                 $("#userContent").html(res);
-                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/list_location.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/list_location.html");
             });
     });
 
@@ -557,7 +557,7 @@ $(document).ready(function ()
         e.preventDefault();
 
         $.ajax({
-            url: "./user/location?locIdOrder=" + locIdOrder,
+            url: "./2064/user/location?locIdOrder=" + locIdOrder,
             type: "GET"
         })
             .done(function (res) {
@@ -592,7 +592,7 @@ $(document).ready(function ()
 
         $("title").html("Search Locations");
         $("#userContent").html(content);
-        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/search_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/search_location.html");
     });
 
     $(document).on("change", "input[name=criterion]", function (e) {
@@ -605,7 +605,7 @@ $(document).ready(function ()
         e.preventDefault();
 
         $.ajax({
-            url: "./user/location?" + $("form").find("input[name=criterion]:checked").val() + "=" + $("#value").val(),
+            url: "./2064/user/location?" + $("form").find("input[name=criterion]:checked").val() + "=" + $("#value").val(),
             type: "GET"
         })
             .done(function (res) {
@@ -620,7 +620,7 @@ $(document).ready(function ()
         changeNavbar($("#seeTop5Loc"));
 
         $.ajax({
-            url: "./user/top5",
+            url: "./2064/user/top5",
             type: "GET"
         })
             .done(function (res) {
@@ -707,7 +707,7 @@ $(document).ready(function ()
                     });
                 }
                 $("title").html("Top 5 Locations");
-                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/user_top5_locations.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/user_top5_locations.html");
             });
     });
 
@@ -718,7 +718,7 @@ $(document).ready(function ()
         changeNavbar($("#seeFavLoc"));
         var redata, i;
         $.ajax({
-            url: "./user/favourite/" + $("#userName").html(),
+            url: "./2064/user/favourite/" + $("#userName").html(),
             type: "GET"
         })
             .done(function (res)
@@ -726,7 +726,7 @@ $(document).ready(function ()
                 console.log($("#userName").html());
                 $("title").html("Fav Locations");
                 $("#userContent").html(res);
-                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/fav_location.html");
+                history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/fav_location.html");
             });
     });
 });

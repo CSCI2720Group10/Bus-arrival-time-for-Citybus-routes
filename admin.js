@@ -190,7 +190,7 @@ async function flushData(){
 
     try {
         await $.ajax({
-            url: "./admin/flush",
+            url: "./2064/admin/flush",
             type: "POST",
             data: {routeIn: routeInData,
                    routeOut: routeOutData,
@@ -225,7 +225,7 @@ $(document).ready(function() {
 
         $("#adminContent").load("/admin.html #adminContent", function(){
             $("title").html("Admin Home");
-            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/admin.html");
+            history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/admin.html");
         });
     });
 
@@ -269,7 +269,7 @@ $(document).ready(function() {
 			'</form>';
         $("title").html("Create Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/create_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/create_location.html");
     });
 
     $(document).on("click", "#createLocBtn", function(e){
@@ -277,7 +277,7 @@ $(document).ready(function() {
         $("#msg").removeClass("text-success");
         console.log($("input[name=dir]:checked").val());
         $.ajax({
-            url: "./admin/location",
+            url: "./2064/admin/location",
             type: "POST",
             data: {locId: $("#locId").val(),
                   locName: $("#locName").val(),
@@ -316,12 +316,12 @@ $(document).ready(function() {
             '<div id="result"></div>';
         $("title").html("Retrieve Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/retrieve_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/retrieve_location.html");
     });
 
     $(document).on("change", "#retrieveLocSelectMenu", function(e){
         $.ajax({
-            url: "./admin/location?routeId=" + e.target.value,
+            url: "./2064/admin/location?routeId=" + e.target.value,
             type: "GET"
         })
         .done(function(res){
@@ -352,12 +352,12 @@ $(document).ready(function() {
             '<div id="result"></div>';
         $("title").html("Update Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/update_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/update_location.html");
     });
 
     $(document).on("change", "#updateLocSelectMenu", function(e){
         $.ajax({
-            url: "./admin/location?routeId=" + e.target.value,
+            url: "./2064/admin/location?routeId=" + e.target.value,
             type: "GET"
         })
         .done(function(res){
@@ -375,7 +375,7 @@ $(document).ready(function() {
             var $this = $(this);
             var locId = $this.parent().find("span").eq(0).html();
             $.ajax({
-                url: "./admin/location",
+                url: "./2064/admin/location",
                 type: "PUT",
                 data: {locId: locId,
                        newLocName: newLocName}
@@ -398,7 +398,7 @@ $(document).ready(function() {
             var $this = $(this);
             var locId = $this.parent().find("span").eq(0).html();
             $.ajax({
-                url: "./admin/location",
+                url: "./2064/admin/location",
                 type: "PUT",
                 data: {locId: locId,
                        newLocLat: newLocLat}
@@ -421,7 +421,7 @@ $(document).ready(function() {
             var $this = $(this);
             var locId = $this.parent().find("span").eq(0).html();
             $.ajax({
-                url: "./admin/location",
+                url: "./2064/admin/location",
                 type: "PUT",
                 data: {locId: locId,
                        newLocLong: newLocLong}
@@ -460,12 +460,12 @@ $(document).ready(function() {
             '<div id="result"></div>';
         $("title").html("Delete Location");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/delete_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/delete_location.html");
     });
 
     $(document).on("change", "#deleteLocSelectMenu", function(e){
         $.ajax({
-            url: "./admin/location?routeId=" + e.target.value,
+            url: "./2064/admin/location?routeId=" + e.target.value,
             type: "GET"
         })
         .done(function(res){
@@ -480,7 +480,7 @@ $(document).ready(function() {
         var locId = $(this).parent().find("span").eq(0).html();
 
         $.ajax({
-            url: "./admin/location",
+            url: "./2064/admin/location",
             type: "DELETE",
             data: {locId: locId}
         })
@@ -508,7 +508,7 @@ $(document).ready(function() {
 			'</form>';
         $("title").html("Create User");
         $("#adminContent").html(content);
-        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/create_user.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/create_user.html");
     });
 
     $(document).on("click", "#createUserBtn", function(e){
@@ -516,7 +516,7 @@ $(document).ready(function() {
         $("#msg").removeClass("text-success");
 
         $.ajax({
-            url: "./admin/user",
+            url: "./2064/admin/user",
             type: "POST",
             data: {username: $("#username").val(),
                    password: $("#password").val()}
@@ -536,13 +536,13 @@ $(document).ready(function() {
         changeNavbar($("#retrieveUser"));
 
         $.ajax({
-            url: "./admin/user",
+            url: "./2064/admin/user",
             type: "GET"
         })
         .done(function(res){
             $("title").html("Retrieve User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
-            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/retrieve_user.html");
+            history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/retrieve_user.html");
         });
     });
 
@@ -552,14 +552,14 @@ $(document).ready(function() {
         changeNavbar($("#updateUser"));
 
         $.ajax({
-            url: "./admin/user",
+            url: "./2064/admin/user",
             type: "GET"
         })
         .done(function(res){
             $("title").html("Update User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning editUsername mr-3">Edit username</button><button type="button" class="btn btn-warning editPassword">Edit password</button>');
-            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/update_user.html");
+            history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/update_user.html");
         });
     });
 
@@ -569,7 +569,7 @@ $(document).ready(function() {
             var $this = $(this);
             var username = $this.parent().find("span").eq(0).html();
             $.ajax({
-                url: "./admin/user",
+                url: "./2064/admin/user",
                 type: "PUT",
                 data: {username: username,
                        newUsername: newUsername}
@@ -592,7 +592,7 @@ $(document).ready(function() {
             var $this = $(this);
             var username = $this.parent().find("span").eq(0).html();
             $.ajax({
-                url: "./admin/user",
+                url: "./2064/admin/user",
                 type: "PUT",
                 data: {username: username,
                        newPassword: newPassword}
@@ -615,14 +615,14 @@ $(document).ready(function() {
         changeNavbar($("#deleteUser"));
 
         $.ajax({
-            url: "./admin/user",
+            url: "./2064/admin/user",
             type: "GET"
         })
         .done(function(res){
             $("title").html("Delete User");
             $("#adminContent").html("<h1>User Information</h1>" + res);
             $(".userInfo").append('<br><button type="button" class="btn btn-warning deleteUserBtn">Delete user</button>');
-            history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/delete_user.html");
+            history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/delete_user.html");
         });
     });
 
@@ -630,7 +630,7 @@ $(document).ready(function() {
         var $this = $(this);
         var username = $(this).parent().find("span").eq(0).html();
         $.ajax({
-            url: "./admin/user",
+            url: "./2064/admin/user",
             type: "DELETE",
             data: {username: username}
         })
@@ -670,7 +670,7 @@ $(document).ready(function() {
            '</div>';
         $("title").html("Location Data Create");
         $("#adminContent").html(locDataForm);
-        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/csv_location.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/csv_location.html");
     });
     var imported = document.createElement('script');
     document.head.appendChild(imported);
@@ -701,7 +701,7 @@ $(document).ready(function() {
             if (i > 0)
             {
                 $.ajax({
-                    url: "./admin/csv",
+                    url: "./2064/admin/csv",
                     type: "POST",
                     data: {
                         locId: cells[0],
@@ -730,7 +730,7 @@ $(document).ready(function() {
         $("#parsed_csv_list").html(table);
     }
 
-    $.getScript('papaparse.min.js', function () {
+    $.getScript('2064/papaparse.min.js', function () {
         $(document).on("click", "#submit-file", function (e) {
             e.preventDefault();
             $('#files').parse(
@@ -759,7 +759,7 @@ $(document).ready(function() {
         changeNavbar($("#seeTop5Users"));
                                                             //With most comments
         $.ajax({
-            url: "./admin/top5",
+            url: "./2064/admin/top5",
             type: "GET"
         })
         .done(function(res){
@@ -870,7 +870,7 @@ $(document).ready(function() {
         });
 
         $("title").html("Top 5 Locations");
-        history.pushState({content: $("#content").html(), login: true, title: $("title").html()}, null, "/user_top5_locations.html");
+        history.pushState({ content: $("#content").html(), login: true, title: $("title").html() }, null, "/2064/user_top5_locations.html");
     });
 
 });
