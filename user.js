@@ -1,3 +1,10 @@
+/*
+Kwan Tsz Fung		        1155078864
+Lee Kwan Hung		        1155108603
+Wong Ching Yeung Wallace 	1155093534
+Choi Chun Wa                1155094180
+*/
+
 function getRouteId(locId){
     let routes = [];
     $.ajax({
@@ -444,8 +451,8 @@ $(document).on("click", "#homeBtn", function (e)
             type: "PUT",
             data: {
                 username: $("#userName").html(),
-                hlatitude: position.coords.latitude,
-                hlongitude: position.coords.longitude
+                hlatitude: position.coords.latitude.toFixed(2),
+                hlongitude: position.coords.longitude.toFixed(2)
             }
         })
             .done(function (res) {

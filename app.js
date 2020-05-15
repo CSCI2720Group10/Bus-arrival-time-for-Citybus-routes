@@ -1,3 +1,10 @@
+/*
+Kwan Tsz Fung		        1155078864
+Lee Kwan Hung		        1155108603
+Wong Ching Yeung Wallace 	1155093534
+Choi Chun Wa                1155094180
+*/
+
 const express = require ('express');
 const app = express();
 
@@ -30,8 +37,7 @@ var LocationSchema = mongoose.Schema({
     locId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-    nearBy: [{type:Number}]
+    longitude: { type: Number, required: true }
 });
 var Location = mongoose.model('Location', LocationSchema);
 
@@ -1245,7 +1251,7 @@ app.post("/admin/user", function(req,res){
 //retrieve users
 app.get("/admin/user", function(req, res){
     User.find()
-	.select('username password commentNum favLocNum')
+        .select('username password commentNum favLocNum latitude longitude')
     .sort({userId: 1})
 	.exec(function(err, users) {
 		if (err)
