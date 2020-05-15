@@ -66,7 +66,7 @@ $(document).ready(function() {
 
             '<h4><u>Data Schemas</u></h4>' +
             '<table class="table table-hover table-sm text-dark w-50">' +
-            '<thead class="thead-light">' +
+            '<tbody class="thead-light">' +
                 '<tr>' +
                     '<td>Location</td>' +
                     '<td><ul>' +
@@ -108,12 +108,12 @@ $(document).ready(function() {
                         '<li>time: String</li>' +
                     '</ul></td>' +
                 '</tr>' +
-            '</table>' +
+            '</tbody></table>' +
 
             '<h4><u>Technologies and Libraries</u></h4>' +
-            '<p>Why NodeJS + ajax + MogoDB(mongoose)?</p>'+
+            '<p>Why NodeJS + ajax + MongoDB(mongoose)?</p>'+
             '<table class="table table-hover table-sm text-dark w-50">' +
-            '<thead class="thead-light">' +
+            '<tbody class="thead-light">' +
             '<tr>' +
                 '<th>advantages </th>' +
                 '<th>disadvantages </th>'+
@@ -131,14 +131,14 @@ $(document).ready(function() {
             '<td></td>' +
             '</tr>' +
             '<tr>' +
-            '<td>MongDB has a flexible data type collection</td>' +
+            '<td>MongoDB has a flexible data type collection</td>' +
             '<td></td>' +
             '</tr>' +
-            '</table>' +
+            '</tbody></table>' +
 
 
             '<br><br>' +
-            '<b class="text-danger"><u>We have read this article in http://www.cuhk.edu.hk/policy/academichonesty carefully.</u></b>' +
+            '<b class="text-danger"><u>We have read the article in http://www.cuhk.edu.hk/policy/academichonesty carefully.</u></b>' +
             '<br><a id="login" href="">Return to Login Page</a>';
         $("#content").html(content);
         $("title").html("About This Project");

@@ -864,7 +864,7 @@ app.get("/admin/location", function(req, res){
         }
         else{
             var output = "<h3>Route ID: " + routeId + "</h3>" +
-                "<h3>Route direction: Inbound</h3>";
+                "<div class='row'><div class='col'><h3>Route direction: Inbound</h3>";
             if(result[0].locInfo.length == 0){
                 output += "No locations";
             }
@@ -889,7 +889,7 @@ app.get("/admin/location", function(req, res){
                     });
                 }
             }
-            output += "<br><br><h3>Route direction: Outbound</h3>";
+            output += "</div><div class='col'><h3>Route direction: Outbound</h3>";
             if(result[1].locInfo.length == 0){
                 output += "No locations";
             }
@@ -914,6 +914,7 @@ app.get("/admin/location", function(req, res){
                     });
                 }
             }
+            output += "</div></div>";
             res.send(output);
         }
     });
