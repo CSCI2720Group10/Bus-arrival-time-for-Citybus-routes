@@ -27,7 +27,8 @@ $(document).ready(function() {
             '<h4><u>Workload distribution</u></h4>' +
             'Kwan Tsz Fung: user action# 4, 6, admin action# 1, 2, 3, charting statistics in admin view<br>' +
             'Lee Kwan Hung: user action# 1, 3, admin action# 1, 2, 3, 5, non-user action#1, 2, charting statistics in user view<br>' +
-            'Wong Ching Yeung Wallace: user action# 2, 3, 4, 5 admin action# 4, user-location , gooleMap application <br>'+
+            'Wong Ching Yeung Wallace: user action# 2, 3, 4, 5 admin action# 4, user-location , googleMap application <br>' +
+            'Choi Chun Wa: report writing, Restful API design, Interface Design, Programme Code structure Editing<br>' +
             'Together: Debug, design different schemas, demo practice' +
             '<br><br>' +
 
