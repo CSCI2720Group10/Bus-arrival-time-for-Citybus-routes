@@ -1,0 +1,8 @@
+These are the code inside the app.js file showing the schema of the location.
+                                                          //Location Schema
+var LocationSchema = mongoose.Schema({
+    locId: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true }
+});
