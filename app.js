@@ -22,7 +22,7 @@ app.use(session({
 }));
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://cywong7:x56057@localhost/cywong7');
+mongoose.connect('mongodb://123:123@localhost/proj');
 var newCommentId = 0;
 
 var db = mongoose.connection;
