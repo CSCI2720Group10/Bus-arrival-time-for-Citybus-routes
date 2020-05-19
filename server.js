@@ -163,7 +163,31 @@ app.get("/api/locations/:locId", function(req,res){
 
 app.put("/api/locations/:locId", function(req,res){
     if(req.headers.authorization == "Bearer csci2720"){
-
+        Location.findOne({locId: req.params['locId']})
+        .exec(function(err, loc){
+            if(err){
+                res.send(err);
+            }
+            else if(loc == null){
+                res.send("Location does not exist!");
+            }
+            else {
+                Location.update({locId: req.params['locId']},
+                {name: req.body.location.name[0],
+                 latitude: req.body.location.latitude[0],
+                 longitude: req.body.location.longitude[0]},
+                function(err, count) {
+                    if (err)
+                        res.send(err);
+                    else {
+                        res.send("<location><name>" + req.body.location.name[0] + "</name>" +
+                                 "<id>" + req.params['locId'] + "</id>" +
+                                 "<latitude>" + req.body.location.latitude[0] + "</latitude>" +
+                                 "<longitude>" + req.body.location.longitude[0] + "</longitude></location>");
+                    }
+                });
+            }
+        });
     }
     else{
         res.status(401).send();
@@ -185,10 +209,7 @@ app.delete("/api/locations/:locId", function(req,res){
                     if (err)
                         res.send(err);
                     else {
-                        res.send("<location><name>" + loc.name + "</name>" +
-                                 "<id>" + loc.locId + "</id>" +
-                                 "<latitude>" + loc.latitude + "</latitude>" +
-                                 "<longitude>" + loc.longitude + "</longitude></location>");
+                        res.send("Location deleted!");
                     }
                 });
             }
