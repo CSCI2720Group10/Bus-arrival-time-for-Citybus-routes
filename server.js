@@ -8,9 +8,8 @@ Choi Chun Wa                1155094180
 const express = require ('express');
 const app = express();
 
-const bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: '100mb' ,extended: true}));
-app.use(bodyParser.urlencoded({limit: '100mb', extended: true, parameterLimit: 1000000}));
+var xmlparser = require('express-xml-bodyparser');
+app.use(xmlparser());
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://123:123@localhost/proj');
@@ -95,7 +94,42 @@ app.get("/api/locations", function (req, res) {
 
 app.post("/api/locations", function(req,res){
     if(req.headers.authorization == "Bearer csci2720"){
+        if(req.body.location.id[0].length == 6){
+            Location.findOne({locId: req.body['locId']})
+            .exec(function(err, loc){
+                if(err){
+                    res.send(err);
+                }
+                else if(loc != null){
+                    res.send("Location already exists!");
+                }
+                else {
+                    var l = new Location({
+                        locId: req.body.location.id[0],
+                        name: req.body.location.name[0],
+                        latitude: req.body.location.latitude[0],
+                        longitude: req.body.location.longitude[0]
+                    });
 
+                    l.save(function(err) {
+                        if (err){
+                            res.send(err);
+                        }
+                        else{
+                            res.location(req.protocol + '://' + req.get('host') + '/2064/api/locations/' + l.locId)
+                            .status(201)
+                            .send("<location><name>" + l.name + "</name>" +
+                            "<id>" + l.locId + "</id>" +
+                            "<latitude>" + l.latitude + "</latitude>" +
+                            "<longitude>" + l.longitude + "</longitude></location>");
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            res.send("Location ID should have 6 digits!");
+        }
     }
     else{
         res.status(401).send();
