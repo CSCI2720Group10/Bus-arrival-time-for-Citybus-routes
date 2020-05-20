@@ -275,7 +275,7 @@ $(document).on("click", "#sepBtn", function (e)
 {
     e.preventDefault();
     $.ajax({
-        url: ". /user/mapping/" + $("#sepValue").val(),
+        url: "./user/mapping/" + $("#sepValue").val(),
         type: "GET"
     })
         .done(function (res)
@@ -370,7 +370,7 @@ $(document).on("click", "#favBtn", function (e) {
     console.log($("#sepValue").val());
     console.log($("#userName").html());
     $.ajax({
-        url: ". /user/favourite",
+        url: "./user/favourite",
         type: "POST",
         data: {
             locId: $("#sepValue").val(),
@@ -417,7 +417,7 @@ $(document).on("click", "#addComment", function (e)
     var $userTime = $("<p>" + "Date:" + new_today + " Time:" + time + "</p>");
 
     $.ajax({
-        url: ". /user/comment",
+        url: "./user/comment",
         type: "POST",
         data: {
             username: $("#userName").html(),
@@ -447,7 +447,7 @@ $(document).on("click", "#homeBtn", function (e)
     navigator.geolocation.getCurrentPosition(function (position)
     {
         $.ajax({
-            url: ". /user/home",
+            url: "./user/home",
             type: "PUT",
             data: {
                 username: $("#userName").html(),
@@ -473,7 +473,7 @@ $(document).on("click", "#disBtn", function (e)
     else
     {
         $.ajax({
-            url: ". /user/mapping",
+            url: "./user/mapping",
             type: "GET"
         })
             .done(function (res)
@@ -525,7 +525,7 @@ $(document).ready(function ()
         changeNavbar($("#home"));
 
         $.ajax({
-            url: ". /user",
+            url: "./user",
             type: "GET"
         })
             .done(function (res) {
@@ -541,7 +541,7 @@ $(document).ready(function ()
         changeNavbar($("#listLoc"));
 
         $.ajax({
-            url: ". /user/location",
+            url: "./user/location",
             type: "GET"
         })
             .done(function (res) {
@@ -557,7 +557,7 @@ $(document).ready(function ()
         e.preventDefault();
 
         $.ajax({
-            url: ". /user/location?locIdOrder=" + locIdOrder,
+            url: "./user/location?locIdOrder=" + locIdOrder,
             type: "GET"
         })
             .done(function (res) {
@@ -605,7 +605,7 @@ $(document).ready(function ()
         e.preventDefault();
 
         $.ajax({
-            url: ". /user/location?" + $("form").find("input[name=criterion]:checked").val() + "=" + $("#value").val(),
+            url: "./user/location?" + $("form").find("input[name=criterion]:checked").val() + "=" + $("#value").val(),
             type: "GET"
         })
             .done(function (res) {
@@ -620,7 +620,7 @@ $(document).ready(function ()
         changeNavbar($("#seeTop5Loc"));
 
         $.ajax({
-            url: ". /user/top5",
+            url: "./user/top5",
             type: "GET"
         })
             .done(function (res) {
@@ -718,7 +718,7 @@ $(document).ready(function ()
         changeNavbar($("#seeFavLoc"));
         var redata, i;
         $.ajax({
-            url: ". /user/favourite/" + $("#userName").html(),
+            url: "./user/favourite/" + $("#userName").html(),
             type: "GET"
         })
             .done(function (res)

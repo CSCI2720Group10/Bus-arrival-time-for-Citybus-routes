@@ -190,7 +190,7 @@ async function flushData(){
 
     try {
         await $.ajax({
-            url: ". /admin/flush",
+            url: "./admin/flush",
             type: "POST",
             data: {routeIn: routeInData,
                    routeOut: routeOutData,
@@ -277,7 +277,7 @@ $(document).ready(function() {
         $("#msg").removeClass("text-success");
         console.log($("input[name=dir]:checked").val());
         $.ajax({
-            url: ". /admin/location",
+            url: "./admin/location",
             type: "POST",
             data: {locId: $("#locId").val(),
                   locName: $("#locName").val(),
@@ -375,7 +375,7 @@ $(document).ready(function() {
             var $this = $(this);
             var locId = $this.parent().find("span").eq(0).html();
             $.ajax({
-                url: ". /admin/location",
+                url: "./admin/location",
                 type: "PUT",
                 data: {locId: locId,
                        newLocName: newLocName}
