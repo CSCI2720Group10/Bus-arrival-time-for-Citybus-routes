@@ -12,7 +12,7 @@ var xmlparser = require('express-xml-bodyparser');
 app.use(xmlparser());
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://123:123@localhost/proj');
+mongoose.connect('mongodb://cywong7:x56057@localhost/cywong7');
 
 var db = mongoose.connection;
 // Upon connection failure
